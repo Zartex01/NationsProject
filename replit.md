@@ -1,4 +1,53 @@
-# Workspace
+# Workspace — NationsEpoque
+
+## Main Project: NationsEpoque Minecraft Plugin
+
+Located at `nations-plugin/`. This is a standalone Java/Maven Bukkit/PaperMC plugin for Minecraft 1.20.4.
+
+### Plugin Features
+- **6 war types**: Pillage, Conquête, Extermination, Siège, Raid, Annihilation (staff validation)
+- **Nation system**: creation, roles (LEADER/CO_LEADER/OFFICER/MEMBER/RECRUIT), invites, alliances
+- **Coalitions**: multi-nation alliance system
+- **Territory claiming**: chunk protection with grade-based claim limits
+- **Economy**: personal accounts + nation bank, pay, top
+- **Seasons + Levels**: 30-day seasons, XP/level system, monthly ranking with rewards
+- **GUIs**: NationMain, Members, Bank, Wars, Manage, StaffWars, Season, PlayerProfile
+- **Grades**: JOUEUR(10), SOUTIEN(20), PREMIUM(35), CHEVALIER(55), ROI(80) max claims
+
+### Build
+```bash
+cd nations-plugin && mvn package
+```
+Output JAR: `nations-plugin/target/NationsEpoque-1.0.0.jar`
+
+### Plugin structure
+```
+nations-plugin/
+├── pom.xml                         # Maven build (Paper 1.20.4)
+├── src/main/resources/
+│   ├── plugin.yml                  # Commands + permissions
+│   └── config.yml                  # All configuration
+└── src/main/java/fr/nations/
+    ├── NationsPlugin.java           # Main class
+    ├── config/ConfigManager.java
+    ├── util/{DataManager,MessageUtil,GuiUtil}.java
+    ├── nation/{Nation,NationMember,NationRole,NationManager,Coalition}.java
+    ├── territory/{ClaimedChunk,TerritoryManager}.java
+    ├── economy/{PlayerAccount,EconomyManager}.java
+    ├── war/{War,WarType,WarStatus,WarManager}.java
+    ├── grade/{GradeType,PlayerGrade,GradeManager}.java
+    ├── season/{PlayerStats,SeasonManager}.java
+    ├── gui/{NationMainGui,MembersGui,BankGui,WarsGui,NationManageGui,
+    │        ConfirmDisbandGui,SeasonGui,StaffWarsGui,PlayerProfileGui,GuiManager}.java
+    ├── commands/{NationCommand,WarCommand,ClaimCommand,CoalitionCommand,
+    │             MoneyCommand,SeasonCommand,NationsAdminCommand}.java
+    └── listeners/{BlockProtectionListener,PlayerJoinListener,PlayerDeathListener,
+                   ChunkListener,GuiClickListener}.java
+```
+
+---
+
+# Workspace (original)
 
 ## Overview
 

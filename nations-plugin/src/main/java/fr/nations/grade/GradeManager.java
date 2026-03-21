@@ -1,0 +1,85 @@
+package fr.nations.grade;
+
+import fr.nations.NationsPlugin;
+import org.bukkit.entity.Player;
+
+import java.util.*;
+
+public class GradeManager {
+
+    private final NationsPlugin plugin;
+    private final Map<UUID, PlayerGrade> playerGrades;
+
+    public GradeManager(NationsPlugin plugin) {
+        this.plugin = plugin;
+        this.playerGrades = new HashMap<>();
+    }
+
+    public void addPlayerGrade(PlayerGrade grade) {
+        playerGrades.put(grade.getPlayerId(), grade);
+    }
+
+    public PlayerGrade getPlayerGrade(UUID playerId) {
+        return playerGrades.get(playerId);
+    }
+
+    public PlayerGrade getOrCreatePlayerGrade(UUID playerId, String playerName) {
+        return playerGrades.computeIfAbsent(playerId, id ->
+            new PlayerGrade(id, GradeType.JOUEUR.name(), 1, 0, 0)
+        );
+    }
+
+    public String getPlayerGradeName(Player player) {
+        GradeType gradeType = GradeType.fromPermission(player);
+        PlayerGrade grade = getOrCreatePlayerGrade(player.getUniqueId(), player.getName());
+        grade.setGradeName(gradeType.name());
+        return gradeType.name();
+    }
+
+    public int getMaxClaims(Player player) {
+        GradeType gradeType = GradeType.fromPermission(player);
+        return gradeType.getMaxClaims();
+    }
+
+    public void addXp(UUID playerId, long amount) {
+        PlayerGrade grade = playerGrades.get(playerId);
+        if (grade == null) return;
+
+        int maxLevel = plugin.getConfigManager().getMaxLevel();
+        if (grade.getLevel() >= maxLevel) return;
+
+        grade.addXp(amount);
+
+        while (grade.canLevelUp() && grade.getLevel() < maxLevel) {
+            long xpCost = grade.getXpForNextLevel();
+            grade.setXp(grade.getXp() - xpCost);
+            grade.setLevel(grade.getLevel() + 1);
+
+            Player player = plugin.getServer().getPlayer(playerId);
+            if (player != null) {
+                player.sendMessage(plugin.getConfigManager().getPrefix()
+                    + "§aFélicitations! Vous êtes maintenant niveau §6" + grade.getLevel() + "§a!");
+            }
+        }
+
+        plugin.getDataManager().savePlayers();
+    }
+
+    public Collection<PlayerGrade> getAllPlayerGrades() {
+        return Collections.unmodifiableCollection(playerGrades.values());
+    }
+
+    public List<PlayerGrade> getTopPlayersByLevel(int limit) {
+        return playerGrades.values().stream()
+            .sorted(Comparator.comparingInt(PlayerGrade::getLevel).reversed()
+                .thenComparingLong(PlayerGrade::getXp).reversed())
+            .limit(limit)
+            .collect(java.util.stream.Collectors.toList());
+    }
+
+    public double getLevelProgressPercent(PlayerGrade grade) {
+        long xpNeeded = grade.getXpForNextLevel();
+        if (xpNeeded == 0) return 100.0;
+        return Math.min(100.0, (grade.getXp() * 100.0) / xpNeeded);
+    }
+}
