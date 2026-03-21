@@ -3,7 +3,9 @@ package fr.nations.nation;
 import fr.nations.NationsPlugin;
 import org.bukkit.entity.Player;
 
+import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class NationManager {
@@ -213,5 +215,188 @@ public class NationManager {
         if (nation == null) return null;
         NationMember member = nation.getMember(playerId);
         return member != null ? member.getRole() : null;
+    }
+
+    public void loadFromDatabase() {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        try (Connection conn = plugin.getDatabaseManager().getConnection()) {
+            loadNations(conn);
+            loadMembers(conn);
+            loadAllies(conn);
+            loadCoalitions(conn);
+            plugin.getLogger().info("[Nations] " + nations.size() + " nations et " + coalitions.size() + " coalitions chargées.");
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur chargement DB", e);
+        }
+    }
+
+    private void loadNations(Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT id, name, description, leader_id, bank_balance, season_points, level, xp, created_at FROM nations");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UUID id = UUID.fromString(rs.getString("id"));
+                String name = rs.getString("name");
+                UUID leaderId = UUID.fromString(rs.getString("leader_id"));
+                long createdAt = rs.getLong("created_at");
+                Nation nation = new Nation(id, name, leaderId, createdAt);
+                nation.setDescription(rs.getString("description"));
+                nation.setSeasonPoints(rs.getInt("season_points"));
+                nation.setLevel(rs.getInt("level"));
+                nation.setXp(rs.getDouble("xp"));
+                nation.depositToBank(rs.getDouble("bank_balance"));
+                nations.put(id, nation);
+            }
+        }
+    }
+
+    private void loadMembers(Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT player_id, nation_id, role_name, joined_at FROM nation_members");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UUID playerId = UUID.fromString(rs.getString("player_id"));
+                UUID nationId = UUID.fromString(rs.getString("nation_id"));
+                String roleName = rs.getString("role_name");
+                long joinedAt = rs.getLong("joined_at");
+                Nation nation = nations.get(nationId);
+                if (nation == null) continue;
+                NationRole role;
+                try { role = NationRole.valueOf(roleName); }
+                catch (IllegalArgumentException e) { role = NationRole.MEMBER; }
+                NationMember member = new NationMember(playerId, null, role);
+                nation.addMember(member);
+                playerNationMap.put(playerId, nationId);
+            }
+        }
+    }
+
+    private void loadAllies(Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT nation_a, nation_b FROM nation_allies");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UUID a = UUID.fromString(rs.getString("nation_a"));
+                UUID b = UUID.fromString(rs.getString("nation_b"));
+                Nation nationA = nations.get(a);
+                if (nationA != null) nationA.addAlly(b);
+            }
+        }
+    }
+
+    private void loadCoalitions(Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT id, name, leader_nation_id, created_at FROM coalitions");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UUID id = UUID.fromString(rs.getString("id"));
+                String name = rs.getString("name");
+                UUID leaderId = UUID.fromString(rs.getString("leader_nation_id"));
+                Coalition coalition = new Coalition(id, name, leaderId);
+                coalitions.put(id, coalition);
+            }
+        }
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT coalition_id, nation_id FROM coalition_members");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UUID cId = UUID.fromString(rs.getString("coalition_id"));
+                UUID nId = UUID.fromString(rs.getString("nation_id"));
+                Coalition coalition = coalitions.get(cId);
+                Nation nation = nations.get(nId);
+                if (coalition != null) coalition.addNation(nId);
+                if (nation != null) nation.setCoalitionId(cId);
+            }
+        }
+    }
+
+    public void saveNationToDatabase(Nation nation) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        String sql = """
+            INSERT INTO nations (id, name, description, leader_id, bank_balance, season_points, level, xp, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?)
+            ON CONFLICT (id) DO UPDATE SET
+                name=EXCLUDED.name, description=EXCLUDED.description, leader_id=EXCLUDED.leader_id,
+                bank_balance=EXCLUDED.bank_balance, season_points=EXCLUDED.season_points,
+                level=EXCLUDED.level, xp=EXCLUDED.xp
+        """;
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, nation.getId());
+            ps.setString(2, nation.getName());
+            ps.setString(3, nation.getDescription());
+            ps.setObject(4, nation.getLeaderId());
+            ps.setDouble(5, nation.getBankBalance());
+            ps.setInt(6, nation.getSeasonPoints());
+            ps.setInt(7, nation.getLevel());
+            ps.setDouble(8, nation.getXp());
+            ps.setLong(9, nation.getCreatedAt());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur sauvegarde nation", e);
+        }
+    }
+
+    public void deleteNationFromDatabase(UUID nationId) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement("DELETE FROM nations WHERE id=?")) {
+            ps.setObject(1, nationId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur suppression nation", e);
+        }
+    }
+
+    public void saveMemberToDatabase(UUID nationId, NationMember member) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        String sql = """
+            INSERT INTO nation_members (player_id, nation_id, role_name, joined_at) VALUES (?,?,?,?)
+            ON CONFLICT (player_id) DO UPDATE SET nation_id=EXCLUDED.nation_id, role_name=EXCLUDED.role_name
+        """;
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, member.getPlayerId());
+            ps.setObject(2, nationId);
+            ps.setString(3, member.getRole().name());
+            ps.setLong(4, System.currentTimeMillis());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur sauvegarde membre", e);
+        }
+    }
+
+    public void deleteMemberFromDatabase(UUID playerId) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement("DELETE FROM nation_members WHERE player_id=?")) {
+            ps.setObject(1, playerId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur suppression membre", e);
+        }
+    }
+
+    public void saveAllianceToDatabase(UUID a, UUID b) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        String sql = "INSERT INTO nation_allies (nation_a, nation_b) VALUES (?,?) ON CONFLICT DO NOTHING";
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, a); ps.setObject(2, b); ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur sauvegarde alliance", e);
+        }
+    }
+
+    public void deleteAllianceFromDatabase(UUID a, UUID b) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        String sql = "DELETE FROM nation_allies WHERE (nation_a=? AND nation_b=?) OR (nation_a=? AND nation_b=?)";
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, a); ps.setObject(2, b); ps.setObject(3, b); ps.setObject(4, a);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur suppression alliance", e);
+        }
     }
 }

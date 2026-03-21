@@ -2,7 +2,9 @@ package fr.nations.economy;
 
 import fr.nations.NationsPlugin;
 
+import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
 
 public class EconomyManager {
 
@@ -88,5 +90,41 @@ public class EconomyManager {
         StringBuilder sb = new StringBuilder();
         formatBalance(amount, sb);
         return sb.toString();
+    }
+
+    public void loadFromDatabase() {
+        String sql = "SELECT player_id, balance FROM player_accounts";
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            int count = 0;
+            while (rs.next()) {
+                UUID id = UUID.fromString(rs.getString("player_id"));
+                double balance = rs.getDouble("balance");
+                accounts.put(id, new PlayerAccount(id, balance));
+                count++;
+            }
+            plugin.getLogger().info("[Economy] " + count + " comptes chargés depuis la DB.");
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Economy] Erreur chargement DB", e);
+        }
+    }
+
+    public void saveAccountToDatabase(UUID playerId) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        PlayerAccount account = accounts.get(playerId);
+        if (account == null) return;
+        String sql = """
+            INSERT INTO player_accounts (player_id, balance) VALUES (?,?)
+            ON CONFLICT (player_id) DO UPDATE SET balance=EXCLUDED.balance
+        """;
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, playerId);
+            ps.setDouble(2, account.getBalance());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Economy] Erreur sauvegarde compte", e);
+        }
     }
 }

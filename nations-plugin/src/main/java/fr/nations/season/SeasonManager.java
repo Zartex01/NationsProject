@@ -5,7 +5,9 @@ import fr.nations.nation.Nation;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class SeasonManager {
@@ -151,8 +153,86 @@ public class SeasonManager {
         return days + "j " + hours + "h";
     }
 
+    public void loadFromDatabase() {
+        String sqlSeason = "SELECT season_number, started_at FROM seasons WHERE current=TRUE LIMIT 1";
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlSeason);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                this.currentSeason = rs.getInt("season_number");
+                this.seasonStartTime = rs.getLong("started_at");
+            } else {
+                saveCurrentSeasonToDatabase();
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Season] Erreur chargement saison", e);
+        }
+
+        String sqlStats = "SELECT player_id, kills, deaths, wars_won, claims FROM season_stats WHERE season_number=?";
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlStats)) {
+            ps.setInt(1, currentSeason);
+            try (ResultSet rs = ps.executeQuery()) {
+                int count = 0;
+                while (rs.next()) {
+                    UUID id = UUID.fromString(rs.getString("player_id"));
+                    PlayerStats stats = new PlayerStats(id);
+                    stats.addKills(rs.getInt("kills"));
+                    stats.addDeaths(rs.getInt("deaths"));
+                    stats.addWarsWon(rs.getInt("wars_won"));
+                    stats.addClaims(rs.getInt("claims"));
+                    playerStats.put(id, stats);
+                    count++;
+                }
+                plugin.getLogger().info("[Season] " + count + " stats joueurs chargées depuis la DB.");
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Season] Erreur chargement stats", e);
+        }
+    }
+
+    public void saveCurrentSeasonToDatabase() {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        String sql = """
+            INSERT INTO seasons (season_number, started_at, current) VALUES (?,?,TRUE)
+            ON CONFLICT (season_number) DO UPDATE SET started_at=EXCLUDED.started_at, current=TRUE
+        """;
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, currentSeason);
+            ps.setLong(2, seasonStartTime);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Season] Erreur sauvegarde saison", e);
+        }
+    }
+
+    public void savePlayerStatToDatabase(UUID playerId) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        PlayerStats stats = playerStats.get(playerId);
+        if (stats == null) return;
+        String sql = """
+            INSERT INTO season_stats (player_id, season_number, kills, deaths, wars_won, claims)
+            VALUES (?,?,?,?,?,?)
+            ON CONFLICT (player_id, season_number) DO UPDATE SET
+                kills=EXCLUDED.kills, deaths=EXCLUDED.deaths,
+                wars_won=EXCLUDED.wars_won, claims=EXCLUDED.claims
+        """;
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, playerId);
+            ps.setInt(2, currentSeason);
+            ps.setInt(3, stats.getKills());
+            ps.setInt(4, stats.getDeaths());
+            ps.setInt(5, stats.getWarsWon());
+            ps.setInt(6, stats.getClaims());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Season] Erreur sauvegarde stat joueur", e);
+        }
+    }
+
     public void shutdown() {
         if (seasonCheckTask != null) seasonCheckTask.cancel();
-        plugin.getDataManager().saveSeasons();
     }
 }

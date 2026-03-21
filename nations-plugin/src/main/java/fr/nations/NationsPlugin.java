@@ -2,10 +2,12 @@ package fr.nations;
 
 import fr.nations.commands.*;
 import fr.nations.config.ConfigManager;
+import fr.nations.database.DatabaseManager;
 import fr.nations.economy.EconomyManager;
 import fr.nations.grade.GradeManager;
 import fr.nations.listeners.*;
 import fr.nations.nation.NationManager;
+import fr.nations.role.CustomRoleManager;
 import fr.nations.season.SeasonManager;
 import fr.nations.territory.TerritoryManager;
 import fr.nations.util.DataManager;
@@ -17,6 +19,7 @@ public class NationsPlugin extends JavaPlugin {
     private static NationsPlugin instance;
 
     private ConfigManager configManager;
+    private DatabaseManager databaseManager;
     private DataManager dataManager;
     private NationManager nationManager;
     private TerritoryManager territoryManager;
@@ -24,43 +27,61 @@ public class NationsPlugin extends JavaPlugin {
     private EconomyManager economyManager;
     private SeasonManager seasonManager;
     private GradeManager gradeManager;
+    private CustomRoleManager customRoleManager;
 
     @Override
     public void onEnable() {
         instance = this;
-
         saveDefaultConfig();
 
         this.configManager = new ConfigManager(this);
-        this.dataManager = new DataManager(this);
+
+        this.databaseManager = new DatabaseManager(this);
+        boolean dbConnected = databaseManager.connect();
+
+        if (dbConnected) {
+            databaseManager.createTables();
+            getLogger().info("Base de données PostgreSQL prête.");
+        } else {
+            getLogger().warning("Base de données indisponible — mode dégradé (YAML fallback).");
+        }
+
         this.gradeManager = new GradeManager(this);
         this.economyManager = new EconomyManager(this);
         this.nationManager = new NationManager(this);
         this.territoryManager = new TerritoryManager(this);
         this.warManager = new WarManager(this);
         this.seasonManager = new SeasonManager(this);
+        this.customRoleManager = new CustomRoleManager(this);
+        this.dataManager = new DataManager(this);
 
-        dataManager.loadAll();
+        if (dbConnected) {
+            nationManager.loadFromDatabase();
+            economyManager.loadFromDatabase();
+            gradeManager.loadFromDatabase();
+            warManager.loadAll();
+            seasonManager.loadFromDatabase();
+            customRoleManager.loadAll();
+            territoryManager.loadFromDatabase();
+        } else {
+            dataManager.loadAll();
+        }
+
+        warManager.startTasks();
 
         registerCommands();
         registerListeners();
 
-        getLogger().info("NationsEpoque v" + getDescription().getVersion() + " activé avec succès!");
+        getLogger().info("NationsEpoque v" + getDescription().getVersion() + " activé!");
         getLogger().info("Nations chargées: " + nationManager.getAllNations().size());
     }
 
     @Override
     public void onDisable() {
-        if (dataManager != null) {
-            dataManager.saveAll();
-        }
-        if (warManager != null) {
-            warManager.shutdown();
-        }
-        if (seasonManager != null) {
-            seasonManager.shutdown();
-        }
-        getLogger().info("NationsEpoque désactivé. Données sauvegardées.");
+        if (warManager != null) warManager.shutdown();
+        if (seasonManager != null) seasonManager.shutdown();
+        if (databaseManager != null) databaseManager.close();
+        getLogger().info("NationsEpoque désactivé.");
     }
 
     private void registerCommands() {
@@ -91,6 +112,10 @@ public class NationsPlugin extends JavaPlugin {
         NationsAdminCommand adminCommand = new NationsAdminCommand(this);
         getCommand("nationsadmin").setExecutor(adminCommand);
         getCommand("nationsadmin").setTabCompleter(adminCommand);
+
+        NationRoleCommand roleCommand = new NationRoleCommand(this);
+        getCommand("nationrole").setExecutor(roleCommand);
+        getCommand("nationrole").setTabCompleter(roleCommand);
     }
 
     private void registerListeners() {
@@ -98,14 +123,13 @@ public class NationsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(this), this);
         getServer().getPluginManager().registerEvents(new ChunkListener(this), this);
-        getServer().getPluginManager().registerEvents(new fr.nations.listeners.GuiClickListener(this), this);
+        getServer().getPluginManager().registerEvents(new GuiClickListener(this), this);
     }
 
-    public static NationsPlugin getInstance() {
-        return instance;
-    }
+    public static NationsPlugin getInstance() { return instance; }
 
     public ConfigManager getConfigManager() { return configManager; }
+    public DatabaseManager getDatabaseManager() { return databaseManager; }
     public DataManager getDataManager() { return dataManager; }
     public NationManager getNationManager() { return nationManager; }
     public TerritoryManager getTerritoryManager() { return territoryManager; }
@@ -113,4 +137,5 @@ public class NationsPlugin extends JavaPlugin {
     public EconomyManager getEconomyManager() { return economyManager; }
     public SeasonManager getSeasonManager() { return seasonManager; }
     public GradeManager getGradeManager() { return gradeManager; }
+    public CustomRoleManager getCustomRoleManager() { return customRoleManager; }
 }

@@ -3,7 +3,9 @@ package fr.nations.grade;
 import fr.nations.NationsPlugin;
 import org.bukkit.entity.Player;
 
+import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
 
 public class GradeManager {
 
@@ -81,5 +83,45 @@ public class GradeManager {
         long xpNeeded = grade.getXpForNextLevel();
         if (xpNeeded == 0) return 100.0;
         return Math.min(100.0, (grade.getXp() * 100.0) / xpNeeded);
+    }
+
+    public void loadFromDatabase() {
+        String sql = "SELECT player_id, grade, level, xp FROM player_grades";
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            int count = 0;
+            while (rs.next()) {
+                UUID id = UUID.fromString(rs.getString("player_id"));
+                String grade = rs.getString("grade");
+                int level = rs.getInt("level");
+                double xp = rs.getDouble("xp");
+                playerGrades.put(id, new PlayerGrade(id, grade, level, (long) xp, 0));
+                count++;
+            }
+            plugin.getLogger().info("[Grades] " + count + " grades chargés depuis la DB.");
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Grades] Erreur chargement DB", e);
+        }
+    }
+
+    public void saveGradeToDatabase(UUID playerId) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        PlayerGrade grade = playerGrades.get(playerId);
+        if (grade == null) return;
+        String sql = """
+            INSERT INTO player_grades (player_id, grade, level, xp) VALUES (?,?,?,?)
+            ON CONFLICT (player_id) DO UPDATE SET grade=EXCLUDED.grade, level=EXCLUDED.level, xp=EXCLUDED.xp
+        """;
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, playerId);
+            ps.setString(2, grade.getGradeName());
+            ps.setInt(3, grade.getLevel());
+            ps.setDouble(4, grade.getXp());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Grades] Erreur sauvegarde grade", e);
+        }
     }
 }

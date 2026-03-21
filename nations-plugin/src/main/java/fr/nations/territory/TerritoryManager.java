@@ -5,7 +5,9 @@ import fr.nations.grade.PlayerGrade;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 
+import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class TerritoryManager {
@@ -140,6 +142,76 @@ public class TerritoryManager {
 
     private String buildKey(String world, int x, int z) {
         return world + "_" + x + "_" + z;
+    }
+
+    public void loadFromDatabase() {
+        String sql = "SELECT id, nation_id, world_name, chunk_x, chunk_z, claimed_at FROM claimed_chunks";
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            int count = 0;
+            while (rs.next()) {
+                UUID id = UUID.fromString(rs.getString("id"));
+                UUID nationId = UUID.fromString(rs.getString("nation_id"));
+                String world = rs.getString("world_name");
+                int x = rs.getInt("chunk_x");
+                int z = rs.getInt("chunk_z");
+                long claimedAt = rs.getLong("claimed_at");
+                ClaimedChunk chunk = new ClaimedChunk(id, nationId, world, x, z, null, claimedAt);
+                claimedChunks.put(buildKey(world, x, z), chunk);
+                count++;
+            }
+            plugin.getLogger().info("[Territory] " + count + " chunks chargés depuis la DB.");
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Territory] Erreur chargement DB", e);
+        }
+    }
+
+    public void saveChunkToDatabase(ClaimedChunk chunk) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        String sql = """
+            INSERT INTO claimed_chunks (id, nation_id, world_name, chunk_x, chunk_z, claimed_at)
+            VALUES (?,?,?,?,?,?)
+            ON CONFLICT (world_name, chunk_x, chunk_z) DO NOTHING
+        """;
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, chunk.getId());
+            ps.setObject(2, chunk.getNationId());
+            ps.setString(3, chunk.getWorldName());
+            ps.setInt(4, chunk.getChunkX());
+            ps.setInt(5, chunk.getChunkZ());
+            ps.setLong(6, chunk.getClaimedAt());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Territory] Erreur sauvegarde chunk", e);
+        }
+    }
+
+    public void deleteChunkFromDatabase(String world, int x, int z) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        String sql = "DELETE FROM claimed_chunks WHERE world_name=? AND chunk_x=? AND chunk_z=?";
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, world);
+            ps.setInt(2, x);
+            ps.setInt(3, z);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Territory] Erreur suppression chunk", e);
+        }
+    }
+
+    public void deleteAllChunksForNation(UUID nationId) {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        String sql = "DELETE FROM claimed_chunks WHERE nation_id=?";
+        try (Connection conn = plugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, nationId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "[Territory] Erreur suppression chunks nation", e);
+        }
     }
 
     public enum ClaimResult {
