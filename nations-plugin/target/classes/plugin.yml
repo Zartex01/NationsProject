@@ -1,0 +1,83 @@
+name: NationsEpoque
+version: '1.0.0'
+main: fr.nations.NationsPlugin
+api-version: '1.20'
+description: Plugin de nations avec 6 époques historiques et guerres d'assaut
+authors: [Zartex01]
+
+commands:
+  nation:
+    description: Commande principale des nations
+    usage: /nation <sous-commande>
+    aliases: [n]
+    permission: nations.use
+  war:
+    description: Commande de gestion des guerres
+    usage: /war <sous-commande>
+    aliases: [guerre]
+    permission: nations.war
+  coalition:
+    description: Commande de gestion des coalitions
+    usage: /coalition <sous-commande>
+    aliases: [co]
+    permission: nations.use
+  claim:
+    description: Commande de claim de territoire
+    usage: /claim [sous-commande]
+    aliases: [territoire]
+    permission: nations.claim
+  money:
+    description: Commande d'économie personnelle
+    usage: /money <sous-commande>
+    aliases: [eco, argent]
+    permission: nations.use
+  season:
+    description: Commande de gestion des saisons
+    usage: /season <sous-commande>
+    aliases: [saison]
+    permission: nations.admin
+  nationsadmin:
+    description: Commande d'administration des nations
+    usage: /nationsadmin <sous-commande>
+    aliases: [nadmin]
+    permission: nations.admin
+  nationrole:
+    description: Gestion des rôles personnalisés de nation
+    usage: /nationrole <sous-commande>
+    aliases: [nrole, role]
+    permission: nations.use
+
+permissions:
+  nations.use:
+    description: Permission d'utiliser les nations
+    default: true
+  nations.war:
+    description: Permission de déclarer des guerres
+    default: true
+  nations.claim:
+    description: Permission de claim des territoires
+    default: true
+  nations.admin:
+    description: Permission d'administration
+    default: op
+  nations.staff:
+    description: Permission du staff (validation guerres, etc.)
+    default: op
+  nations.bypass:
+    description: Bypass la protection des claims
+    default: op
+  nations.grade.joueur:
+    description: Grade Joueur (10 claims max)
+    default: true
+  nations.grade.soutien:
+    description: Grade Soutien (20 claims max)
+    default: false
+  nations.grade.premium:
+    description: Grade Premium (35 claims max)
+    default: false
+  nations.grade.chevalier:
+    description: Grade Chevalier (55 claims max)
+    default: false
+  nations.grade.roi:
+    description: Grade Roi (80 claims max)
+    default: false

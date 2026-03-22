@@ -26,4 +26,4 @@ path = "scripts/post-merge.sh"
 timeoutMs = 20000
 
 [nix]
-packages = ["maven"]
+packages = ["maven", "adoptopenjdk-hotspot-bin-16"]
