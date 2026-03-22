@@ -32,8 +32,8 @@ fr/nations/commands/NationCommand.class
 fr/nations/commands/ClaimCommand$1.class
 fr/nations/war/WarManager.class
 fr/nations/gui/MembersGui.class
-fr/nations/NationsPlugin.class
 fr/nations/gui/SeasonGui.class
+fr/nations/NationsPlugin.class
 fr/nations/economy/EconomyManager.class
 fr/nations/nation/NationRole.class
 fr/nations/role/RolePermission.class

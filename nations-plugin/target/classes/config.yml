@@ -52,6 +52,8 @@ wars:
   declaration-cost: 1000
   declaration-cooldown-hours: 24
   max-active-wars: 3
+  # Nombre minimum de joueurs connectés dans chaque nation pour déclarer une guerre
+  min-online-to-declare: 2
   types:
     PILLAGE:
       duration-hours: 24

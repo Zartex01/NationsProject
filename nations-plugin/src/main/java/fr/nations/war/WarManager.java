@@ -113,6 +113,15 @@ public class WarManager {
         }
     }
 
+    /**
+     * Compte le nombre de membres de la nation actuellement connectés.
+     */
+    public int countOnlineMembers(Nation nation) {
+        return (int) nation.getMembers().keySet().stream()
+            .filter(id -> Bukkit.getPlayer(id) != null)
+            .count();
+    }
+
     public WarDeclarationResult declareWar(Nation attacker, Nation defender, WarType type, String reason) {
         if (attacker.getId().equals(defender.getId())) {
             return WarDeclarationResult.SAME_NATION;
@@ -120,6 +129,15 @@ public class WarManager {
         if (attacker.isAlly(defender.getId())) {
             return WarDeclarationResult.IS_ALLY;
         }
+
+        int minOnline = plugin.getConfig().getInt("wars.min-online-to-declare", 2);
+        if (countOnlineMembers(attacker) < minOnline) {
+            return WarDeclarationResult.NOT_ENOUGH_ONLINE_ATTACKER;
+        }
+        if (countOnlineMembers(defender) < minOnline) {
+            return WarDeclarationResult.NOT_ENOUGH_ONLINE_DEFENDER;
+        }
+
         long cooldownEnd = warCooldowns.getOrDefault(attacker.getId(), 0L);
         if (System.currentTimeMillis() < cooldownEnd) {
             return WarDeclarationResult.ON_COOLDOWN;
@@ -338,6 +356,18 @@ public class WarManager {
         if (warCheckTask != null) warCheckTask.cancel();
     }
 
+    /**
+     * Vérifie si le PvP est autorisé entre deux joueurs dans un chunk donné.
+     * Règle : autorisé seulement si les deux joueurs sont dans des nations en guerre.
+     */
+    public boolean isPvpAllowedInClaim(UUID playerA, UUID playerB) {
+        Nation nationA = plugin.getNationManager().getPlayerNation(playerA);
+        Nation nationB = plugin.getNationManager().getPlayerNation(playerB);
+        if (nationA == null || nationB == null) return false;
+        if (nationA.getId().equals(nationB.getId())) return false;
+        return areNationsAtWar(nationA.getId(), nationB.getId());
+    }
+
     public enum WarDeclarationResult {
         PENDING_VALIDATION,
         SAME_NATION,
@@ -345,7 +375,9 @@ public class WarManager {
         ON_COOLDOWN,
         MAX_WARS_REACHED,
         ALREADY_AT_WAR,
-        INSUFFICIENT_FUNDS
+        INSUFFICIENT_FUNDS,
+        NOT_ENOUGH_ONLINE_ATTACKER,
+        NOT_ENOUGH_ONLINE_DEFENDER
     }
 
     public enum SurrenderResult {

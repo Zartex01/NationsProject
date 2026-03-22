@@ -125,6 +125,17 @@ public class WarCommand implements CommandExecutor, TabCompleter {
             case MAX_WARS_REACHED -> MessageUtil.sendError(player, "Nombre maximum de guerres actives atteint.");
             case ALREADY_AT_WAR -> MessageUtil.sendError(player, "Déjà en guerre avec cette nation.");
             case INSUFFICIENT_FUNDS -> MessageUtil.sendError(player, "Fonds insuffisants. Coût: §e" + MessageUtil.formatNumber(warType.getCost()) + " coins");
+            case NOT_ENOUGH_ONLINE_ATTACKER -> {
+                int min = plugin.getConfig().getInt("wars.min-online-to-declare", 2);
+                MessageUtil.sendError(player, "Votre nation doit avoir au moins §e" + min
+                    + " joueurs connectés §cpour déclarer une guerre.");
+            }
+            case NOT_ENOUGH_ONLINE_DEFENDER -> {
+                int min = plugin.getConfig().getInt("wars.min-online-to-declare", 2);
+                MessageUtil.sendError(player, "La nation adverse doit avoir au moins §e" + min
+                    + " joueurs connectés §cpour être déclarée en guerre.");
+                player.sendMessage("§7La guerre reste suspendue jusqu'à ce qu'ils soient assez connectés.");
+            }
         }
     }
 
