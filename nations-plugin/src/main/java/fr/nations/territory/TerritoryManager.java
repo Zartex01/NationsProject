@@ -157,7 +157,7 @@ public class TerritoryManager {
                 int x = rs.getInt("chunk_x");
                 int z = rs.getInt("chunk_z");
                 long claimedAt = rs.getLong("claimed_at");
-                ClaimedChunk chunk = new ClaimedChunk(id, nationId, world, x, z, null, claimedAt);
+                ClaimedChunk chunk = new ClaimedChunk(id, world, x, z, nationId, null, claimedAt);
                 claimedChunks.put(buildKey(world, x, z), chunk);
                 count++;
             }
@@ -176,7 +176,7 @@ public class TerritoryManager {
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, chunk.getId());
+            ps.setObject(1, chunk.getId() != null ? chunk.getId() : UUID.randomUUID());
             ps.setObject(2, chunk.getNationId());
             ps.setString(3, chunk.getWorldName());
             ps.setInt(4, chunk.getChunkX());

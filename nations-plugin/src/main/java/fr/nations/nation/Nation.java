@@ -11,6 +11,8 @@ public class Nation {
     private final long createdAt;
     private double bankBalance;
     private int seasonPoints;
+    private int level;
+    private double xp;
     private boolean open;
     private UUID coalitionId;
 
@@ -120,6 +122,10 @@ public class Nation {
     }
     public int getSeasonPoints() { return seasonPoints; }
     public void setSeasonPoints(int points) { this.seasonPoints = points; }
+    public int getLevel() { return level; }
+    public void setLevel(int level) { this.level = level; }
+    public double getXp() { return xp; }
+    public void setXp(double xp) { this.xp = xp; }
     public boolean isOpen() { return open; }
     public void setOpen(boolean open) { this.open = open; }
     public UUID getCoalitionId() { return coalitionId; }

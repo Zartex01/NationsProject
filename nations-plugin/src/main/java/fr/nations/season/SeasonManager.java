@@ -176,11 +176,13 @@ public class SeasonManager {
                 int count = 0;
                 while (rs.next()) {
                     UUID id = UUID.fromString(rs.getString("player_id"));
-                    PlayerStats stats = new PlayerStats(id);
-                    stats.addKills(rs.getInt("kills"));
-                    stats.addDeaths(rs.getInt("deaths"));
-                    stats.addWarsWon(rs.getInt("wars_won"));
-                    stats.addClaims(rs.getInt("claims"));
+                    PlayerStats stats = new PlayerStats(
+                        id,
+                        rs.getInt("kills"),
+                        rs.getInt("deaths"),
+                        rs.getInt("wars_won"),
+                        rs.getInt("claims")
+                    );
                     playerStats.put(id, stats);
                     count++;
                 }
@@ -225,7 +227,7 @@ public class SeasonManager {
             ps.setInt(3, stats.getKills());
             ps.setInt(4, stats.getDeaths());
             ps.setInt(5, stats.getWarsWon());
-            ps.setInt(6, stats.getClaims());
+            ps.setInt(6, stats.getClaimsCount());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Season] Erreur sauvegarde stat joueur", e);

@@ -330,6 +330,10 @@ public class WarManager {
         return getActiveWarBetween(nationA, nationB) != null;
     }
 
+    public void addWarFallback(War war) {
+        wars.put(war.getId(), war);
+    }
+
     public void shutdown() {
         if (warCheckTask != null) warCheckTask.cancel();
     }

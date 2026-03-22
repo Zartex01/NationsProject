@@ -211,7 +211,7 @@ public class DataManager {
             war.setAttackerKills(warsConfig.getInt(path + ".attacker-kills", 0));
             war.setDefenderKills(warsConfig.getInt(path + ".defender-kills", 0));
 
-            plugin.getWarManager().addWar(war);
+            plugin.getWarManager().addWarFallback(war);
         }
     }
 

@@ -32,8 +32,28 @@ public class GuiUtil {
         return item;
     }
 
+    public static ItemStack createItem(Material material, String name, List<String> lore) {
+        return createItem(material, name, lore.stream().map(MessageUtil::colorize).toArray(String[]::new));
+    }
+
+    public static ItemStack createFillerItem(Material material) {
+        return createItem(material, " ");
+    }
+
     public static ItemStack createFillerItem() {
         return createItem(Material.GRAY_STAINED_GLASS_PANE, " ");
+    }
+
+    public static void fillBorder(Inventory inv, Material material) {
+        int size = inv.getSize();
+        int rows = size / 9;
+        ItemStack filler = createFillerItem(material);
+        for (int i = 0; i < 9; i++) inv.setItem(i, filler);
+        for (int i = size - 9; i < size; i++) inv.setItem(i, filler);
+        for (int row = 1; row < rows - 1; row++) {
+            inv.setItem(row * 9, filler);
+            inv.setItem(row * 9 + 8, filler);
+        }
     }
 
     public static void fillBorder(Inventory inv) {
