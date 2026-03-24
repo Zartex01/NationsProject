@@ -113,9 +113,6 @@ public class WarManager {
         }
     }
 
-    /**
-     * Compte le nombre de membres de la nation actuellement connectés.
-     */
     public int countOnlineMembers(Nation nation) {
         return (int) nation.getMembers().keySet().stream()
             .filter(id -> Bukkit.getPlayer(id) != null)
@@ -207,10 +204,6 @@ public class WarManager {
         return true;
     }
 
-    /**
-     * Demande de reddition par la nation défenseure.
-     * Seulement disponible pour une guerre ASSAULT active.
-     */
     public SurrenderResult requestSurrender(UUID defenderNationId, UUID warId) {
         War war = wars.get(warId);
         if (war == null || !war.getStatus().isActive()) return SurrenderResult.WAR_NOT_FOUND;
@@ -222,10 +215,6 @@ public class WarManager {
         return SurrenderResult.REQUESTED;
     }
 
-    /**
-     * Confirme la reddition (le leader défenseur confirme après /war surrender confirm).
-     * Termine la guerre ASSAULT avec victoire de l'attaquant.
-     */
     public boolean confirmSurrender(UUID defenderNationId, UUID warId) {
         War war = wars.get(warId);
         if (war == null || !war.getStatus().isActive()) return false;
@@ -236,9 +225,6 @@ public class WarManager {
         return true;
     }
 
-    /**
-     * Appelé quand la nation défenseure est dissoute en pleine guerre d'assaut.
-     */
     public void handleNationDisband(UUID nationId) {
         wars.values().stream()
             .filter(w -> w.getStatus().isActive() && w.isNationInvolved(nationId))
@@ -356,10 +342,6 @@ public class WarManager {
         if (warCheckTask != null) warCheckTask.cancel();
     }
 
-    /**
-     * Vérifie si le PvP est autorisé entre deux joueurs dans un chunk donné.
-     * Règle : autorisé seulement si les deux joueurs sont dans des nations en guerre.
-     */
     public boolean isPvpAllowedInClaim(UUID playerA, UUID playerB) {
         Nation nationA = plugin.getNationManager().getPlayerNation(playerA);
         Nation nationB = plugin.getNationManager().getPlayerNation(playerB);
