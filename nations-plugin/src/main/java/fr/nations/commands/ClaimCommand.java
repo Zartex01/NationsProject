@@ -47,7 +47,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
         switch (result) {
             case SUCCESS -> {
                 Nation nation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
-                MessageUtil.sendSuccess(player, "Chunk §f[" + chunk.getX() + ", " + chunk.getZ() + "] §aclamé pour §6"
+                MessageUtil.sendSuccess(player, "Chunk §f[" + chunk.getX() + ", " + chunk.getZ() + "] §aclaim pour §6"
                     + (nation != null ? nation.getName() : "votre nation") + "§a!");
                 MessageUtil.sendInfo(player, "Coût: §e" + MessageUtil.formatNumber(plugin.getConfigManager().getClaimPrice()) + " coins §7débités.");
             }
