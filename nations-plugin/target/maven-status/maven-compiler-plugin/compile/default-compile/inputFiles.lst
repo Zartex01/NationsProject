@@ -6,8 +6,8 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/PlayerDeathListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/war/WarStatus.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/PlayerJoinListener.java
-/home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/NationManageGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/ConfirmDisbandGui.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/NationManageGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/nation/NationRole.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/war/War.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/WarsGui.java
@@ -29,8 +29,8 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/territory/ClaimedChunk.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/CoalitionCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/economy/EconomyManager.java
-/home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/PlayerStats.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/PlayerGrade.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/PlayerStats.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/MembersGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/PlayerProfileGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/war/WarManager.java

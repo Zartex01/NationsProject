@@ -2,6 +2,12 @@ plugin:
   debug: false
   language: fr
 
+database:
+  # Mets ici l'URL de ta base de données PostgreSQL
+  # Format: postgresql://utilisateur:motdepasse@hote:5432/nom_de_la_base
+  # Exemple: postgresql://admin:monmotdepasse@localhost:5432/nations
+  url: ""
+
 nations:
   max-name-length: 20
   min-name-length: 3

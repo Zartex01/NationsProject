@@ -22,7 +22,9 @@ public class DatabaseManager {
             url = plugin.getConfig().getString("database.url", "");
         }
         if (url.isEmpty()) {
-            plugin.getLogger().severe("[DB] Aucune DATABASE_URL trouvée. Vérifiez votre variable d'environnement.");
+            plugin.getLogger().severe("[DB] Aucune DATABASE_URL trouvée !");
+            plugin.getLogger().severe("[DB] Configurez l'URL dans plugins/NationsEpoque/config.yml sous 'database.url'");
+            plugin.getLogger().severe("[DB] Format: postgresql://utilisateur:motdepasse@hote:5432/nom_de_la_base");
             return false;
         }
 

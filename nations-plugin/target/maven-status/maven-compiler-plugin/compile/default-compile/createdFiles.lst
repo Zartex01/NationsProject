@@ -10,9 +10,9 @@ fr/nations/territory/ClaimedChunk.class
 fr/nations/util/DataManager.class
 fr/nations/util/GuiUtil.class
 fr/nations/war/WarType.class
-fr/nations/listeners/ChunkListener.class
-fr/nations/gui/NationManageGui.class
 fr/nations/commands/ClaimCommand.class
+fr/nations/gui/NationManageGui.class
+fr/nations/listeners/ChunkListener.class
 fr/nations/util/MessageUtil.class
 fr/nations/war/War.class
 fr/nations/gui/GuiManager.class
@@ -43,8 +43,8 @@ fr/nations/commands/NationRoleCommand.class
 fr/nations/grade/PlayerGrade.class
 fr/nations/gui/NationMainGui.class
 fr/nations/listeners/PlayerDeathListener.class
-fr/nations/season/SeasonManager.class
 fr/nations/commands/WarCommand.class
+fr/nations/season/SeasonManager.class
 fr/nations/database/DatabaseManager.class
 fr/nations/nation/Coalition.class
 fr/nations/territory/TerritoryManager.class

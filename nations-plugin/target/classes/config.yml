@@ -2,6 +2,12 @@ plugin:
   debug: false
   language: fr
 
+database:
+  # Mets ici l'URL de ta base de données PostgreSQL
+  # Format: postgresql://utilisateur:motdepasse@hote:5432/nom_de_la_base
+  # Exemple: postgresql://admin:monmotdepasse@localhost:5432/nations
+  url: ""
+
 nations:
   max-name-length: 20
   min-name-length: 3
@@ -45,14 +51,13 @@ grades:
 economy:
   starting-balance: 250
   nation-tax-rate: 0.0
-  max-personal-balance: 1000000
-  max-nation-balance: 10000000
+  max-personal-balance: -1
+  max-nation-balance: -1
 
 wars:
   declaration-cost: 1000
   declaration-cooldown-hours: 24
   max-active-wars: 3
-  # Nombre minimum de joueurs connectés dans chaque nation pour déclarer une guerre
   min-online-to-declare: 2
   types:
     PILLAGE:
