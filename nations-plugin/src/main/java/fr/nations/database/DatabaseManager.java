@@ -200,8 +200,15 @@ public class DatabaseManager {
     }
 
     public Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            throw new SQLException("La connexion SQLite n'est pas initialisée.");
+        try {
+            if (connection == null || connection.isClosed()) {
+                connect();
+            }
+        } catch (SQLException ignored) {
+            connect();
+        }
+        if (connection == null) {
+            throw new SQLException("Impossible d'établir la connexion SQLite.");
         }
         return connection;
     }
