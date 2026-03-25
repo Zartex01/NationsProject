@@ -41,7 +41,7 @@ public class NationsPlugin extends JavaPlugin {
 
         if (dbConnected) {
             databaseManager.createTables();
-            getLogger().info("Base de données PostgreSQL prête.");
+            getLogger().info("Base de données SQLite prête.");
         } else {
             getLogger().warning("Base de données indisponible — mode dégradé (YAML fallback).");
         }

@@ -258,7 +258,6 @@ public class NationManager {
                 UUID playerId = UUID.fromString(rs.getString("player_id"));
                 UUID nationId = UUID.fromString(rs.getString("nation_id"));
                 String roleName = rs.getString("role_name");
-                long joinedAt = rs.getLong("joined_at");
                 Nation nation = nations.get(nationId);
                 if (nation == null) continue;
                 NationRole role;
@@ -316,16 +315,16 @@ public class NationManager {
             INSERT INTO nations (id, name, description, leader_id, bank_balance, season_points, level, xp, created_at)
             VALUES (?,?,?,?,?,?,?,?,?)
             ON CONFLICT (id) DO UPDATE SET
-                name=EXCLUDED.name, description=EXCLUDED.description, leader_id=EXCLUDED.leader_id,
-                bank_balance=EXCLUDED.bank_balance, season_points=EXCLUDED.season_points,
-                level=EXCLUDED.level, xp=EXCLUDED.xp
+                name=excluded.name, description=excluded.description, leader_id=excluded.leader_id,
+                bank_balance=excluded.bank_balance, season_points=excluded.season_points,
+                level=excluded.level, xp=excluded.xp
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, nation.getId());
+            ps.setString(1, nation.getId().toString());
             ps.setString(2, nation.getName());
             ps.setString(3, nation.getDescription());
-            ps.setObject(4, nation.getLeaderId());
+            ps.setString(4, nation.getLeaderId().toString());
             ps.setDouble(5, nation.getBankBalance());
             ps.setInt(6, nation.getSeasonPoints());
             ps.setInt(7, nation.getLevel());
@@ -341,7 +340,7 @@ public class NationManager {
         if (!plugin.getDatabaseManager().isConnected()) return;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement("DELETE FROM nations WHERE id=?")) {
-            ps.setObject(1, nationId);
+            ps.setString(1, nationId.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur suppression nation", e);
@@ -352,12 +351,12 @@ public class NationManager {
         if (!plugin.getDatabaseManager().isConnected()) return;
         String sql = """
             INSERT INTO nation_members (player_id, nation_id, role_name, joined_at) VALUES (?,?,?,?)
-            ON CONFLICT (player_id) DO UPDATE SET nation_id=EXCLUDED.nation_id, role_name=EXCLUDED.role_name
+            ON CONFLICT (player_id) DO UPDATE SET nation_id=excluded.nation_id, role_name=excluded.role_name
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, member.getPlayerId());
-            ps.setObject(2, nationId);
+            ps.setString(1, member.getPlayerId().toString());
+            ps.setString(2, nationId.toString());
             ps.setString(3, member.getRole().name());
             ps.setLong(4, System.currentTimeMillis());
             ps.executeUpdate();
@@ -370,7 +369,7 @@ public class NationManager {
         if (!plugin.getDatabaseManager().isConnected()) return;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement("DELETE FROM nation_members WHERE player_id=?")) {
-            ps.setObject(1, playerId);
+            ps.setString(1, playerId.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur suppression membre", e);
@@ -379,10 +378,12 @@ public class NationManager {
 
     public void saveAllianceToDatabase(UUID a, UUID b) {
         if (!plugin.getDatabaseManager().isConnected()) return;
-        String sql = "INSERT INTO nation_allies (nation_a, nation_b) VALUES (?,?) ON CONFLICT DO NOTHING";
+        String sql = "INSERT OR IGNORE INTO nation_allies (nation_a, nation_b) VALUES (?,?)";
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, a); ps.setObject(2, b); ps.executeUpdate();
+            ps.setString(1, a.toString());
+            ps.setString(2, b.toString());
+            ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur sauvegarde alliance", e);
         }
@@ -393,7 +394,10 @@ public class NationManager {
         String sql = "DELETE FROM nation_allies WHERE (nation_a=? AND nation_b=?) OR (nation_a=? AND nation_b=?)";
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, a); ps.setObject(2, b); ps.setObject(3, b); ps.setObject(4, a);
+            ps.setString(1, a.toString());
+            ps.setString(2, b.toString());
+            ps.setString(3, b.toString());
+            ps.setString(4, a.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Nations] Erreur suppression alliance", e);

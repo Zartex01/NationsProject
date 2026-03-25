@@ -12,11 +12,11 @@
     <name>NationsEpoque</name>
     <description>Plugin de nations avec 6 époques historiques pour Minecraft</description>
 
-        <properties>
-            <maven.compiler.source>21</maven.compiler.source>
-            <maven.compiler.target>21</maven.compiler.target>
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        </properties>
+    </properties>
 
     <repositories>
         <repository>
@@ -38,15 +38,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.7.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>5.1.0</version>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.47.2.0</version>
         </dependency>
     </dependencies>
 
@@ -75,12 +69,8 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
                                 <relocation>
-                                    <pattern>com.zaxxer.hikari</pattern>
-                                    <shadedPattern>fr.nations.libs.hikari</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.postgresql</pattern>
-                                    <shadedPattern>fr.nations.libs.postgresql</shadedPattern>
+                                    <pattern>org.sqlite</pattern>
+                                    <shadedPattern>fr.nations.libs.sqlite</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

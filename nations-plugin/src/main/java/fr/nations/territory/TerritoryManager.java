@@ -170,14 +170,13 @@ public class TerritoryManager {
     public void saveChunkToDatabase(ClaimedChunk chunk) {
         if (!plugin.getDatabaseManager().isConnected()) return;
         String sql = """
-            INSERT INTO claimed_chunks (id, nation_id, world_name, chunk_x, chunk_z, claimed_at)
+            INSERT OR IGNORE INTO claimed_chunks (id, nation_id, world_name, chunk_x, chunk_z, claimed_at)
             VALUES (?,?,?,?,?,?)
-            ON CONFLICT (world_name, chunk_x, chunk_z) DO NOTHING
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, chunk.getId() != null ? chunk.getId() : UUID.randomUUID());
-            ps.setObject(2, chunk.getNationId());
+            ps.setString(1, (chunk.getId() != null ? chunk.getId() : UUID.randomUUID()).toString());
+            ps.setString(2, chunk.getNationId().toString());
             ps.setString(3, chunk.getWorldName());
             ps.setInt(4, chunk.getChunkX());
             ps.setInt(5, chunk.getChunkZ());
@@ -207,7 +206,7 @@ public class TerritoryManager {
         String sql = "DELETE FROM claimed_chunks WHERE nation_id=?";
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, nationId);
+            ps.setString(1, nationId.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Territory] Erreur suppression chunks nation", e);

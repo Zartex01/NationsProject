@@ -36,7 +36,7 @@ public class CustomRoleManager {
                 int rank = rs.getInt("rank");
                 CustomRole role = new CustomRole(id, nationId, name, displayName, rank);
                 for (RolePermission perm : RolePermission.values()) {
-                    role.setPermission(perm, rs.getBoolean(perm.getColumnName()));
+                    role.setPermission(perm, rs.getInt(perm.getColumnName()) == 1);
                 }
                 roles.put(id, role);
             }
@@ -76,30 +76,30 @@ public class CustomRoleManager {
                 perm_manage_claims, perm_manage_allies, perm_manage_roles, perm_rename, perm_disband)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT (id) DO UPDATE SET
-                name=EXCLUDED.name, display_name=EXCLUDED.display_name, rank=EXCLUDED.rank,
-                perm_build=EXCLUDED.perm_build, perm_invite=EXCLUDED.perm_invite,
-                perm_kick=EXCLUDED.perm_kick, perm_manage_war=EXCLUDED.perm_manage_war,
-                perm_manage_bank=EXCLUDED.perm_manage_bank, perm_manage_claims=EXCLUDED.perm_manage_claims,
-                perm_manage_allies=EXCLUDED.perm_manage_allies, perm_manage_roles=EXCLUDED.perm_manage_roles,
-                perm_rename=EXCLUDED.perm_rename, perm_disband=EXCLUDED.perm_disband
+                name=excluded.name, display_name=excluded.display_name, rank=excluded.rank,
+                perm_build=excluded.perm_build, perm_invite=excluded.perm_invite,
+                perm_kick=excluded.perm_kick, perm_manage_war=excluded.perm_manage_war,
+                perm_manage_bank=excluded.perm_manage_bank, perm_manage_claims=excluded.perm_manage_claims,
+                perm_manage_allies=excluded.perm_manage_allies, perm_manage_roles=excluded.perm_manage_roles,
+                perm_rename=excluded.perm_rename, perm_disband=excluded.perm_disband
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, role.getId());
-            ps.setObject(2, role.getNationId());
+            ps.setString(1, role.getId().toString());
+            ps.setString(2, role.getNationId().toString());
             ps.setString(3, role.getName());
             ps.setString(4, role.getDisplayName());
             ps.setInt(5, role.getRank());
-            ps.setBoolean(6, role.hasPermission(RolePermission.BUILD));
-            ps.setBoolean(7, role.hasPermission(RolePermission.INVITE));
-            ps.setBoolean(8, role.hasPermission(RolePermission.KICK));
-            ps.setBoolean(9, role.hasPermission(RolePermission.MANAGE_WAR));
-            ps.setBoolean(10, role.hasPermission(RolePermission.MANAGE_BANK));
-            ps.setBoolean(11, role.hasPermission(RolePermission.MANAGE_CLAIMS));
-            ps.setBoolean(12, role.hasPermission(RolePermission.MANAGE_ALLIES));
-            ps.setBoolean(13, role.hasPermission(RolePermission.MANAGE_ROLES));
-            ps.setBoolean(14, role.hasPermission(RolePermission.RENAME));
-            ps.setBoolean(15, role.hasPermission(RolePermission.DISBAND));
+            ps.setInt(6, role.hasPermission(RolePermission.BUILD) ? 1 : 0);
+            ps.setInt(7, role.hasPermission(RolePermission.INVITE) ? 1 : 0);
+            ps.setInt(8, role.hasPermission(RolePermission.KICK) ? 1 : 0);
+            ps.setInt(9, role.hasPermission(RolePermission.MANAGE_WAR) ? 1 : 0);
+            ps.setInt(10, role.hasPermission(RolePermission.MANAGE_BANK) ? 1 : 0);
+            ps.setInt(11, role.hasPermission(RolePermission.MANAGE_CLAIMS) ? 1 : 0);
+            ps.setInt(12, role.hasPermission(RolePermission.MANAGE_ALLIES) ? 1 : 0);
+            ps.setInt(13, role.hasPermission(RolePermission.MANAGE_ROLES) ? 1 : 0);
+            ps.setInt(14, role.hasPermission(RolePermission.RENAME) ? 1 : 0);
+            ps.setInt(15, role.hasPermission(RolePermission.DISBAND) ? 1 : 0);
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Roles] Erreur sauvegarde rôle", e);
@@ -111,7 +111,7 @@ public class CustomRoleManager {
         playerRoleAssignments.entrySet().removeIf(e -> e.getValue().equals(roleId));
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement("DELETE FROM custom_roles WHERE id=?")) {
-            ps.setObject(1, roleId);
+            ps.setString(1, roleId.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Roles] Erreur suppression rôle", e);
@@ -122,13 +122,13 @@ public class CustomRoleManager {
         playerRoleAssignments.put(playerId, roleId);
         String sql = """
             INSERT INTO player_custom_roles (player_id, nation_id, role_id) VALUES (?,?,?)
-            ON CONFLICT (player_id, nation_id) DO UPDATE SET role_id=EXCLUDED.role_id
+            ON CONFLICT (player_id, nation_id) DO UPDATE SET role_id=excluded.role_id
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, playerId);
-            ps.setObject(2, nationId);
-            ps.setObject(3, roleId);
+            ps.setString(1, playerId.toString());
+            ps.setString(2, nationId.toString());
+            ps.setString(3, roleId.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Roles] Erreur assignation rôle", e);
@@ -140,8 +140,8 @@ public class CustomRoleManager {
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(
                  "DELETE FROM player_custom_roles WHERE player_id=? AND nation_id=?")) {
-            ps.setObject(1, playerId);
-            ps.setObject(2, nationId);
+            ps.setString(1, playerId.toString());
+            ps.setString(2, nationId.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Roles] Erreur suppression assignation", e);

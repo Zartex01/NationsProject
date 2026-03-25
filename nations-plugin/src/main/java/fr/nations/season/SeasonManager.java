@@ -154,7 +154,7 @@ public class SeasonManager {
     }
 
     public void loadFromDatabase() {
-        String sqlSeason = "SELECT season_number, started_at FROM seasons WHERE current=TRUE LIMIT 1";
+        String sqlSeason = "SELECT season_number, started_at FROM seasons WHERE current=1 LIMIT 1";
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlSeason);
              ResultSet rs = ps.executeQuery()) {
@@ -196,8 +196,8 @@ public class SeasonManager {
     public void saveCurrentSeasonToDatabase() {
         if (!plugin.getDatabaseManager().isConnected()) return;
         String sql = """
-            INSERT INTO seasons (season_number, started_at, current) VALUES (?,?,TRUE)
-            ON CONFLICT (season_number) DO UPDATE SET started_at=EXCLUDED.started_at, current=TRUE
+            INSERT INTO seasons (season_number, started_at, current) VALUES (?,?,1)
+            ON CONFLICT (season_number) DO UPDATE SET started_at=excluded.started_at, current=1
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -217,12 +217,12 @@ public class SeasonManager {
             INSERT INTO season_stats (player_id, season_number, kills, deaths, wars_won, claims)
             VALUES (?,?,?,?,?,?)
             ON CONFLICT (player_id, season_number) DO UPDATE SET
-                kills=EXCLUDED.kills, deaths=EXCLUDED.deaths,
-                wars_won=EXCLUDED.wars_won, claims=EXCLUDED.claims
+                kills=excluded.kills, deaths=excluded.deaths,
+                wars_won=excluded.wars_won, claims=excluded.claims
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, playerId);
+            ps.setString(1, playerId.toString());
             ps.setInt(2, currentSeason);
             ps.setInt(3, stats.getKills());
             ps.setInt(4, stats.getDeaths());

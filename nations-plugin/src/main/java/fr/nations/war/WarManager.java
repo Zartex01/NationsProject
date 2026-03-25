@@ -67,7 +67,7 @@ public class WarManager {
                 war.setStaffNote(rs.getString("staff_note"));
                 String vb = rs.getString("validated_by");
                 if (vb != null) war.setValidatedBy(UUID.fromString(vb));
-                war.setSurrenderRequested(rs.getBoolean("surrender_requested"));
+                war.setSurrenderRequested(rs.getInt("surrender_requested") == 1);
                 war.setSurrenderRequestedAt(rs.getLong("surrender_requested_at"));
                 wars.put(id, war);
             }
@@ -85,17 +85,17 @@ public class WarManager {
                 validated_by, surrender_requested, surrender_requested_at)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT (id) DO UPDATE SET
-                status=EXCLUDED.status, attacker_kills=EXCLUDED.attacker_kills,
-                defender_kills=EXCLUDED.defender_kills, staff_note=EXCLUDED.staff_note,
-                validated_by=EXCLUDED.validated_by, ends_at=EXCLUDED.ends_at,
-                surrender_requested=EXCLUDED.surrender_requested,
-                surrender_requested_at=EXCLUDED.surrender_requested_at
+                status=excluded.status, attacker_kills=excluded.attacker_kills,
+                defender_kills=excluded.defender_kills, staff_note=excluded.staff_note,
+                validated_by=excluded.validated_by, ends_at=excluded.ends_at,
+                surrender_requested=excluded.surrender_requested,
+                surrender_requested_at=excluded.surrender_requested_at
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, war.getId());
-            ps.setObject(2, war.getAttackerNationId());
-            ps.setObject(3, war.getDefenderNationId());
+            ps.setString(1, war.getId().toString());
+            ps.setString(2, war.getAttackerNationId().toString());
+            ps.setString(3, war.getDefenderNationId().toString());
             ps.setString(4, war.getType().name());
             ps.setString(5, war.getStatus().name());
             ps.setLong(6, war.getDeclaredAt());
@@ -104,8 +104,12 @@ public class WarManager {
             ps.setInt(9, war.getAttackerKills());
             ps.setInt(10, war.getDefenderKills());
             ps.setString(11, war.getStaffNote());
-            ps.setObject(12, war.getValidatedBy());
-            ps.setBoolean(13, war.hasSurrenderRequest());
+            if (war.getValidatedBy() != null) {
+                ps.setString(12, war.getValidatedBy().toString());
+            } else {
+                ps.setNull(12, Types.VARCHAR);
+            }
+            ps.setInt(13, war.hasSurrenderRequest() ? 1 : 0);
             ps.setLong(14, war.getSurrenderRequestedAt());
             ps.executeUpdate();
         } catch (SQLException e) {

@@ -111,11 +111,11 @@ public class GradeManager {
         if (grade == null) return;
         String sql = """
             INSERT INTO player_grades (player_id, grade, level, xp) VALUES (?,?,?,?)
-            ON CONFLICT (player_id) DO UPDATE SET grade=EXCLUDED.grade, level=EXCLUDED.level, xp=EXCLUDED.xp
+            ON CONFLICT (player_id) DO UPDATE SET grade=excluded.grade, level=excluded.level, xp=excluded.xp
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, playerId);
+            ps.setString(1, playerId.toString());
             ps.setString(2, grade.getGradeName());
             ps.setInt(3, grade.getLevel());
             ps.setDouble(4, grade.getXp());

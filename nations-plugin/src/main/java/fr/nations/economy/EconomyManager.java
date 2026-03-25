@@ -116,11 +116,11 @@ public class EconomyManager {
         if (account == null) return;
         String sql = """
             INSERT INTO player_accounts (player_id, balance) VALUES (?,?)
-            ON CONFLICT (player_id) DO UPDATE SET balance=EXCLUDED.balance
+            ON CONFLICT (player_id) DO UPDATE SET balance=excluded.balance
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, playerId);
+            ps.setString(1, playerId.toString());
             ps.setDouble(2, account.getBalance());
             ps.executeUpdate();
         } catch (SQLException e) {
