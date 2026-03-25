@@ -3,8 +3,7 @@ plugin:
   language: fr
 
 database:
-  # Nom du fichier SQLite (créé automatiquement dans le dossier du plugin)
-  file: "data.db"
+  url: "data.db"
 
 nations:
   max-name-length: 20
