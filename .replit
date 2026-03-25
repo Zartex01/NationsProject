@@ -1,4 +1,4 @@
-modules = ["nodejs-24"]
+modules = ["java-graalvm22.3", "nodejs-20", "web"]
 
 [[artifacts]]
 id = "artifacts/api-server"
