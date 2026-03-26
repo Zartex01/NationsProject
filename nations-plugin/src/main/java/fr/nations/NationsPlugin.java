@@ -1,5 +1,6 @@
 package fr.nations;
 
+import fr.nations.atm.AtmManager;
 import fr.nations.commands.*;
 import fr.nations.config.ConfigManager;
 import fr.nations.database.DatabaseManager;
@@ -28,6 +29,7 @@ public class NationsPlugin extends JavaPlugin {
     private SeasonManager seasonManager;
     private GradeManager gradeManager;
     private CustomRoleManager customRoleManager;
+    private AtmManager atmManager;
 
     @Override
     public void onEnable() {
@@ -48,6 +50,7 @@ public class NationsPlugin extends JavaPlugin {
 
         this.gradeManager = new GradeManager(this);
         this.economyManager = new EconomyManager(this);
+        this.atmManager = new AtmManager(this);
         this.nationManager = new NationManager(this);
         this.territoryManager = new TerritoryManager(this);
         this.warManager = new WarManager(this);
@@ -78,6 +81,7 @@ public class NationsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (atmManager != null) atmManager.flushAllSessions();
         if (warManager != null) warManager.shutdown();
         if (seasonManager != null) seasonManager.shutdown();
         if (databaseManager != null) databaseManager.close();
@@ -116,6 +120,10 @@ public class NationsPlugin extends JavaPlugin {
         NationRoleCommand roleCommand = new NationRoleCommand(this);
         getCommand("nationrole").setExecutor(roleCommand);
         getCommand("nationrole").setTabCompleter(roleCommand);
+
+        AtmCommand atmCommand = new AtmCommand(this);
+        getCommand("atm").setExecutor(atmCommand);
+        getCommand("atm").setTabCompleter(atmCommand);
     }
 
     private void registerListeners() {
@@ -124,6 +132,7 @@ public class NationsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(this), this);
         getServer().getPluginManager().registerEvents(new ChunkListener(this), this);
         getServer().getPluginManager().registerEvents(new GuiClickListener(this), this);
+        getServer().getPluginManager().registerEvents(new AtmPlaytimeListener(this), this);
     }
 
     public static NationsPlugin getInstance() { return instance; }
@@ -138,4 +147,5 @@ public class NationsPlugin extends JavaPlugin {
     public SeasonManager getSeasonManager() { return seasonManager; }
     public GradeManager getGradeManager() { return gradeManager; }
     public CustomRoleManager getCustomRoleManager() { return customRoleManager; }
+    public AtmManager getAtmManager() { return atmManager; }
 }

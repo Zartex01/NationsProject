@@ -1,6 +1,7 @@
 fr/nations/listeners/GuiClickListener.class
 fr/nations/grade/GradeManager.class
 fr/nations/commands/SeasonCommand.class
+fr/nations/listeners/AtmPlaytimeListener.class
 fr/nations/gui/StaffWarsGui.class
 fr/nations/commands/MoneyCommand.class
 fr/nations/commands/CoalitionCommand.class
@@ -10,12 +11,13 @@ fr/nations/territory/ClaimedChunk.class
 fr/nations/util/DataManager.class
 fr/nations/util/GuiUtil.class
 fr/nations/war/WarType.class
-fr/nations/commands/ClaimCommand.class
-fr/nations/gui/NationManageGui.class
 fr/nations/listeners/ChunkListener.class
+fr/nations/gui/NationManageGui.class
+fr/nations/commands/ClaimCommand.class
 fr/nations/util/MessageUtil.class
 fr/nations/war/War.class
 fr/nations/gui/GuiManager.class
+fr/nations/atm/AtmManager.class
 fr/nations/listeners/BlockProtectionListener.class
 fr/nations/listeners/PlayerJoinListener.class
 fr/nations/gui/ConfirmDisbandGui.class
@@ -32,8 +34,8 @@ fr/nations/commands/NationCommand.class
 fr/nations/commands/ClaimCommand$1.class
 fr/nations/war/WarManager.class
 fr/nations/gui/MembersGui.class
-fr/nations/gui/SeasonGui.class
 fr/nations/NationsPlugin.class
+fr/nations/gui/SeasonGui.class
 fr/nations/economy/EconomyManager.class
 fr/nations/nation/NationRole.class
 fr/nations/role/RolePermission.class
@@ -43,8 +45,8 @@ fr/nations/commands/NationRoleCommand.class
 fr/nations/grade/PlayerGrade.class
 fr/nations/gui/NationMainGui.class
 fr/nations/listeners/PlayerDeathListener.class
-fr/nations/commands/WarCommand.class
 fr/nations/season/SeasonManager.class
+fr/nations/commands/WarCommand.class
 fr/nations/database/DatabaseManager.class
 fr/nations/nation/Coalition.class
 fr/nations/territory/TerritoryManager.class
@@ -52,5 +54,6 @@ fr/nations/territory/TerritoryManager$ClaimResult.class
 fr/nations/nation/NationManager.class
 fr/nations/config/ConfigManager.class
 fr/nations/role/CustomRole.class
+fr/nations/commands/AtmCommand.class
 fr/nations/economy/PlayerAccount.class
 fr/nations/gui/WarsGui.class

@@ -193,6 +193,14 @@ public class DatabaseManager {
                 )
             """);
 
+            stmt.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS player_playtime (
+                    player_id TEXT PRIMARY KEY,
+                    total_seconds INTEGER DEFAULT 0,
+                    claimed_seconds INTEGER DEFAULT 0
+                )
+            """);
+
             plugin.getLogger().info("[DB] Tables créées / vérifiées avec succès.");
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[DB] Erreur lors de la création des tables: " + e.getMessage(), e);

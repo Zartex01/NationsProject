@@ -20,6 +20,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationsAdminCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/ClaimCommand.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/AtmPlaytimeListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/GuiClickListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/nation/NationMember.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/role/CustomRole.java
@@ -29,6 +30,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/territory/ClaimedChunk.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/CoalitionCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/economy/EconomyManager.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/AtmCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/PlayerGrade.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/PlayerStats.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/MembersGui.java
@@ -37,6 +39,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/database/DatabaseManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/role/CustomRoleManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/GradeType.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/atm/AtmManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/SeasonManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/WarCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/config/ConfigManager.java

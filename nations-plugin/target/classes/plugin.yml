@@ -46,6 +46,11 @@ commands:
     usage: /nationrole <sous-commande>
     aliases: [nrole, role]
     permission: nations.use
+  atm:
+    description: Convertit ton temps de jeu en argent (x2 par minute)
+    usage: /atm
+    aliases: [distributeur]
+    permission: nations.use
 
 permissions:
   nations.use:
