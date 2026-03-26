@@ -106,6 +106,26 @@ public class ConfigManager {
         return config.getInt("seasons.rewards.third-place", 2500);
     }
 
+    public int getSeasonFirstPlaceXpReward() {
+        return config.getInt("seasons.rewards.first-place-xp", 5000);
+    }
+
+    public int getSeasonSecondPlaceXpReward() {
+        return config.getInt("seasons.rewards.second-place-xp", 2500);
+    }
+
+    public int getSeasonThirdPlaceXpReward() {
+        return config.getInt("seasons.rewards.third-place-xp", 1000);
+    }
+
+    public int getNationMaxLevel() {
+        return config.getInt("seasons.nation-level.max-level", 50);
+    }
+
+    public int getNationXpFormulaMultiplier() {
+        return config.getInt("seasons.nation-level.xp-formula-multiplier", 1000);
+    }
+
     public boolean isDebug() {
         return config.getBoolean("plugin.debug", false);
     }

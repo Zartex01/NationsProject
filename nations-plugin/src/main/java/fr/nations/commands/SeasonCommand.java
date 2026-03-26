@@ -49,29 +49,47 @@ public class SeasonCommand implements CommandExecutor, TabCompleter {
         MessageUtil.sendSeparator(player);
         MessageUtil.sendTitle(player, "Saison " + plugin.getSeasonManager().getCurrentSeason());
         MessageUtil.sendRaw(player, "  §7Temps restant: §e" + plugin.getSeasonManager().getFormattedSeasonTimeRemaining());
-        MessageUtil.sendRaw(player, "  §7Récompenses:");
-        MessageUtil.sendRaw(player, "    §6🥇 1er: §e" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonFirstPlaceReward()) + " coins");
-        MessageUtil.sendRaw(player, "    §7🥈 2ème: §e" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonSecondPlaceReward()) + " coins");
-        MessageUtil.sendRaw(player, "    §c🥉 3ème: §e" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonThirdPlaceReward()) + " coins");
+        MessageUtil.sendRaw(player, "");
+        MessageUtil.sendRaw(player, "  §7Récompenses de fin de saison (banque nation + XP nation):");
+        MessageUtil.sendRaw(player, "  §6§l🥇 §e1er: §a+"
+            + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonFirstPlaceReward()) + " coins"
+            + " §7+ §b+" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonFirstPlaceXpReward()) + " xp nation");
+        MessageUtil.sendRaw(player, "  §7§l🥈 §72ème: §a+"
+            + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonSecondPlaceReward()) + " coins"
+            + " §7+ §b+" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonSecondPlaceXpReward()) + " xp nation");
+        MessageUtil.sendRaw(player, "  §c§l🥉 §c3ème: §a+"
+            + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonThirdPlaceReward()) + " coins"
+            + " §7+ §b+" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonThirdPlaceXpReward()) + " xp nation");
         MessageUtil.sendSeparator(player);
     }
 
     private void handleTop(Player player) {
         List<Nation> sorted = plugin.getNationManager().getNationsSortedByPoints();
         MessageUtil.sendSeparator(player);
-        MessageUtil.sendTitle(player, "Classement Saison");
+        MessageUtil.sendTitle(player, "Classement Saison " + plugin.getSeasonManager().getCurrentSeason());
         if (sorted.isEmpty()) {
-            MessageUtil.sendRaw(player, "  §7Aucune nation.");
+            MessageUtil.sendRaw(player, "  §7Aucune nation pour le moment.");
         } else {
             for (int i = 0; i < Math.min(10, sorted.size()); i++) {
                 Nation n = sorted.get(i);
-                String medal = switch (i) {
-                    case 0 -> "§6🥇";
-                    case 1 -> "§7🥈";
-                    case 2 -> "§c🥉";
-                    default -> "§7#" + (i + 1);
+                String prefix = switch (i) {
+                    case 0 -> "§6§l🥇 §6";
+                    case 1 -> "§7§l🥈 §7";
+                    case 2 -> "§c§l🥉 §c";
+                    default -> "§8  #" + (i + 1) + " §f";
                 };
-                MessageUtil.sendRaw(player, "  " + medal + " §6" + n.getName() + " §7— §e" + n.getSeasonPoints() + " pts §7(" + n.getMemberCount() + " membres)");
+                String rewardHint = switch (i) {
+                    case 0 -> " §8[§a+" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonFirstPlaceReward())
+                            + "§8/§b+" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonFirstPlaceXpReward()) + "xp§8]";
+                    case 1 -> " §8[§a+" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonSecondPlaceReward())
+                            + "§8/§b+" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonSecondPlaceXpReward()) + "xp§8]";
+                    case 2 -> " §8[§a+" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonThirdPlaceReward())
+                            + "§8/§b+" + MessageUtil.formatNumber(plugin.getConfigManager().getSeasonThirdPlaceXpReward()) + "xp§8]";
+                    default -> "";
+                };
+                MessageUtil.sendRaw(player, "  " + prefix + n.getName()
+                    + " §8— §e" + n.getSeasonPoints() + " pts §7| §fNiv." + n.getLevel()
+                    + " §7| §f" + n.getMemberCount() + " membres" + rewardHint);
             }
         }
         MessageUtil.sendSeparator(player);

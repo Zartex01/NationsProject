@@ -2,6 +2,7 @@ package fr.nations.season;
 
 import fr.nations.NationsPlugin;
 import fr.nations.nation.Nation;
+import fr.nations.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -53,35 +54,72 @@ public class SeasonManager {
     private void distributeSeasonRewards() {
         List<Nation> sorted = plugin.getNationManager().getNationsSortedByPoints();
 
+        broadcastSeasonEndHeader();
+
         if (sorted.size() >= 1) {
             Nation first = sorted.get(0);
-            int reward = plugin.getConfigManager().getSeasonFirstPlaceReward();
-            first.depositToBank(reward);
-            broadcastNationRanking(1, first, reward);
+            int money = plugin.getConfigManager().getSeasonFirstPlaceReward();
+            int xp = plugin.getConfigManager().getSeasonFirstPlaceXpReward();
+            giveRewardToNation(first, money, xp);
+            broadcastNationRanking(1, first, money, xp);
         }
         if (sorted.size() >= 2) {
             Nation second = sorted.get(1);
-            int reward = plugin.getConfigManager().getSeasonSecondPlaceReward();
-            second.depositToBank(reward);
-            broadcastNationRanking(2, second, reward);
+            int money = plugin.getConfigManager().getSeasonSecondPlaceReward();
+            int xp = plugin.getConfigManager().getSeasonSecondPlaceXpReward();
+            giveRewardToNation(second, money, xp);
+            broadcastNationRanking(2, second, money, xp);
         }
         if (sorted.size() >= 3) {
             Nation third = sorted.get(2);
-            int reward = plugin.getConfigManager().getSeasonThirdPlaceReward();
-            third.depositToBank(reward);
-            broadcastNationRanking(3, third, reward);
+            int money = plugin.getConfigManager().getSeasonThirdPlaceReward();
+            int xp = plugin.getConfigManager().getSeasonThirdPlaceXpReward();
+            giveRewardToNation(third, money, xp);
+            broadcastNationRanking(3, third, money, xp);
+        }
+
+        broadcastSeasonEndFooter();
+    }
+
+    private void giveRewardToNation(Nation nation, int money, int xp) {
+        nation.depositToBank(money);
+        int maxLevel = plugin.getConfigManager().getNationMaxLevel();
+        int multiplier = plugin.getConfigManager().getNationXpFormulaMultiplier();
+        int levelsGained = nation.addXp(xp, maxLevel, multiplier);
+        plugin.getNationManager().saveNationToDatabase(nation);
+
+        if (levelsGained > 0) {
+            Bukkit.broadcastMessage(plugin.getConfigManager().getPrefix()
+                + "§b✦ §fLa nation §6" + nation.getName() + " §fest passée au §eniveau " + nation.getLevel() + "§f! §b✦");
         }
     }
 
-    private void broadcastNationRanking(int rank, Nation nation, int reward) {
+    private void broadcastSeasonEndHeader() {
+        String sep = "§8§m════════════════════════════════";
+        Bukkit.broadcastMessage(sep);
+        Bukkit.broadcastMessage("§6§l        ★ FIN DE SAISON " + currentSeason + " ★");
+        Bukkit.broadcastMessage("§7     Voici le classement final des nations:");
+        Bukkit.broadcastMessage(sep);
+    }
+
+    private void broadcastSeasonEndFooter() {
+        String sep = "§8§m════════════════════════════════";
+        Bukkit.broadcastMessage(sep);
+        Bukkit.broadcastMessage("§6§l  La saison §e" + (currentSeason + 1) + " §6§lcommence maintenant!");
+        Bukkit.broadcastMessage(sep);
+    }
+
+    private void broadcastNationRanking(int rank, Nation nation, int money, int xp) {
         String medal = switch (rank) {
-            case 1 -> "§6§l🥇";
-            case 2 -> "§7§l🥈";
-            case 3 -> "§c§l🥉";
+            case 1 -> "§6§l🥇 1er";
+            case 2 -> "§7§l🥈 2ème";
+            case 3 -> "§c§l🥉 3ème";
             default -> "§7#" + rank;
         };
-        Bukkit.broadcastMessage(plugin.getConfigManager().getPrefix()
-            + medal + " §f" + nation.getName() + " §7— §a+" + reward + " coins §7(" + nation.getSeasonPoints() + " pts)");
+        Bukkit.broadcastMessage("  " + medal + " §f" + nation.getName()
+            + " §8(§e" + nation.getSeasonPoints() + " pts§8)");
+        Bukkit.broadcastMessage("    §7➤ Banque: §a+" + MessageUtil.formatNumber(money) + " coins"
+            + "  §7➤ Nation XP: §b+" + MessageUtil.formatNumber(xp) + " xp");
     }
 
     private void resetSeasonData() {

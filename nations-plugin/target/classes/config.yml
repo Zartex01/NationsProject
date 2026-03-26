@@ -80,8 +80,11 @@ seasons:
   duration-days: 30
   rewards:
     first-place: 10000
+    first-place-xp: 5000
     second-place: 5000
+    second-place-xp: 2500
     third-place: 2500
+    third-place-xp: 1000
   level:
     xp-per-block-placed: 1
     xp-per-kill: 50
@@ -89,6 +92,9 @@ seasons:
     xp-per-claim: 10
     max-level: 100
     xp-formula-multiplier: 100
+  nation-level:
+    max-level: 50
+    xp-formula-multiplier: 1000
 
 messages:
   prefix: "&8[&6Nations&8] "

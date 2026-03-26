@@ -100,6 +100,29 @@ public class Nation {
         this.seasonPoints = 0;
     }
 
+    public int addXp(double amount, int maxLevel, int xpMultiplier) {
+        if (this.level >= maxLevel) return 0;
+        this.xp += amount;
+        int levelsGained = 0;
+        while (this.level < maxLevel) {
+            long xpNeeded = (long) this.level * xpMultiplier;
+            if (xpNeeded <= 0) xpNeeded = xpMultiplier;
+            if (this.xp >= xpNeeded) {
+                this.xp -= xpNeeded;
+                this.level++;
+                levelsGained++;
+            } else {
+                break;
+            }
+        }
+        return levelsGained;
+    }
+
+    public long getXpForNextLevel(int xpMultiplier) {
+        long needed = (long) this.level * xpMultiplier;
+        return needed <= 0 ? xpMultiplier : needed;
+    }
+
     public int getMemberCount() {
         return members.size();
     }
