@@ -1,4 +1,5 @@
 fr/nations/listeners/GuiClickListener.class
+fr/nations/commands/GiveMoneyCommand.class
 fr/nations/grade/GradeManager.class
 fr/nations/commands/SeasonCommand.class
 fr/nations/listeners/AtmPlaytimeListener.class
@@ -26,6 +27,7 @@ fr/nations/war/WarManager$SurrenderResult.class
 fr/nations/role/CustomRoleManager.class
 fr/nations/commands/WarCommand$1.class
 fr/nations/war/WarManager$WarDeclarationResult.class
+fr/nations/commands/PayCommand.class
 fr/nations/nation/NationMember.class
 fr/nations/nation/Nation.class
 fr/nations/war/WarStatus.class
@@ -45,6 +47,7 @@ fr/nations/commands/NationRoleCommand.class
 fr/nations/grade/PlayerGrade.class
 fr/nations/gui/NationMainGui.class
 fr/nations/listeners/PlayerDeathListener.class
+fr/nations/commands/BalanceCommand.class
 fr/nations/season/SeasonManager.class
 fr/nations/commands/WarCommand.class
 fr/nations/database/DatabaseManager.class

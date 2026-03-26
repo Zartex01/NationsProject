@@ -51,6 +51,21 @@ commands:
     usage: /atm
     aliases: [distributeur]
     permission: nations.use
+  pay:
+    description: Envoyer des coins à un joueur
+    usage: /pay <joueur> <montant>
+    aliases: [payer, virement]
+    permission: nations.use
+  bal:
+    description: Voir sa balance ou celle d'un joueur
+    usage: /bal [joueur]
+    aliases: [balance, solde]
+    permission: nations.use
+  givemoney:
+    description: Donner des coins à un joueur (admin)
+    usage: /givemoney <joueur> <montant>
+    aliases: [addmoney, givecoins]
+    permission: nations.admin
 
 permissions:
   nations.use:

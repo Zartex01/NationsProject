@@ -124,6 +124,18 @@ public class NationsPlugin extends JavaPlugin {
         AtmCommand atmCommand = new AtmCommand(this);
         getCommand("atm").setExecutor(atmCommand);
         getCommand("atm").setTabCompleter(atmCommand);
+
+        PayCommand payCommand = new PayCommand(this);
+        getCommand("pay").setExecutor(payCommand);
+        getCommand("pay").setTabCompleter(payCommand);
+
+        BalanceCommand balanceCommand = new BalanceCommand(this);
+        getCommand("bal").setExecutor(balanceCommand);
+        getCommand("bal").setTabCompleter(balanceCommand);
+
+        GiveMoneyCommand giveMoneyCommand = new GiveMoneyCommand(this);
+        getCommand("givemoney").setExecutor(giveMoneyCommand);
+        getCommand("givemoney").setTabCompleter(giveMoneyCommand);
     }
 
     private void registerListeners() {
