@@ -141,6 +141,21 @@ seasons:
     max-level: 50
     xp-formula-multiplier: 1000
 
+# Commandes réservées à certains grades (et aux grades supérieurs)
+# Les admins (nations.admin) ont toujours accès à tout
+# Exemple: "furnace" = commande /furnace, accessible à partir du grade "premium"
+grade-commands:
+  joueur: []
+  soutien: []
+  premium:
+    - furnace
+    - craft
+    - workbench
+  chevalier:
+    - enderchest
+  roi:
+    - hat
+
 messages:
   prefix: "&8[&6Nations&8] "
   no-permission: "&cVous n'avez pas la permission d'effectuer cette action."

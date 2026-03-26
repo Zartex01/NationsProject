@@ -136,6 +136,10 @@ public class NationsPlugin extends JavaPlugin {
         GiveMoneyCommand giveMoneyCommand = new GiveMoneyCommand(this);
         getCommand("givemoney").setExecutor(giveMoneyCommand);
         getCommand("givemoney").setTabCompleter(giveMoneyCommand);
+
+        SetGradeCommand setGradeCommand = new SetGradeCommand(this);
+        getCommand("setgrade").setExecutor(setGradeCommand);
+        getCommand("setgrade").setTabCompleter(setGradeCommand);
     }
 
     private void registerListeners() {
@@ -145,6 +149,7 @@ public class NationsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChunkListener(this), this);
         getServer().getPluginManager().registerEvents(new GuiClickListener(this), this);
         getServer().getPluginManager().registerEvents(new AtmPlaytimeListener(this), this);
+        getServer().getPluginManager().registerEvents(new GradeCommandListener(this), this);
     }
 
     public static NationsPlugin getInstance() { return instance; }

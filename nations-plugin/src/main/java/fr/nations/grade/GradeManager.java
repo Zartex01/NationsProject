@@ -31,16 +31,27 @@ public class GradeManager {
         );
     }
 
+    public GradeType getEffectiveGrade(Player player) {
+        GradeType permGrade = GradeType.fromPermission(player);
+        PlayerGrade stored = playerGrades.get(player.getUniqueId());
+        if (stored == null) return permGrade;
+        try {
+            GradeType dbGrade = GradeType.valueOf(stored.getGradeName().toUpperCase());
+            return dbGrade.ordinal() > permGrade.ordinal() ? dbGrade : permGrade;
+        } catch (IllegalArgumentException e) {
+            return permGrade;
+        }
+    }
+
     public String getPlayerGradeName(Player player) {
-        GradeType gradeType = GradeType.fromPermission(player);
+        GradeType gradeType = getEffectiveGrade(player);
         PlayerGrade grade = getOrCreatePlayerGrade(player.getUniqueId(), player.getName());
         grade.setGradeName(gradeType.name());
         return gradeType.name();
     }
 
     public int getMaxClaims(Player player) {
-        GradeType gradeType = GradeType.fromPermission(player);
-        return gradeType.getMaxClaims();
+        return getEffectiveGrade(player).getMaxClaims();
     }
 
     public void addXp(UUID playerId, long amount) {

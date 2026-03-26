@@ -46,6 +46,8 @@ public class GuiClickListener implements Listener {
             staffGui.handleClick(event);
         } else if (gui instanceof PlayerProfileGui profileGui) {
             profileGui.handleClick(event);
+        } else if (gui instanceof fr.nations.gui.RolePermissionsGui roleGui) {
+            roleGui.handleClick(event);
         }
     }
 

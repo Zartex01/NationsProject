@@ -1,7 +1,6 @@
 package fr.nations.listeners;
 
 import fr.nations.NationsPlugin;
-import fr.nations.grade.GradeType;
 import fr.nations.grade.PlayerGrade;
 import fr.nations.nation.Nation;
 import fr.nations.util.MessageUtil;
@@ -25,7 +24,7 @@ public class PlayerJoinListener implements Listener {
 
         plugin.getEconomyManager().getOrCreateAccount(player.getUniqueId());
         PlayerGrade grade = plugin.getGradeManager().getOrCreatePlayerGrade(player.getUniqueId(), player.getName());
-        grade.setGradeName(GradeType.fromPermission(player).name());
+        grade.setGradeName(plugin.getGradeManager().getEffectiveGrade(player).name());
         plugin.getSeasonManager().getOrCreatePlayerStats(player.getUniqueId());
 
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
@@ -41,7 +40,7 @@ public class PlayerJoinListener implements Listener {
 
             MessageUtil.sendRaw(player, "");
             MessageUtil.send(player, "§6Bienvenue §f" + player.getName() + "§6 sur §eNationsEpoque§6!");
-            MessageUtil.send(player, "§7Grade: " + GradeType.fromPermission(player).getColoredDisplay() + " §7| Niveau: §e" + grade.getLevel());
+            MessageUtil.send(player, "§7Grade: " + plugin.getGradeManager().getEffectiveGrade(player).getColoredDisplay() + " §7| Niveau: §e" + grade.getLevel());
             if (nation != null) {
                 MessageUtil.send(player, "§7Nation: §6" + nation.getName() + " §7| Points: §e" + nation.getSeasonPoints());
                 if (pendingWars > 0) {

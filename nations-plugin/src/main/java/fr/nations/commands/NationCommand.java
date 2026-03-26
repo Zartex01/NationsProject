@@ -45,6 +45,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
             case "list", "liste" -> handleList(player);
             case "disband", "dissoudre" -> handleDisband(player);
             case "open", "ouvrir" -> handleOpen(player);
+            case "role" -> handleRoleGui(player, args);
             case "description", "desc" -> handleDescription(player, args);
             case "rename", "renommer" -> handleRename(player, args);
             case "deposit", "deposer" -> handleBankDeposit(player, args);
@@ -543,6 +544,25 @@ public class NationCommand implements CommandExecutor, TabCompleter {
             }
         }
         return completions;
+    }
+
+    private void handleRoleGui(Player player, String[] args) {
+        if (!player.hasPermission("nations.admin")) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission.");
+            return;
+        }
+        if (args.length < 2) {
+            MessageUtil.sendError(player, "Usage: /nation role <LEADER|CO_LEADER|OFFICER|MEMBER|RECRUIT>");
+            return;
+        }
+        fr.nations.nation.NationRole role;
+        try {
+            role = fr.nations.nation.NationRole.valueOf(args[1].toUpperCase());
+        } catch (IllegalArgumentException e) {
+            MessageUtil.sendError(player, "Rôle invalide. Rôles: LEADER, CO_LEADER, OFFICER, MEMBER, RECRUIT");
+            return;
+        }
+        new fr.nations.gui.RolePermissionsGui(plugin, player, role).open();
     }
 
     private org.bukkit.configuration.file.FileConfiguration getConfig() {

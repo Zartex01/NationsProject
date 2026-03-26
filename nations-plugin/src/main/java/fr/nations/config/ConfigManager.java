@@ -3,6 +3,8 @@ package fr.nations.config;
 import fr.nations.NationsPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.List;
+
 public class ConfigManager {
 
     private final NationsPlugin plugin;
@@ -48,6 +50,15 @@ public class ConfigManager {
 
     public boolean getRolePerm(String roleName, String perm, boolean defaultValue) {
         return config.getBoolean("nation-roles." + roleName + "." + perm, defaultValue);
+    }
+
+    public void setRolePerm(String roleName, String perm, boolean value) {
+        config.set("nation-roles." + roleName + "." + perm, value);
+        plugin.saveConfig();
+    }
+
+    public List<String> getGradeCommands(String gradeName) {
+        return config.getStringList("grade-commands." + gradeName.toLowerCase());
     }
 
     public double getNationCreationCost() {
