@@ -20,30 +20,75 @@ claims:
 
 grades:
   joueur:
-    max-claims: 10
     display: "Joueur"
-    color: "GRAY"
-    permission: ""
+    color: "&7"
+    max-claims: 10
   soutien:
-    max-claims: 20
     display: "Soutien"
-    color: "GREEN"
-    permission: "nations.grade.soutien"
+    color: "&a"
+    max-claims: 20
   premium:
-    max-claims: 35
     display: "Premium"
-    color: "GOLD"
-    permission: "nations.grade.premium"
+    color: "&6"
+    max-claims: 35
   chevalier:
-    max-claims: 55
     display: "Chevalier"
-    color: "AQUA"
-    permission: "nations.grade.chevalier"
+    color: "&b"
+    max-claims: 55
   roi:
-    max-claims: 80
     display: "Roi"
-    color: "LIGHT_PURPLE"
-    permission: "nations.grade.roi"
+    color: "&d"
+    max-claims: 80
+
+# Roles des nations — modifiables sans recompiler
+# Permissions disponibles: can-build, can-invite, can-kick,
+#                          can-manage-war, can-manage-bank, can-dissolve
+nation-roles:
+  LEADER:
+    display: "Chef"
+    color: "&6"
+    can-build: true
+    can-invite: true
+    can-kick: true
+    can-manage-war: true
+    can-manage-bank: true
+    can-dissolve: true
+  CO_LEADER:
+    display: "Co-Chef"
+    color: "&e"
+    can-build: true
+    can-invite: true
+    can-kick: true
+    can-manage-war: true
+    can-manage-bank: true
+    can-dissolve: false
+  OFFICER:
+    display: "Officier"
+    color: "&a"
+    can-build: true
+    can-invite: true
+    can-kick: true
+    can-manage-war: false
+    can-manage-bank: false
+    can-dissolve: false
+  MEMBER:
+    display: "Membre"
+    color: "&7"
+    can-build: true
+    can-invite: false
+    can-kick: false
+    can-manage-war: false
+    can-manage-bank: false
+    can-dissolve: false
+  RECRUIT:
+    display: "Recrue"
+    color: "&8"
+    can-build: false
+    can-invite: false
+    can-kick: false
+    can-manage-war: false
+    can-manage-bank: false
+    can-dissolve: false
 
 economy:
   starting-balance: 250

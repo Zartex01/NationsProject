@@ -30,12 +30,24 @@ public class ConfigManager {
         return config.getInt("grades." + gradeName.toLowerCase() + ".max-claims", 10);
     }
 
-    public String getGradeDisplay(String gradeName) {
-        return colorize(config.getString("grades." + gradeName.toLowerCase() + ".display", gradeName));
+    public String getGradeDisplay(String gradeName, String defaultValue) {
+        return colorize(config.getString("grades." + gradeName.toLowerCase() + ".display", defaultValue));
     }
 
-    public String getGradeColor(String gradeName) {
-        return config.getString("grades." + gradeName.toLowerCase() + ".color", "GRAY");
+    public String getGradeColorCode(String gradeName, String defaultColor) {
+        return colorize(config.getString("grades." + gradeName.toLowerCase() + ".color", defaultColor));
+    }
+
+    public String getRoleDisplay(String roleName, String defaultValue) {
+        return colorize(config.getString("nation-roles." + roleName + ".display", defaultValue));
+    }
+
+    public String getRoleColor(String roleName, String defaultColor) {
+        return colorize(config.getString("nation-roles." + roleName + ".color", defaultColor));
+    }
+
+    public boolean getRolePerm(String roleName, String perm, boolean defaultValue) {
+        return config.getBoolean("nation-roles." + roleName + "." + perm, defaultValue);
     }
 
     public double getNationCreationCost() {
