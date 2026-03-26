@@ -35,7 +35,7 @@ commands:
     description: Commande de gestion des saisons
     usage: /season <sous-commande>
     aliases: [saison]
-    permission: nations.admin
+    permission: nations.use
   nationsadmin:
     description: Commande d'administration des nations
     usage: /nationsadmin <sous-commande>

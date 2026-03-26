@@ -87,7 +87,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
 
         MessageUtil.sendSeparator(player);
         if (claimed == null) {
-            MessageUtil.sendRaw(player, "  §7Ce chunk est §climbre§7 (non claimé).");
+            MessageUtil.sendRaw(player, "  §7Ce chunk est §clibre§7 (non claimé).");
         } else {
             Nation nation = plugin.getNationManager().getNationById(claimed.getNationId());
             MessageUtil.sendRaw(player, "  §7Chunk: §f[" + chunk.getX() + ", " + chunk.getZ() + "]");
