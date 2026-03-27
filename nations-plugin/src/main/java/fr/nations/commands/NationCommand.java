@@ -224,7 +224,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         Nation nation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
         if (nation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
         NationMember promoter = nation.getMember(player.getUniqueId());
-        if (promoter == null || promoter.getRole().getRank() < NationRole.CO_LEADER.getRank()) {
+        if (promoter == null || !promoter.canPromote()) {
             MessageUtil.sendError(player, "Vous n'avez pas la permission de promouvoir.");
             return;
         }
@@ -256,8 +256,8 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         Nation nation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
         if (nation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
         NationMember demoter = nation.getMember(player.getUniqueId());
-        if (demoter == null || !nation.isLeader(player.getUniqueId()) && demoter.getRole().getRank() < NationRole.CO_LEADER.getRank()) {
-            MessageUtil.sendError(player, "Vous n'avez pas la permission de rétrograder.");
+        if (demoter == null || !demoter.canDemote()) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission de retrograder.");
             return;
         }
         Player target = Bukkit.getPlayer(args[1]);
@@ -288,8 +288,8 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         Nation myNation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
         if (myNation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
         NationMember member = myNation.getMember(player.getUniqueId());
-        if (member == null || member.getRole().getRank() < NationRole.CO_LEADER.getRank()) {
-            MessageUtil.sendError(player, "Seuls les co-chefs et chefs peuvent gérer les alliances.");
+        if (member == null || !member.canManageAllies()) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission de gerer les alliances.");
             return;
         }
         Nation targetNation = plugin.getNationManager().getNationByName(args[1]);
@@ -318,9 +318,14 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         }
         Nation myNation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
         if (myNation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
+        NationMember unallyMember = myNation.getMember(player.getUniqueId());
+        if (unallyMember == null || !unallyMember.canManageAllies()) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission de gerer les alliances.");
+            return;
+        }
         Nation targetNation = plugin.getNationManager().getNationByName(args[1]);
         if (targetNation == null || !myNation.isAlly(targetNation.getId())) {
-            MessageUtil.sendError(player, "Cette nation n'est pas votre alliée.");
+            MessageUtil.sendError(player, "Cette nation n'est pas votre alliee.");
             return;
         }
         plugin.getNationManager().breakAlliance(myNation, targetNation);
@@ -375,17 +380,25 @@ public class NationCommand implements CommandExecutor, TabCompleter {
     private void handleDisband(Player player) {
         Nation nation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
         if (nation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
-        if (!nation.isLeader(player.getUniqueId())) { MessageUtil.sendError(player, "Seul le chef peut dissoudre la nation."); return; }
+        NationMember disbandMember = nation.getMember(player.getUniqueId());
+        if (disbandMember == null || !disbandMember.canDissolve()) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission de dissoudre la nation.");
+            return;
+        }
         new ConfirmDisbandGui(plugin, player, nation).open();
     }
 
     private void handleOpen(Player player) {
         Nation nation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
         if (nation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
-        if (!nation.isLeader(player.getUniqueId())) { MessageUtil.sendError(player, "Seul le chef peut changer ce paramètre."); return; }
+        NationMember openMember = nation.getMember(player.getUniqueId());
+        if (openMember == null || !openMember.canOpenNation()) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission d'ouvrir/fermer la nation.");
+            return;
+        }
         nation.setOpen(!nation.isOpen());
         plugin.getDataManager().saveNations();
-        MessageUtil.sendSuccess(player, "La nation est maintenant " + (nation.isOpen() ? "§aOuverte" : "§cFermée") + "§a.");
+        MessageUtil.sendSuccess(player, "La nation est maintenant " + (nation.isOpen() ? "§aOuverte" : "§cFermee") + "§a.");
     }
 
     private void handleDescription(Player player, String[] args) {
@@ -396,8 +409,8 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         Nation nation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
         if (nation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
         NationMember member = nation.getMember(player.getUniqueId());
-        if (member == null || member.getRole().getRank() < NationRole.CO_LEADER.getRank()) {
-            MessageUtil.sendError(player, "Permission insuffisante.");
+        if (member == null || !member.canSetDescription()) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission de modifier la description.");
             return;
         }
         String desc = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
@@ -407,7 +420,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         }
         nation.setDescription(desc);
         plugin.getDataManager().saveNations();
-        MessageUtil.sendSuccess(player, "Description mise à jour.");
+        MessageUtil.sendSuccess(player, "Description mise a jour.");
     }
 
     private void handleRename(Player player, String[] args) {
@@ -417,20 +430,24 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         }
         Nation nation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
         if (nation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
-        if (!nation.isLeader(player.getUniqueId())) { MessageUtil.sendError(player, "Seul le chef peut renommer la nation."); return; }
+        NationMember renameMember = nation.getMember(player.getUniqueId());
+        if (renameMember == null || !renameMember.canRename()) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission de renommer la nation.");
+            return;
+        }
         String newName = args[1];
         if (!newName.matches("[a-zA-Z0-9_]+") || newName.length() < 3 || newName.length() > 20) {
             MessageUtil.sendError(player, "Nom invalide.");
             return;
         }
         if (plugin.getNationManager().getNationByName(newName) != null) {
-            MessageUtil.sendError(player, "Ce nom est déjà pris.");
+            MessageUtil.sendError(player, "Ce nom est deja pris.");
             return;
         }
         String oldName = nation.getName();
         nation.setName(newName);
         plugin.getDataManager().saveNations();
-        MessageUtil.sendSuccess(player, "Nation renommée de §6" + oldName + " §àvers §6" + newName + "§a.");
+        MessageUtil.sendSuccess(player, "Nation renommee de §6" + oldName + " §avers §6" + newName + "§a.");
     }
 
     private void handleBankDeposit(Player player, String[] args) {
@@ -440,6 +457,11 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         }
         Nation nation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
         if (nation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
+        NationMember depositMember = nation.getMember(player.getUniqueId());
+        if (depositMember == null || !depositMember.canDepositBank()) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission de deposer dans la banque.");
+            return;
+        }
         try {
             double amount = Double.parseDouble(args[1]);
             if (amount <= 0) throw new NumberFormatException();

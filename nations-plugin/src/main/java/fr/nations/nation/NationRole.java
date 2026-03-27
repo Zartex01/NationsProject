@@ -86,6 +86,12 @@ public enum NationRole {
         return defaultCanDissolve;
     }
 
+    public boolean hasPerm(String permKey) {
+        NationsPlugin p = plugin();
+        if (p != null) return p.getConfigManager().getRolePerm(name(), permKey, false);
+        return false;
+    }
+
     public boolean isHigherThan(NationRole other) {
         return this.rank > other.rank;
     }

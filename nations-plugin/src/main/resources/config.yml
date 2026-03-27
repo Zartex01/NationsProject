@@ -40,9 +40,99 @@ grades:
     color: "&d"
     max-claims: 80
 
-# Roles des nations — modifiables sans recompiler
-# Permissions disponibles: can-build, can-invite, can-kick,
-#                          can-manage-war, can-manage-bank, can-dissolve
+# ============================================================
+#  Permissions des rôles — tout est configurable ici
+#  Tu peux ajouter autant de permissions que tu veux dans
+#  "nation-role-permissions" et elles apparaîtront dans le GUI
+#  automatiquement. Utilise member.hasPerm("ta-permission")
+#  dans le code pour vérifier une permission custom.
+# ============================================================
+
+# Métadonnées de chaque permission (affichage dans le GUI)
+nation-role-permissions:
+  can-build:
+    display: "Construire"
+    description: "Placer et casser des blocs dans les claims"
+    material: GRASS_BLOCK
+  can-invite:
+    display: "Inviter"
+    description: "Inviter des joueurs dans la nation"
+    material: PAPER
+  can-kick:
+    display: "Expulser"
+    description: "Expulser des membres de la nation"
+    material: LEATHER_BOOTS
+  can-promote:
+    display: "Promouvoir"
+    description: "Promouvoir des membres à un rang superieur"
+    material: DIAMOND
+  can-demote:
+    display: "Retrograder"
+    description: "Retrograder des membres a un rang inferieur"
+    material: COAL
+  can-claim:
+    display: "Revendiquer"
+    description: "Claim des chunks de territoire"
+    material: MAP
+  can-unclaim:
+    display: "Liberer"
+    description: "Liberer des chunks de territoire"
+    material: BARRIER
+  can-manage-war:
+    display: "Guerres"
+    description: "Declarer et gerer des guerres"
+    material: IRON_SWORD
+  can-manage-bank:
+    display: "Retrait banque"
+    description: "Retirer de l'argent de la banque"
+    material: GOLD_BLOCK
+  can-deposit-bank:
+    display: "Depot banque"
+    description: "Deposer de l'argent dans la banque"
+    material: GOLD_INGOT
+  can-manage-allies:
+    display: "Alliances"
+    description: "Gerer les alliances avec d'autres nations"
+    material: WHITE_BANNER
+  can-rename:
+    display: "Renommer"
+    description: "Renommer la nation"
+    material: NAME_TAG
+  can-set-description:
+    display: "Description"
+    description: "Modifier la description de la nation"
+    material: BOOK
+  can-dissolve:
+    display: "Dissoudre"
+    description: "Dissoudre la nation definitivement"
+    material: TNT
+  can-set-home:
+    display: "Def. Home"
+    description: "Definir le point de ralliement de la nation"
+    material: RESPAWN_ANCHOR
+  can-teleport-home:
+    display: "Teleportation"
+    description: "Se teleporter au home de la nation"
+    material: ENDER_PEARL
+  can-open-nation:
+    display: "Ouvrir/Fermer"
+    description: "Ouvrir ou fermer la nation aux nouvelles recrues"
+    material: IRON_DOOR
+  can-access-storage:
+    display: "Coffre partage"
+    description: "Acceder au coffre partage de la nation"
+    material: CHEST
+  can-manage-flags:
+    display: "Parametres"
+    description: "Modifier les parametres et drapeaux de la nation"
+    material: LEVER
+  can-use-atm:
+    display: "ATM Nation"
+    description: "Utiliser la trésorerie de la nation via ATM"
+    material: EMERALD
+
+# Valeurs des permissions par rôle
+# (les clés correspondent à celles de nation-role-permissions)
 nation-roles:
   LEADER:
     display: "Chef"
@@ -50,45 +140,115 @@ nation-roles:
     can-build: true
     can-invite: true
     can-kick: true
+    can-promote: true
+    can-demote: true
+    can-claim: true
+    can-unclaim: true
     can-manage-war: true
     can-manage-bank: true
+    can-deposit-bank: true
+    can-manage-allies: true
+    can-rename: true
+    can-set-description: true
     can-dissolve: true
+    can-set-home: true
+    can-teleport-home: true
+    can-open-nation: true
+    can-access-storage: true
+    can-manage-flags: true
+    can-use-atm: true
   CO_LEADER:
     display: "Co-Chef"
     color: "&e"
     can-build: true
     can-invite: true
     can-kick: true
+    can-promote: true
+    can-demote: true
+    can-claim: true
+    can-unclaim: true
     can-manage-war: true
     can-manage-bank: true
+    can-deposit-bank: true
+    can-manage-allies: true
+    can-rename: true
+    can-set-description: true
     can-dissolve: false
+    can-set-home: true
+    can-teleport-home: true
+    can-open-nation: true
+    can-access-storage: true
+    can-manage-flags: true
+    can-use-atm: true
   OFFICER:
     display: "Officier"
     color: "&a"
     can-build: true
     can-invite: true
     can-kick: true
+    can-promote: false
+    can-demote: false
+    can-claim: true
+    can-unclaim: true
     can-manage-war: false
     can-manage-bank: false
+    can-deposit-bank: true
+    can-manage-allies: false
+    can-rename: false
+    can-set-description: false
     can-dissolve: false
+    can-set-home: false
+    can-teleport-home: true
+    can-open-nation: false
+    can-access-storage: true
+    can-manage-flags: false
+    can-use-atm: false
   MEMBER:
     display: "Membre"
     color: "&7"
     can-build: true
     can-invite: false
     can-kick: false
+    can-promote: false
+    can-demote: false
+    can-claim: false
+    can-unclaim: false
     can-manage-war: false
     can-manage-bank: false
+    can-deposit-bank: true
+    can-manage-allies: false
+    can-rename: false
+    can-set-description: false
     can-dissolve: false
+    can-set-home: false
+    can-teleport-home: true
+    can-open-nation: false
+    can-access-storage: true
+    can-manage-flags: false
+    can-use-atm: false
   RECRUIT:
     display: "Recrue"
     color: "&8"
     can-build: false
     can-invite: false
     can-kick: false
+    can-promote: false
+    can-demote: false
+    can-claim: false
+    can-unclaim: false
     can-manage-war: false
     can-manage-bank: false
+    can-deposit-bank: false
+    can-manage-allies: false
+    can-rename: false
+    can-set-description: false
     can-dissolve: false
+    can-set-home: false
+    can-teleport-home: false
+    can-open-nation: false
+    can-access-storage: false
+    can-manage-flags: false
+    can-use-atm: false
 
 economy:
   starting-balance: 250

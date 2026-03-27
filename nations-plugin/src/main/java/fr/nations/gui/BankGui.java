@@ -38,15 +38,24 @@ public class BankGui {
         ));
 
         NationMember member = nation.getMember(player.getUniqueId());
-        boolean canManageBank = member != null && member.canManageBank();
+        boolean canManageBank  = member != null && member.canManageBank();
+        boolean canDepositBank = member != null && member.canDepositBank();
 
-        inv.setItem(11, GuiUtil.createItem(Material.HOPPER,
-            "&aDepôt",
-            "&7Déposer de votre argent",
-            "&7dans la banque de la nation",
-            "",
-            "&eCliquer pour déposer"
-        ));
+        if (canDepositBank) {
+            inv.setItem(11, GuiUtil.createItem(Material.HOPPER,
+                "&aDepôt",
+                "&7Deposer de votre argent",
+                "&7dans la banque de la nation",
+                "",
+                "&eCliquer pour deposer"
+            ));
+        } else {
+            inv.setItem(11, GuiUtil.createItem(Material.BARRIER,
+                "&cDepôt non autorisé",
+                "&7Votre rôle ne peut pas",
+                "&7deposer dans la banque"
+            ));
+        }
 
         if (canManageBank) {
             inv.setItem(15, GuiUtil.createItem(Material.CHEST,
@@ -74,8 +83,13 @@ public class BankGui {
         int slot = event.getRawSlot();
 
         if (slot == 11) {
+            NationMember clickMember = nation.getMember(player.getUniqueId());
+            if (clickMember == null || !clickMember.canDepositBank()) {
+                fr.nations.util.MessageUtil.sendError(player, "Vous n'avez pas la permission de deposer dans la banque.");
+                return;
+            }
             player.closeInventory();
-            MessageUtil.send(player, "&7Entrez le montant à &aDéposer &7dans le chat: (ex: §e100§7)");
+            MessageUtil.send(player, "&7Entrez le montant a &aDeposer &7dans le chat: (ex: §e100§7)");
             GuiManager.setPendingAction(player.getUniqueId(), "bank_deposit:" + nation.getId());
         } else if (slot == 15) {
             NationMember member = nation.getMember(player.getUniqueId());

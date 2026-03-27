@@ -61,6 +61,27 @@ public class ConfigManager {
         return config.getStringList("grade-commands." + gradeName.toLowerCase());
     }
 
+    public List<String> getRolePermissionKeys() {
+        org.bukkit.configuration.ConfigurationSection section =
+            config.getConfigurationSection("nation-role-permissions");
+        if (section == null) return List.of();
+        return new java.util.ArrayList<>(section.getKeys(false));
+    }
+
+    public String getRolePermissionDisplay(String key) {
+        return colorize(config.getString("nation-role-permissions." + key + ".display", key));
+    }
+
+    public String getRolePermissionDescription(String key) {
+        return colorize(config.getString("nation-role-permissions." + key + ".description", ""));
+    }
+
+    public org.bukkit.Material getRolePermissionMaterial(String key) {
+        String mat = config.getString("nation-role-permissions." + key + ".material", "PAPER");
+        try { return org.bukkit.Material.valueOf(mat.toUpperCase()); }
+        catch (IllegalArgumentException e) { return org.bukkit.Material.PAPER; }
+    }
+
     public double getNationCreationCost() {
         return config.getDouble("nations.creation-cost", 500);
     }

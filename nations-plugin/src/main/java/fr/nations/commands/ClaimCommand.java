@@ -2,6 +2,7 @@ package fr.nations.commands;
 
 import fr.nations.NationsPlugin;
 import fr.nations.nation.Nation;
+import fr.nations.nation.NationMember;
 import fr.nations.territory.TerritoryManager;
 import fr.nations.util.MessageUtil;
 import org.bukkit.Chunk;
@@ -41,6 +42,14 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleClaim(Player player) {
+        Nation claimNation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
+        if (claimNation != null) {
+            NationMember claimMember = claimNation.getMember(player.getUniqueId());
+            if (claimMember != null && !claimMember.canClaim()) {
+                MessageUtil.sendError(player, "Vous n'avez pas la permission de revendiquer des territoires.");
+                return;
+            }
+        }
         Chunk chunk = player.getLocation().getChunk();
         TerritoryManager.ClaimResult result = plugin.getTerritoryManager().claimChunk(player, chunk);
 
@@ -73,11 +82,19 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleUnclaim(Player player) {
+        Nation unclaimNation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
+        if (unclaimNation != null) {
+            NationMember unclaimMember = unclaimNation.getMember(player.getUniqueId());
+            if (unclaimMember != null && !unclaimMember.canUnclaim()) {
+                MessageUtil.sendError(player, "Vous n'avez pas la permission de liberer des territoires.");
+                return;
+            }
+        }
         Chunk chunk = player.getLocation().getChunk();
         if (plugin.getTerritoryManager().unclaimChunk(player, chunk)) {
-            MessageUtil.sendSuccess(player, "Chunk §f[" + chunk.getX() + ", " + chunk.getZ() + "] §aunclamé.");
+            MessageUtil.sendSuccess(player, "Chunk §f[" + chunk.getX() + ", " + chunk.getZ() + "] §aunclaime.");
         } else {
-            MessageUtil.sendError(player, "Ce chunk n'appartient pas à votre nation.");
+            MessageUtil.sendError(player, "Ce chunk n'appartient pas a votre nation.");
         }
     }
 

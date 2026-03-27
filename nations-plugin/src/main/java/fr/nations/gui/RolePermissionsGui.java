@@ -1,6 +1,7 @@
 package fr.nations.gui;
 
 import fr.nations.NationsPlugin;
+import fr.nations.config.ConfigManager;
 import fr.nations.nation.NationRole;
 import fr.nations.util.GuiUtil;
 import fr.nations.util.MessageUtil;
@@ -13,77 +14,96 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 public class RolePermissionsGui {
 
     private final NationsPlugin plugin;
     private final Player player;
     private final NationRole role;
+    private int page;
 
-    private static final Map<Integer, String[]> PERM_SLOTS;
+    private static final int[] ITEM_SLOTS = {
+        10, 11, 12, 13, 14, 15, 16,
+        19, 20, 21, 22, 23, 24, 25,
+        28, 29, 30, 31, 32, 33, 34
+    };
+    private static final int ITEMS_PER_PAGE = ITEM_SLOTS.length;
 
-    static {
-        PERM_SLOTS = new LinkedHashMap<>();
-        PERM_SLOTS.put(10, new String[]{"can-build",       "Construire",       "Autoriser le rôle à placer/casser des blocs"});
-        PERM_SLOTS.put(12, new String[]{"can-invite",      "Inviter",          "Autoriser le rôle à inviter des joueurs"});
-        PERM_SLOTS.put(14, new String[]{"can-kick",        "Expulser",         "Autoriser le rôle à expulser des membres"});
-        PERM_SLOTS.put(19, new String[]{"can-manage-war",  "Gérer les guerres","Autoriser le rôle à déclarer des guerres"});
-        PERM_SLOTS.put(21, new String[]{"can-manage-bank", "Gérer la banque",  "Autoriser le rôle à retirer de la banque"});
-        PERM_SLOTS.put(23, new String[]{"can-dissolve",    "Dissoudre",        "Autoriser le rôle à dissoudre la nation"});
-    }
-
-    private static final Map<String, Material> PERM_MATERIALS = Map.of(
-        "can-build",       Material.GRASS_BLOCK,
-        "can-invite",      Material.PAPER,
-        "can-kick",        Material.LEATHER_BOOTS,
-        "can-manage-war",  Material.IRON_SWORD,
-        "can-manage-bank", Material.GOLD_INGOT,
-        "can-dissolve",    Material.TNT
-    );
+    private static final int SLOT_PREV  = 39;
+    private static final int SLOT_INFO  = 40;
+    private static final int SLOT_NEXT  = 41;
+    private static final int SLOT_CLOSE = 44;
 
     public RolePermissionsGui(NationsPlugin plugin, Player player, NationRole role) {
+        this(plugin, player, role, 0);
+    }
+
+    public RolePermissionsGui(NationsPlugin plugin, Player player, NationRole role, int page) {
         this.plugin = plugin;
         this.player = player;
-        this.role = role;
+        this.role   = role;
+        this.page   = page;
     }
 
     public Inventory build() {
-        String title = "&8Permissions " + role.getColoredDisplay();
-        Inventory inv = GuiUtil.createGui(title, 4);
+        ConfigManager cfg = plugin.getConfigManager();
+        List<String> allKeys = cfg.getRolePermissionKeys();
+        int totalPages = Math.max(1, (int) Math.ceil(allKeys.size() / (double) ITEMS_PER_PAGE));
+        if (page >= totalPages) page = totalPages - 1;
+
+        int from = page * ITEMS_PER_PAGE;
+        int to   = Math.min(from + ITEMS_PER_PAGE, allKeys.size());
+        List<String> pageKeys = allKeys.subList(from, to);
+
+        String title = "&8[" + role.getColoredDisplay() + "&8] Permissions &7(p." + (page + 1) + "/" + totalPages + ")";
+        Inventory inv = GuiUtil.createGui(title, 5);
         GuiUtil.fillBorder(inv);
 
-        PERM_SLOTS.forEach((slot, data) -> {
-            String permKey = data[0];
-            String label   = data[1];
-            String desc    = data[2];
+        for (int i = 0; i < pageKeys.size(); i++) {
+            String key     = pageKeys.get(i);
+            boolean active = cfg.getRolePerm(role.name(), key, false);
+            String display = cfg.getRolePermissionDisplay(key);
+            String desc    = cfg.getRolePermissionDescription(key);
+            Material mat   = cfg.getRolePermissionMaterial(key);
+            inv.setItem(ITEM_SLOTS[i], buildItem(mat, display, desc, active));
+        }
 
-            boolean enabled = plugin.getConfigManager().getRolePerm(role.name(), permKey, false);
-            Material mat = PERM_MATERIALS.getOrDefault(permKey, Material.PAPER);
+        if (page > 0) {
+            inv.setItem(SLOT_PREV, GuiUtil.createItem(Material.ARROW, "&ePage precedente"));
+        }
+        inv.setItem(SLOT_INFO, GuiUtil.createItem(Material.PLAYER_HEAD,
+            role.getColoredDisplay(),
+            "&7Page &e" + (page + 1) + " &7/ &e" + totalPages,
+            "&7Permissions: &e" + allKeys.size() + " total",
+            "",
+            "&7Cliquez sur un item pour",
+            "&7activer/desactiver la permission"
+        ));
+        if (page < totalPages - 1) {
+            inv.setItem(SLOT_NEXT, GuiUtil.createItem(Material.ARROW, "&ePage suivante"));
+        }
+        inv.setItem(SLOT_CLOSE, GuiUtil.createItem(Material.BARRIER, "&cFermer"));
 
-            ItemStack item = buildPermItem(mat, label, desc, permKey, enabled);
-            inv.setItem(slot, item);
-        });
-
-        inv.setItem(31, GuiUtil.createItem(Material.BARRIER, "&cFermer"));
         GuiUtil.fillAll(inv);
         return inv;
     }
 
-    private ItemStack buildPermItem(Material mat, String label, String desc, String permKey, boolean enabled) {
-        String status = enabled ? "&a✔ Autorisé" : "&c✖ Refusé";
-        String hint   = enabled ? "&7Cliquer pour &cDésactiver" : "&7Cliquer pour &aActiver";
+    private ItemStack buildItem(Material mat, String display, String desc, boolean active) {
+        String color   = active ? "&a" : "&c";
+        String symbol  = active ? "✔" : "✖";
+        String status  = active ? "&aAutorise" : "&cRefuse";
+        String hint    = active ? "&7► Cliquer pour &cDesactiver" : "&7► Cliquer pour &aActiver";
 
         ItemStack item = GuiUtil.createItem(mat,
-            (enabled ? "&a" : "&c") + label,
-            "&7" + desc,
+            color + symbol + " " + display,
+            "&8" + desc,
             "",
             status,
             hint
         );
 
-        if (enabled) {
+        if (active) {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 meta.addEnchant(Enchantment.UNBREAKING, 1, true);
@@ -98,30 +118,41 @@ public class RolePermissionsGui {
         event.setCancelled(true);
         int slot = event.getRawSlot();
 
-        if (slot == 31) {
-            player.closeInventory();
-            return;
+        if (slot == SLOT_CLOSE) { player.closeInventory(); return; }
+        if (slot == SLOT_PREV && page > 0) { openPage(page - 1); return; }
+        if (slot == SLOT_NEXT) { openPage(page + 1); return; }
+
+        int indexInPage = -1;
+        for (int i = 0; i < ITEM_SLOTS.length; i++) {
+            if (ITEM_SLOTS[i] == slot) { indexInPage = i; break; }
         }
+        if (indexInPage < 0) return;
 
-        String[] data = PERM_SLOTS.get(slot);
-        if (data == null) return;
+        ConfigManager cfg = plugin.getConfigManager();
+        List<String> allKeys  = cfg.getRolePermissionKeys();
+        int globalIndex = page * ITEMS_PER_PAGE + indexInPage;
+        if (globalIndex >= allKeys.size()) return;
 
-        String permKey = data[0];
-        boolean current = plugin.getConfigManager().getRolePerm(role.name(), permKey, false);
-        boolean newValue = !current;
+        String key     = allKeys.get(globalIndex);
+        boolean current = cfg.getRolePerm(role.name(), key, false);
+        boolean newVal  = !current;
 
-        plugin.getConfigManager().setRolePerm(role.name(), permKey, newValue);
+        cfg.setRolePerm(role.name(), key, newVal);
 
-        String statusMsg = newValue ? "&aactivée" : "&cdésactivée";
-        MessageUtil.sendSuccess(player, "Permission &e" + data[1] + " &7pour &e"
-            + role.getDisplayName() + " &7: " + statusMsg + "&7.");
+        String display = cfg.getRolePermissionDisplay(key);
+        String msg = newVal ? "&a" + display + " activee" : "&c" + display + " desactivee";
+        MessageUtil.sendSuccess(player, "Rolle &e" + role.getDisplayName() + " &7- " + msg + "&7.");
 
-        player.openInventory(build());
-        GuiManager.registerGui(player.getUniqueId(), this);
+        openPage(page);
+    }
+
+    private void openPage(int newPage) {
+        RolePermissionsGui newGui = new RolePermissionsGui(plugin, player, role, newPage);
+        player.openInventory(newGui.build());
+        GuiManager.registerGui(player.getUniqueId(), newGui);
     }
 
     public void open() {
-        player.openInventory(build());
-        GuiManager.registerGui(player.getUniqueId(), this);
+        openPage(0);
     }
 }
