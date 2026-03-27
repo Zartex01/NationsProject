@@ -134,6 +134,17 @@ commands:
     usage: /nick <pseudo|reset>
     aliases: [pseudo, surnom]
     permission: nations.grade.premium
+  # ──── Shop ────
+  shop:
+    description: Ouvrir la boutique du serveur
+    usage: /shop
+    aliases: [boutique, magasin]
+    permission: nations.use
+  sell:
+    description: Vendre des objets (hand = en main, all = tout l'inventaire)
+    usage: /sell [hand|all]
+    aliases: [vendre]
+    permission: nations.use
 
 permissions:
   nations.use:
@@ -171,10 +182,11 @@ permissions:
     children:
       nations.grade.heros: true
   nations.grade.premium:
-    description: "Grade Premium — Kit Premium, /repair, /repair all, /nick, /furnace all, 30 homes, AFK 1h"
+    description: "Grade Premium — Kit Premium, /repair, /repair all, /nick, /furnace all, /sell all, 30 homes, AFK 1h"
     default: false
     children:
       nations.grade.chevalier: true
+      nations.sell.all: true
   nations.grade.roi:
     description: Grade Roi (120 claims max)
     default: false

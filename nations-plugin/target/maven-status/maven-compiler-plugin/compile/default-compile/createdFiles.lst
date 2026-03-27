@@ -1,4 +1,5 @@
 fr/nations/listeners/GuiClickListener.class
+fr/nations/gui/ShopCategoryGui.class
 fr/nations/commands/GiveMoneyCommand.class
 fr/nations/grade/GradeManager.class
 fr/nations/commands/SeasonCommand.class
@@ -14,6 +15,7 @@ fr/nations/commands/PTimeCommand.class
 fr/nations/commands/NationsAdminCommand.class
 fr/nations/territory/ClaimedChunk.class
 fr/nations/util/DataManager.class
+fr/nations/shop/ShopItem.class
 fr/nations/util/GuiUtil.class
 fr/nations/war/WarType.class
 fr/nations/listeners/ChunkListener.class
@@ -29,11 +31,14 @@ fr/nations/listeners/BlockProtectionListener.class
 fr/nations/gui/KitGui.class
 fr/nations/listeners/PlayerJoinListener.class
 fr/nations/gui/ConfirmDisbandGui.class
+fr/nations/commands/ShopCommand.class
 fr/nations/season/PlayerStats.class
 fr/nations/kit/KitManager.class
 fr/nations/gui/RolePermissionsGui.class
 fr/nations/war/WarManager$SurrenderResult.class
+fr/nations/gui/ShopGui.class
 fr/nations/role/CustomRoleManager.class
+fr/nations/commands/SellCommand.class
 fr/nations/commands/WarCommand$1.class
 fr/nations/war/WarManager$WarDeclarationResult.class
 fr/nations/commands/PayCommand.class
@@ -48,9 +53,11 @@ fr/nations/commands/StonecutterCommand.class
 fr/nations/commands/NationCommand.class
 fr/nations/commands/ClaimCommand$1.class
 fr/nations/war/WarManager.class
+fr/nations/shop/ShopManager.class
 fr/nations/commands/PWeatherCommand.class
 fr/nations/gui/MembersGui.class
 fr/nations/commands/SetGradeCommand.class
+fr/nations/shop/ShopCategory.class
 fr/nations/commands/KitCommand.class
 fr/nations/commands/AnvilCommand.class
 fr/nations/NationsPlugin.class

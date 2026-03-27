@@ -7,6 +7,7 @@ import fr.nations.database.DatabaseManager;
 import fr.nations.economy.EconomyManager;
 import fr.nations.grade.GradeManager;
 import fr.nations.kit.KitManager;
+import fr.nations.shop.ShopManager;
 import fr.nations.listeners.*;
 import fr.nations.nation.NationManager;
 import fr.nations.role.CustomRoleManager;
@@ -32,6 +33,7 @@ public class NationsPlugin extends JavaPlugin {
     private CustomRoleManager customRoleManager;
     private AtmManager atmManager;
     private KitManager kitManager;
+    private ShopManager shopManager;
 
     @Override
     public void onEnable() {
@@ -54,6 +56,7 @@ public class NationsPlugin extends JavaPlugin {
         this.economyManager = new EconomyManager(this);
         this.atmManager = new AtmManager(this);
         this.kitManager = new KitManager(this);
+        this.shopManager = new ShopManager(this);
         this.nationManager = new NationManager(this);
         this.territoryManager = new TerritoryManager(this);
         this.warManager = new WarManager(this);
@@ -192,6 +195,14 @@ public class NationsPlugin extends JavaPlugin {
         getCommand("nick").setExecutor(nickCommand);
         getCommand("nick").setTabCompleter(nickCommand);
 
+        ShopCommand shopCommand = new ShopCommand(this);
+        getCommand("shop").setExecutor(shopCommand);
+        getCommand("shop").setTabCompleter(shopCommand);
+
+        SellCommand sellCommand = new SellCommand(this);
+        getCommand("sell").setExecutor(sellCommand);
+        getCommand("sell").setTabCompleter(sellCommand);
+
         getServer().getPluginManager().registerEvents(new BackLocationListener(this, backCommand), this);
     }
 
@@ -219,4 +230,5 @@ public class NationsPlugin extends JavaPlugin {
     public CustomRoleManager getCustomRoleManager() { return customRoleManager; }
     public AtmManager getAtmManager() { return atmManager; }
     public KitManager getKitManager() { return kitManager; }
+    public ShopManager getShopManager() { return shopManager; }
 }

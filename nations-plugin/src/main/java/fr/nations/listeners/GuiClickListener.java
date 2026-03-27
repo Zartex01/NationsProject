@@ -51,6 +51,10 @@ public class GuiClickListener implements Listener {
             roleGui.handleClick(event);
         } else if (gui instanceof KitGui kitGui) {
             kitGui.handleClick(event);
+        } else if (gui instanceof ShopGui shopGui) {
+            shopGui.handleClick(event);
+        } else if (gui instanceof ShopCategoryGui shopCatGui) {
+            shopCatGui.handleClick(event);
         }
     }
 
