@@ -2,6 +2,7 @@ fr/nations/listeners/GuiClickListener.class
 fr/nations/commands/GiveMoneyCommand.class
 fr/nations/grade/GradeManager.class
 fr/nations/commands/SeasonCommand.class
+fr/nations/gui/KitGui$1.class
 fr/nations/commands/NickCommand.class
 fr/nations/listeners/AtmPlaytimeListener.class
 fr/nations/gui/StaffWarsGui.class
@@ -25,6 +26,7 @@ fr/nations/commands/BackCommand.class
 fr/nations/gui/GuiManager.class
 fr/nations/atm/AtmManager.class
 fr/nations/listeners/BlockProtectionListener.class
+fr/nations/gui/KitGui.class
 fr/nations/listeners/PlayerJoinListener.class
 fr/nations/gui/ConfirmDisbandGui.class
 fr/nations/season/PlayerStats.class

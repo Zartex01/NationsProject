@@ -2,6 +2,7 @@ package fr.nations.listeners;
 
 import fr.nations.NationsPlugin;
 import fr.nations.gui.*;
+import fr.nations.gui.KitGui;
 import fr.nations.nation.Nation;
 import fr.nations.util.MessageUtil;
 import org.bukkit.entity.Player;
@@ -48,6 +49,8 @@ public class GuiClickListener implements Listener {
             profileGui.handleClick(event);
         } else if (gui instanceof fr.nations.gui.RolePermissionsGui roleGui) {
             roleGui.handleClick(event);
+        } else if (gui instanceof KitGui kitGui) {
+            kitGui.handleClick(event);
         }
     }
 

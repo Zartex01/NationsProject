@@ -58,6 +58,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/PTimeCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/StonecutterCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/EnderChestCommand.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/KitGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/KitCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/CraftCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/BankGui.java
