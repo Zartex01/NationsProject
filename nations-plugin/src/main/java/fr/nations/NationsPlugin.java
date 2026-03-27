@@ -6,6 +6,7 @@ import fr.nations.config.ConfigManager;
 import fr.nations.database.DatabaseManager;
 import fr.nations.economy.EconomyManager;
 import fr.nations.grade.GradeManager;
+import fr.nations.kit.KitManager;
 import fr.nations.listeners.*;
 import fr.nations.nation.NationManager;
 import fr.nations.role.CustomRoleManager;
@@ -30,6 +31,7 @@ public class NationsPlugin extends JavaPlugin {
     private GradeManager gradeManager;
     private CustomRoleManager customRoleManager;
     private AtmManager atmManager;
+    private KitManager kitManager;
 
     @Override
     public void onEnable() {
@@ -51,6 +53,7 @@ public class NationsPlugin extends JavaPlugin {
         this.gradeManager = new GradeManager(this);
         this.economyManager = new EconomyManager(this);
         this.atmManager = new AtmManager(this);
+        this.kitManager = new KitManager(this);
         this.nationManager = new NationManager(this);
         this.territoryManager = new TerritoryManager(this);
         this.warManager = new WarManager(this);
@@ -140,6 +143,56 @@ public class NationsPlugin extends JavaPlugin {
         SetGradeCommand setGradeCommand = new SetGradeCommand(this);
         getCommand("setgrade").setExecutor(setGradeCommand);
         getCommand("setgrade").setTabCompleter(setGradeCommand);
+
+        KitCommand kitCommand = new KitCommand(this);
+        getCommand("kit").setExecutor(kitCommand);
+        getCommand("kit").setTabCompleter(kitCommand);
+
+        CraftCommand craftCommand = new CraftCommand(this);
+        getCommand("craft").setExecutor(craftCommand);
+        getCommand("craft").setTabCompleter(craftCommand);
+
+        PWeatherCommand pWeatherCommand = new PWeatherCommand(this);
+        getCommand("pweather").setExecutor(pWeatherCommand);
+        getCommand("pweather").setTabCompleter(pWeatherCommand);
+
+        PTimeCommand pTimeCommand = new PTimeCommand(this);
+        getCommand("ptime").setExecutor(pTimeCommand);
+        getCommand("ptime").setTabCompleter(pTimeCommand);
+
+        FurnaceCommand furnaceCommand = new FurnaceCommand(this);
+        getCommand("furnace").setExecutor(furnaceCommand);
+        getCommand("furnace").setTabCompleter(furnaceCommand);
+
+        StonecutterCommand stonecutterCommand = new StonecutterCommand(this);
+        getCommand("stonecutter").setExecutor(stonecutterCommand);
+        getCommand("stonecutter").setTabCompleter(stonecutterCommand);
+
+        AnvilCommand anvilCommand = new AnvilCommand(this);
+        getCommand("anvil").setExecutor(anvilCommand);
+        getCommand("anvil").setTabCompleter(anvilCommand);
+
+        BackCommand backCommand = new BackCommand(this);
+        getCommand("back").setExecutor(backCommand);
+        getCommand("back").setTabCompleter(backCommand);
+
+        EnderChestCommand ecCommand = new EnderChestCommand(this);
+        getCommand("ec").setExecutor(ecCommand);
+        getCommand("ec").setTabCompleter(ecCommand);
+
+        XpBottleCommand xpbCommand = new XpBottleCommand(this);
+        getCommand("xpb").setExecutor(xpbCommand);
+        getCommand("xpb").setTabCompleter(xpbCommand);
+
+        RepairCommand repairCommand = new RepairCommand(this);
+        getCommand("repair").setExecutor(repairCommand);
+        getCommand("repair").setTabCompleter(repairCommand);
+
+        NickCommand nickCommand = new NickCommand(this);
+        getCommand("nick").setExecutor(nickCommand);
+        getCommand("nick").setTabCompleter(nickCommand);
+
+        getServer().getPluginManager().registerEvents(new BackLocationListener(this, backCommand), this);
     }
 
     private void registerListeners() {
@@ -165,4 +218,5 @@ public class NationsPlugin extends JavaPlugin {
     public GradeManager getGradeManager() { return gradeManager; }
     public CustomRoleManager getCustomRoleManager() { return customRoleManager; }
     public AtmManager getAtmManager() { return atmManager; }
+    public KitManager getKitManager() { return kitManager; }
 }

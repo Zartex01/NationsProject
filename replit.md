@@ -6,8 +6,29 @@ A multi-faceted development project centered around a Minecraft "Nations" plugin
 
 ### Minecraft Plugin (`nations-plugin/`)
 - Java 21, Paper API (1.21.4), Maven build system
-- PostgreSQL via HikariCP connection pooling
+- SQLite (primary) with YAML fallback for persistence
 - Features: land claiming, historical epochs, economic systems, warfare mechanics
+
+#### Grade Hierarchy
+JOUEUR → SOUTIEN → HÉROS → CHEVALIER → PREMIUM → ROI
+
+#### Kit System (`fr/nations/kit/KitManager.java`)
+- `/kit [heros|chevalier|premium]` — 24h cooldown per kit
+- Kit Héros: armure fer Prot II, épée diamant Sharp II, arc Power I
+- Kit Chevalier: armure fer Prot III, épée diamant Sharp III + Fire Aspect I, arc Power II
+- Kit Premium: armure diamant Prot III, épée diamant Sharp IV, arc Power III + Infinity
+
+#### Grade Advantage Commands
+| Grade | Commandes |
+|-------|-----------|
+| Héros | `/craft`, `/pweather`, `/ptime` |
+| Chevalier | `/furnace [all]`, `/stonecutter`, `/anvil`, `/back`, `/ec`, `/xpb` |
+| Premium | `/repair [all]`, `/nick` |
+
+#### Future Permissions (already in plugin.yml, à implémenter)
+- `nations.hotel.slots.*` — emplacements Hôtel des Ventes
+- `nations.mine.heros` — accès mine secondaire
+- `nations.sell.all` — /sell all (shop)
 
 ### TypeScript Monorepo (pnpm workspaces)
 

@@ -6,9 +6,10 @@ public enum GradeType {
 
     JOUEUR    ("Joueur",    "&7", "",                       10),
     SOUTIEN   ("Soutien",   "&a", "nations.grade.soutien",  20),
-    PREMIUM   ("Premium",   "&6", "nations.grade.premium",  35),
+    HEROS     ("Héros",     "&e", "nations.grade.heros",    30),
     CHEVALIER ("Chevalier", "&b", "nations.grade.chevalier",55),
-    ROI       ("Roi",       "&d", "nations.grade.roi",      80);
+    PREMIUM   ("Premium",   "&6", "nations.grade.premium",  80),
+    ROI       ("Roi",       "&d", "nations.grade.roi",      120);
 
     private final String defaultDisplay;
     private final String defaultColor;
@@ -50,8 +51,9 @@ public enum GradeType {
 
     public static GradeType fromPermission(org.bukkit.entity.Player player) {
         if (player.hasPermission("nations.grade.roi"))       return ROI;
-        if (player.hasPermission("nations.grade.chevalier")) return CHEVALIER;
         if (player.hasPermission("nations.grade.premium"))   return PREMIUM;
+        if (player.hasPermission("nations.grade.chevalier")) return CHEVALIER;
+        if (player.hasPermission("nations.grade.heros"))     return HEROS;
         if (player.hasPermission("nations.grade.soutien"))   return SOUTIEN;
         return JOUEUR;
     }

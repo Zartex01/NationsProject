@@ -27,18 +27,22 @@ grades:
     display: "Soutien"
     color: "&a"
     max-claims: 20
-  premium:
-    display: "Premium"
-    color: "&6"
-    max-claims: 35
+  heros:
+    display: "Héros"
+    color: "&e"
+    max-claims: 30
   chevalier:
     display: "Chevalier"
     color: "&b"
     max-claims: 55
+  premium:
+    display: "Premium"
+    color: "&6"
+    max-claims: 80
   roi:
     display: "Roi"
     color: "&d"
-    max-claims: 80
+    max-claims: 120
 
 # ============================================================
 #  Permissions des rôles — tout est configurable ici
@@ -303,16 +307,39 @@ seasons:
 
 # Commandes réservées à certains grades (et aux grades supérieurs)
 # Les admins (nations.admin) ont toujours accès à tout
-# Exemple: "furnace" = commande /furnace, accessible à partir du grade "premium"
+# La hiérarchie : joueur < soutien < heros < chevalier < premium < roi
 grade-commands:
   joueur: []
   soutien: []
-  premium:
-    - furnace
+  heros:
     - craft
     - workbench
+    - wb
+    - pweather
+    - weather
+    - ptime
+    - time
+    - kit
   chevalier:
+    - furnace
+    - four
+    - stonecutter
+    - tailleur
+    - anvil
+    - enclume
+    - back
+    - ec
     - enderchest
+    - echest
+    - xpb
+    - xpbottle
+    - xpbouteille
+  premium:
+    - repair
+    - reparer
+    - nick
+    - pseudo
+    - surnom
   roi:
     - hat
 
