@@ -17,12 +17,14 @@ fr/nations/gui/NationManageGui.class
 fr/nations/commands/ClaimCommand.class
 fr/nations/util/MessageUtil.class
 fr/nations/war/War.class
+fr/nations/listeners/GradeCommandListener.class
 fr/nations/gui/GuiManager.class
 fr/nations/atm/AtmManager.class
 fr/nations/listeners/BlockProtectionListener.class
 fr/nations/listeners/PlayerJoinListener.class
 fr/nations/gui/ConfirmDisbandGui.class
 fr/nations/season/PlayerStats.class
+fr/nations/gui/RolePermissionsGui.class
 fr/nations/war/WarManager$SurrenderResult.class
 fr/nations/role/CustomRoleManager.class
 fr/nations/commands/WarCommand$1.class
@@ -36,6 +38,7 @@ fr/nations/commands/NationCommand.class
 fr/nations/commands/ClaimCommand$1.class
 fr/nations/war/WarManager.class
 fr/nations/gui/MembersGui.class
+fr/nations/commands/SetGradeCommand.class
 fr/nations/NationsPlugin.class
 fr/nations/gui/SeasonGui.class
 fr/nations/economy/EconomyManager.class

@@ -20,6 +20,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/war/WarType.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationsAdminCommand.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/SetGradeCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/ClaimCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/AtmPlaytimeListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/GuiClickListener.java
@@ -42,6 +43,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/role/CustomRoleManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/GradeType.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/GiveMoneyCommand.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/RolePermissionsGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/atm/AtmManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/SeasonManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/WarCommand.java
@@ -53,5 +55,6 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/territory/TerritoryManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/util/DataManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/role/RolePermission.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/GradeCommandListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationRoleCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/economy/PlayerAccount.java

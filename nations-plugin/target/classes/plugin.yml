@@ -66,6 +66,11 @@ commands:
     usage: /givemoney <joueur> <montant>
     aliases: [addmoney, givecoins]
     permission: nations.admin
+  setgrade:
+    description: Définir le grade d'un joueur (admin)
+    usage: /setgrade <joueur> <grade>
+    aliases: [grade, donnergrade]
+    permission: nations.admin
 
 permissions:
   nations.use:
