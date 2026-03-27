@@ -99,14 +99,14 @@ public class KitGui {
         } else if (onCooldown) {
             long secs = plugin.getKitManager().getRemainingCooldownSeconds(player, kit);
             lore.add("&c⏳ En recharge !");
-            lore.add("&7Disponible dans : &e" + plugin.getKitManager().formatCooldown(secs));
+            lore.add("&7Temps de jeu restant : &e" + plugin.getKitManager().formatCooldown(secs));
         } else {
             lore.add("&a✔ Disponible !");
             lore.add("&eCliquez pour récupérer votre kit !");
         }
 
         lore.add("");
-        lore.add("&7Recharge : &e24h");
+        lore.add("&7Recharge : &e3h de temps de jeu");
 
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();

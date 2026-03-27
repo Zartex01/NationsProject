@@ -8,39 +8,40 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class KitManager {
 
-    private static final long COOLDOWN_MS = 24L * 60 * 60 * 1000;
+    /** 3 heures de temps de jeu effectif */
+    public static final long COOLDOWN_PLAYTIME_MS = 3L * 60 * 60 * 1000;
 
     private final NationsPlugin plugin;
-    private final Map<UUID, Map<GradeType, Long>> cooldowns = new HashMap<>();
 
     public KitManager(NationsPlugin plugin) {
         this.plugin = plugin;
     }
 
     public boolean isOnCooldown(Player player, GradeType kit) {
-        Map<GradeType, Long> playerCooldowns = cooldowns.get(player.getUniqueId());
-        if (playerCooldowns == null) return false;
-        Long last = playerCooldowns.get(kit);
-        if (last == null) return false;
-        return (System.currentTimeMillis() - last) < COOLDOWN_MS;
+        long claimPt = plugin.getPlaytimeTracker().getKitClaimPlaytime(player.getUniqueId(), kit);
+        if (claimPt < 0) return false;
+        long currentPt = plugin.getPlaytimeTracker().getPlaytimeMillis(player.getUniqueId());
+        return (currentPt - claimPt) < COOLDOWN_PLAYTIME_MS;
     }
 
+    /** Retourne le temps de jeu restant en secondes avant de pouvoir reprendre le kit. */
     public long getRemainingCooldownSeconds(Player player, GradeType kit) {
-        Map<GradeType, Long> playerCooldowns = cooldowns.get(player.getUniqueId());
-        if (playerCooldowns == null) return 0;
-        Long last = playerCooldowns.get(kit);
-        if (last == null) return 0;
-        long remaining = COOLDOWN_MS - (System.currentTimeMillis() - last);
+        long claimPt   = plugin.getPlaytimeTracker().getKitClaimPlaytime(player.getUniqueId(), kit);
+        if (claimPt < 0) return 0;
+        long currentPt = plugin.getPlaytimeTracker().getPlaytimeMillis(player.getUniqueId());
+        long remaining = COOLDOWN_PLAYTIME_MS - (currentPt - claimPt);
         return remaining > 0 ? remaining / 1000 : 0;
     }
 
     public void setCooldown(Player player, GradeType kit) {
-        cooldowns.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
-                 .put(kit, System.currentTimeMillis());
+        long currentPt = plugin.getPlaytimeTracker().getPlaytimeMillis(player.getUniqueId());
+        plugin.getPlaytimeTracker().setKitClaimPlaytime(player.getUniqueId(), kit, currentPt);
     }
 
     public void giveKit(Player player, GradeType kit) {

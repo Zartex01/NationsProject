@@ -7,6 +7,7 @@ import fr.nations.database.DatabaseManager;
 import fr.nations.economy.EconomyManager;
 import fr.nations.grade.GradeManager;
 import fr.nations.kit.KitManager;
+import fr.nations.kit.PlaytimeTracker;
 import fr.nations.shop.ShopManager;
 import fr.nations.listeners.*;
 import fr.nations.nation.NationManager;
@@ -33,6 +34,7 @@ public class NationsPlugin extends JavaPlugin {
     private CustomRoleManager customRoleManager;
     private AtmManager atmManager;
     private KitManager kitManager;
+    private PlaytimeTracker playtimeTracker;
     private ShopManager shopManager;
 
     @Override
@@ -55,6 +57,7 @@ public class NationsPlugin extends JavaPlugin {
         this.gradeManager = new GradeManager(this);
         this.economyManager = new EconomyManager(this);
         this.atmManager = new AtmManager(this);
+        this.playtimeTracker = new PlaytimeTracker(this);
         this.kitManager = new KitManager(this);
         this.shopManager = new ShopManager(this);
         this.nationManager = new NationManager(this);
@@ -87,6 +90,7 @@ public class NationsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (playtimeTracker != null) playtimeTracker.saveAll();
         if (atmManager != null) atmManager.flushAllSessions();
         if (warManager != null) warManager.shutdown();
         if (seasonManager != null) seasonManager.shutdown();
@@ -207,6 +211,7 @@ public class NationsPlugin extends JavaPlugin {
     }
 
     private void registerListeners() {
+        getServer().getPluginManager().registerEvents(playtimeTracker, this);
         getServer().getPluginManager().registerEvents(new BlockProtectionListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(this), this);
@@ -230,5 +235,6 @@ public class NationsPlugin extends JavaPlugin {
     public CustomRoleManager getCustomRoleManager() { return customRoleManager; }
     public AtmManager getAtmManager() { return atmManager; }
     public KitManager getKitManager() { return kitManager; }
+    public PlaytimeTracker getPlaytimeTracker() { return playtimeTracker; }
     public ShopManager getShopManager() { return shopManager; }
 }
