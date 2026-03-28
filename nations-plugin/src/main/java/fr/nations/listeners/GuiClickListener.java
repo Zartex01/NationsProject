@@ -63,6 +63,8 @@ public class GuiClickListener implements Listener {
             hdvSellGui.handleClick(event);
         } else if (gui instanceof HdvConfirmGui hdvConfirmGui) {
             hdvConfirmGui.handleClick(event);
+        } else if (gui instanceof HdvSellConfirmGui hdvSellConfirmGui) {
+            hdvSellConfirmGui.handleClick(event);
         } else if (gui instanceof NationRolesGui rolesGui) {
             rolesGui.handleClick(event);
         } else if (gui instanceof NationRoleEditGui roleEditGui) {
@@ -75,6 +77,10 @@ public class GuiClickListener implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if (!(event.getPlayer() instanceof Player player)) return;
+        Object gui = GuiManager.getOpenGui(player.getUniqueId());
+        if (gui instanceof HdvSellConfirmGui sellConfirm) {
+            plugin.getServer().getScheduler().runTask(plugin, sellConfirm::returnItem);
+        }
         GuiManager.closeGui(player.getUniqueId());
     }
 

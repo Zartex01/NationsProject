@@ -129,6 +129,12 @@ commands:
     usage: /hdv [sell]
     aliases: [hotel, marche, marketplace]
     permission: nations.use
+  # ──── Nation Pub ────
+  npub:
+    description: Envoyer une publicité au chat pour votre nation (1000 coins)
+    usage: /npub <message>
+    aliases: [nationpub, pub]
+    permission: nations.use
   # ──── Shop ────
   shop:
     description: Ouvrir la boutique du serveur

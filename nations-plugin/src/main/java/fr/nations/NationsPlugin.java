@@ -206,6 +206,10 @@ public class NationsPlugin extends JavaPlugin {
         getCommand("hdv").setExecutor(hdvCommand);
         getCommand("hdv").setTabCompleter(hdvCommand);
 
+        NationPubCommand nationPubCommand = new NationPubCommand(this);
+        getCommand("npub").setExecutor(nationPubCommand);
+        getCommand("npub").setTabCompleter(nationPubCommand);
+
         ShopCommand shopCommand = new ShopCommand(this);
         getCommand("shop").setExecutor(shopCommand);
         getCommand("shop").setTabCompleter(shopCommand);

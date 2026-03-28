@@ -32,7 +32,7 @@ public class HdvManager {
     //  Listing management
     // ─────────────────────────────────────────────────────────────────────────
 
-    public boolean addListing(Player seller, ItemStack item, double price) {
+    public boolean addListing(Player seller, ItemStack item, double price, boolean pub) {
         if (item == null || item.getType().isAir()) return false;
         HdvListing listing = new HdvListing(
             nextId++,
@@ -40,10 +40,22 @@ public class HdvManager {
             seller.getName(),
             item,
             price,
+            pub,
             System.currentTimeMillis()
         );
         listings.put(listing.getId(), listing);
         save();
+
+        if (pub) {
+            String itemName = item.hasItemMeta() && item.getItemMeta().hasDisplayName()
+                ? item.getItemMeta().getDisplayName()
+                : item.getType().name().replace("_", " ").toLowerCase();
+            plugin.getServer().broadcastMessage(MessageUtil.colorize(
+                "&6&l[PUB] &e" + seller.getName() + " &7vend &e"
+                + itemName + " &8×" + item.getAmount()
+                + " &7pour &a" + MessageUtil.formatNumber(price) + " coins &8— &e/hdv"
+            ));
+        }
         return true;
     }
 
@@ -88,7 +100,8 @@ public class HdvManager {
         if (!leftover.isEmpty()) return false;
 
         plugin.getEconomyManager().withdraw(buyer.getUniqueId(), listing.getPrice());
-        plugin.getEconomyManager().deposit(listing.getSellerUuid(), listing.getPrice());
+        double earnings = listing.getSellerEarnings();
+        plugin.getEconomyManager().deposit(listing.getSellerUuid(), earnings);
 
         listings.remove(listingId);
         save();
@@ -98,7 +111,9 @@ public class HdvManager {
             MessageUtil.send(seller,
                 "&a&lHDV &8» &7" + buyer.getName() + " a acheté votre &e"
                 + listing.getItem().getType().name().replace("_", " ").toLowerCase()
-                + " &7pour &e" + MessageUtil.formatNumber(listing.getPrice()) + " coins&7 !");
+                + " &7pour &e" + MessageUtil.formatNumber(listing.getPrice()) + " coins "
+                + "&8(vous recevez &a" + MessageUtil.formatNumber(earnings)
+                + " coins &8après taxes)&7 !");
         }
         return true;
     }
@@ -168,9 +183,10 @@ public class HdvManager {
                     String name    = cfg.getString(path + ".seller-name", "?");
                     ItemStack item = cfg.getItemStack(path + ".item");
                     double price   = cfg.getDouble(path + ".price");
+                    boolean pub    = cfg.getBoolean(path + ".pub", false);
                     long listedAt  = cfg.getLong(path + ".listed-at");
                     if (item != null) {
-                        listings.put(id, new HdvListing(id, seller, name, item, price, listedAt));
+                        listings.put(id, new HdvListing(id, seller, name, item, price, pub, listedAt));
                     }
                 } catch (Exception e) {
                     plugin.getLogger().warning("HDV: entrée corrompue ignorée (id=" + key + ")");
@@ -188,6 +204,7 @@ public class HdvManager {
             cfg.set(path + ".seller-name",  l.getSellerName());
             cfg.set(path + ".item",         l.getItem());
             cfg.set(path + ".price",        l.getPrice());
+            cfg.set(path + ".pub",          l.isPub());
             cfg.set(path + ".listed-at",    l.getListedAt());
         }
         try {

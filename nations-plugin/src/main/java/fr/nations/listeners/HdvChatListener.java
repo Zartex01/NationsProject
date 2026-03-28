@@ -2,6 +2,7 @@ package fr.nations.listeners;
 
 import fr.nations.NationsPlugin;
 import fr.nations.gui.HdvGui;
+import fr.nations.gui.HdvSellConfirmGui;
 import fr.nations.util.MessageUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -68,18 +69,7 @@ public class HdvChatListener implements Listener {
 
         final double finalPrice = price;
         plugin.getServer().getScheduler().runTask(plugin, () -> {
-            boolean ok = plugin.getHdvManager().addListing(player, item, finalPrice);
-            if (ok) {
-                MessageUtil.send(player,
-                    "&a&lHDV &8» &7Objet mis en vente pour &e"
-                    + MessageUtil.formatNumber(finalPrice) + " coins &a!");
-                MessageUtil.send(player, "&7Utilisez &e/hdv &7pour voir vos annonces.");
-                new HdvGui(plugin, player, 0).open();
-            } else {
-                MessageUtil.sendError(player, "Impossible de créer l'annonce. Réessayez.");
-                Map<Integer, ItemStack> leftover = player.getInventory().addItem(item);
-                leftover.values().forEach(i -> player.getWorld().dropItemNaturally(player.getLocation(), i));
-            }
+            new HdvSellConfirmGui(plugin, player, item, finalPrice).open();
         });
     }
 }
