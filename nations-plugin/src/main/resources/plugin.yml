@@ -134,6 +134,12 @@ commands:
     usage: /nick <pseudo|reset>
     aliases: [pseudo, surnom]
     permission: nations.grade.premium
+  # ──── HDV ────
+  hdv:
+    description: Hôtel des Ventes — marché entre joueurs
+    usage: /hdv [sell]
+    aliases: [hotel, marche, marketplace]
+    permission: nations.use
   # ──── Shop ────
   shop:
     description: Ouvrir la boutique du serveur

@@ -6,6 +6,7 @@ import fr.nations.config.ConfigManager;
 import fr.nations.database.DatabaseManager;
 import fr.nations.economy.EconomyManager;
 import fr.nations.grade.GradeManager;
+import fr.nations.hdv.HdvManager;
 import fr.nations.kit.KitManager;
 import fr.nations.kit.PlaytimeTracker;
 import fr.nations.shop.ShopManager;
@@ -36,6 +37,7 @@ public class NationsPlugin extends JavaPlugin {
     private KitManager kitManager;
     private PlaytimeTracker playtimeTracker;
     private ShopManager shopManager;
+    private HdvManager hdvManager;
 
     @Override
     public void onEnable() {
@@ -60,6 +62,7 @@ public class NationsPlugin extends JavaPlugin {
         this.playtimeTracker = new PlaytimeTracker(this);
         this.kitManager = new KitManager(this);
         this.shopManager = new ShopManager(this);
+        this.hdvManager  = new HdvManager(this);
         this.nationManager = new NationManager(this);
         this.territoryManager = new TerritoryManager(this);
         this.warManager = new WarManager(this);
@@ -199,6 +202,10 @@ public class NationsPlugin extends JavaPlugin {
         getCommand("nick").setExecutor(nickCommand);
         getCommand("nick").setTabCompleter(nickCommand);
 
+        HdvCommand hdvCommand = new HdvCommand(this);
+        getCommand("hdv").setExecutor(hdvCommand);
+        getCommand("hdv").setTabCompleter(hdvCommand);
+
         ShopCommand shopCommand = new ShopCommand(this);
         getCommand("shop").setExecutor(shopCommand);
         getCommand("shop").setTabCompleter(shopCommand);
@@ -212,6 +219,7 @@ public class NationsPlugin extends JavaPlugin {
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(playtimeTracker, this);
+        getServer().getPluginManager().registerEvents(new HdvChatListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockProtectionListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(this), this);
@@ -236,5 +244,6 @@ public class NationsPlugin extends JavaPlugin {
     public AtmManager getAtmManager() { return atmManager; }
     public KitManager getKitManager() { return kitManager; }
     public PlaytimeTracker getPlaytimeTracker() { return playtimeTracker; }
-    public ShopManager getShopManager() { return shopManager; }
+    public ShopManager getShopManager()         { return shopManager; }
+    public HdvManager getHdvManager()           { return hdvManager; }
 }
