@@ -4,6 +4,7 @@ fr/nations/gui/StaffWarsGui.class
 fr/nations/commands/CoalitionCommand.class
 fr/nations/commands/EnderChestCommand.class
 fr/nations/gui/BankGui.class
+fr/nations/gui/NationRolesGui.class
 fr/nations/commands/NationsAdminCommand.class
 fr/nations/util/DataManager.class
 fr/nations/shop/ShopItem.class
@@ -16,6 +17,7 @@ fr/nations/commands/BackCommand.class
 fr/nations/atm/AtmManager.class
 fr/nations/listeners/BlockProtectionListener.class
 fr/nations/listeners/PlayerJoinListener.class
+fr/nations/gui/NationRoleAssignGui.class
 fr/nations/gui/ConfirmDisbandGui.class
 fr/nations/season/PlayerStats.class
 fr/nations/war/WarManager$SurrenderResult.class
@@ -87,6 +89,7 @@ fr/nations/hdv/HdvManager.class
 fr/nations/grade/PlayerGrade.class
 fr/nations/commands/FurnaceCommand$1.class
 fr/nations/kit/KitManager$1.class
+fr/nations/gui/NationRoleEditGui.class
 fr/nations/gui/NationMainGui.class
 fr/nations/listeners/PlayerDeathListener.class
 fr/nations/season/SeasonManager.class

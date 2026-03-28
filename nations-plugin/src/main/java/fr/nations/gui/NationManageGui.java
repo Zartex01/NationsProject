@@ -49,7 +49,7 @@ public class NationManageGui {
         ));
 
         boolean canManageRoles = isLeader
-            || (member != null && (nation.isCoLeader(player.getUniqueId())
+            || (member != null && (member.getRole() == fr.nations.nation.NationRole.CO_LEADER
                 || plugin.getCustomRoleManager().hasPermission(player.getUniqueId(),
                     fr.nations.role.RolePermission.MANAGE_ROLES)));
         inv.setItem(16, GuiUtil.createItem(Material.NAME_TAG,

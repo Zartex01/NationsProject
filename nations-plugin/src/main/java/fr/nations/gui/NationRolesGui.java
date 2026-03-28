@@ -12,7 +12,6 @@ import fr.nations.util.MessageUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.MouseButton;
 import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;

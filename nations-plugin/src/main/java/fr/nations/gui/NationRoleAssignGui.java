@@ -58,7 +58,7 @@ public class NationRoleAssignGui {
         Inventory inv = GuiUtil.createGui("&5Assigner: &d" + role.getDisplayName(), 6);
         GuiUtil.fillBorder(inv, Material.PURPLE_STAINED_GLASS_PANE);
 
-        List<NationMember> members = new ArrayList<>(nation.getMembers());
+        List<NationMember> members = new ArrayList<>(nation.getMembers().values());
         // Exclure leader/co-leader (non-assignables à un rôle custom)
         members.removeIf(m -> m.getRole() == NationRole.LEADER || m.getRole() == NationRole.CO_LEADER);
 
@@ -112,7 +112,7 @@ public class NationRoleAssignGui {
             return;
         }
 
-        List<NationMember> members = new ArrayList<>(nation.getMembers());
+        List<NationMember> members = new ArrayList<>(nation.getMembers().values());
         members.removeIf(m -> m.getRole() == NationRole.LEADER || m.getRole() == NationRole.CO_LEADER);
 
         for (int i = 0; i < Math.min(members.size(), MEMBER_SLOTS.length); i++) {

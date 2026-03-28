@@ -181,7 +181,7 @@ public class NationRoleEditGui {
     }
 
     private long countAssigned() {
-        return nation.getMembers().stream()
+        return nation.getMembers().values().stream()
             .filter(m -> {
                 CustomRole r = plugin.getCustomRoleManager().getPlayerRole(m.getPlayerId());
                 return r != null && r.getId().equals(role.getId());
