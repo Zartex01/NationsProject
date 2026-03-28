@@ -1,6 +1,7 @@
 package fr.nations.grade;
 
 import fr.nations.NationsPlugin;
+import fr.nations.util.MessageUtil;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
@@ -52,6 +53,12 @@ public class GradeManager {
 
     public int getMaxClaims(Player player) {
         return getEffectiveGrade(player).getMaxClaims();
+    }
+
+    public void updateTabDisplay(Player player) {
+        GradeType grade = getEffectiveGrade(player);
+        String tabName = MessageUtil.colorize(grade.getColor() + "[" + grade.getDisplayName() + "] &f" + player.getName());
+        player.setPlayerListName(tabName);
     }
 
     public void addXp(UUID playerId, long amount) {

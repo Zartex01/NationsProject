@@ -26,6 +26,7 @@ public class PlayerJoinListener implements Listener {
         PlayerGrade grade = plugin.getGradeManager().getOrCreatePlayerGrade(player.getUniqueId(), player.getName());
         grade.setGradeName(plugin.getGradeManager().getEffectiveGrade(player).name());
         plugin.getSeasonManager().getOrCreatePlayerStats(player.getUniqueId());
+        plugin.getGradeManager().updateTabDisplay(player);
 
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (!player.isOnline()) return;

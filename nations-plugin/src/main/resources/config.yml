@@ -23,10 +23,6 @@ grades:
     display: "Joueur"
     color: "&7"
     max-claims: 10
-  soutien:
-    display: "Premium"
-    color: "&a"
-    max-claims: 20
   heros:
     display: "Héros"
     color: "&e"
@@ -307,10 +303,9 @@ seasons:
 
 # Commandes réservées à certains grades (et aux grades supérieurs)
 # Les admins (nations.admin) ont toujours accès à tout
-# La hiérarchie : joueur < soutien < heros < chevalier < premium < roi
+# La hiérarchie : joueur < heros < chevalier < premium < roi
 grade-commands:
   joueur: []
-  soutien: []
   heros:
     - craft
     - workbench

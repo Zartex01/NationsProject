@@ -73,6 +73,7 @@ public class SetGradeCommand implements CommandExecutor, TabCompleter {
 
         if (target != null) {
             MessageUtil.send(target, "&aVotre grade a été défini à " + grade.getColoredDisplay() + " &apar un administrateur.");
+            plugin.getGradeManager().updateTabDisplay(target);
         }
         return true;
     }

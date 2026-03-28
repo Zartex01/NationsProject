@@ -5,7 +5,6 @@ import fr.nations.NationsPlugin;
 public enum GradeType {
 
     JOUEUR    ("Joueur",    "&7", "",                       10),
-    SOUTIEN   ("Premium",   "&a", "nations.grade.soutien",  20),
     HEROS     ("Héros",     "&e", "nations.grade.heros",    30),
     CHEVALIER ("Chevalier", "&b", "nations.grade.chevalier",55),
     PREMIUM   ("Héros",     "&6", "nations.grade.premium",  80),
@@ -54,7 +53,6 @@ public enum GradeType {
         if (player.hasPermission("nations.grade.premium"))   return PREMIUM;
         if (player.hasPermission("nations.grade.chevalier")) return CHEVALIER;
         if (player.hasPermission("nations.grade.heros"))     return HEROS;
-        if (player.hasPermission("nations.grade.soutien"))   return SOUTIEN;
         return JOUEUR;
     }
 

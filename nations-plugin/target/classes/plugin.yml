@@ -163,14 +163,9 @@ permissions:
   nations.grade.joueur:
     description: Grade Joueur (10 claims max)
     default: true
-  nations.grade.soutien:
-    description: Grade Soutien (20 claims max)
-    default: false
   nations.grade.heros:
     description: "Grade Héros — Kit Héros, /craft, /pweather, /ptime, 10 homes, AFK 25min"
     default: false
-    children:
-      nations.grade.soutien: true
   nations.grade.chevalier:
     description: "Grade Chevalier — Kit Chevalier, /furnace, /stonecutter, /anvil, /back, /ec, /xpb, 20 homes, AFK 35min"
     default: false

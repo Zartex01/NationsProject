@@ -124,7 +124,7 @@ public class NationsAdminCommand implements CommandExecutor, TabCompleter {
         try {
             GradeType.valueOf(gradeName);
         } catch (IllegalArgumentException e) {
-            MessageUtil.sendError(sender, "Grade invalide. Grades: JOUEUR, SOUTIEN, PREMIUM, CHEVALIER, ROI");
+            MessageUtil.sendError(sender, "Grade invalide. Grades: JOUEUR, HEROS, CHEVALIER, PREMIUM, ROI");
             return;
         }
         var grade = plugin.getGradeManager().getOrCreatePlayerGrade(target.getUniqueId(), target.getName());
