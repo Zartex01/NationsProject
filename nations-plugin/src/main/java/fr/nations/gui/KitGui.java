@@ -51,7 +51,7 @@ public class KitGui {
         switch (kit) {
             case HEROS -> {
                 material = hasAccess ? Material.IRON_HELMET : Material.BARRIER;
-                displayName = kit.getColoredDisplay() + " &7— Kit Héros";
+                displayName = kit.getColoredDisplay() + " &7— Kit " + kit.getDisplayName();
                 lore.add("&7Grade requis : " + GradeType.HEROS.getColoredDisplay());
                 lore.add("");
                 lore.add("&eContenu :");
@@ -63,7 +63,7 @@ public class KitGui {
             }
             case CHEVALIER -> {
                 material = hasAccess ? Material.IRON_CHESTPLATE : Material.BARRIER;
-                displayName = kit.getColoredDisplay() + " &7— Kit Chevalier";
+                displayName = kit.getColoredDisplay() + " &7— Kit " + kit.getDisplayName();
                 lore.add("&7Grade requis : " + GradeType.CHEVALIER.getColoredDisplay());
                 lore.add("");
                 lore.add("&eContenu :");
@@ -75,7 +75,7 @@ public class KitGui {
             }
             case PREMIUM -> {
                 material = hasAccess ? Material.DIAMOND_CHESTPLATE : Material.BARRIER;
-                displayName = kit.getColoredDisplay() + " &7— Kit Premium";
+                displayName = kit.getColoredDisplay() + " &7— Kit " + kit.getDisplayName();
                 lore.add("&7Grade requis : " + GradeType.PREMIUM.getColoredDisplay());
                 lore.add("");
                 lore.add("&eContenu :");

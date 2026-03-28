@@ -24,7 +24,7 @@ grades:
     color: "&7"
     max-claims: 10
   soutien:
-    display: "Soutien"
+    display: "Premium"
     color: "&a"
     max-claims: 20
   heros:
@@ -36,7 +36,7 @@ grades:
     color: "&b"
     max-claims: 55
   premium:
-    display: "Premium"
+    display: "Héros"
     color: "&6"
     max-claims: 80
   roi:

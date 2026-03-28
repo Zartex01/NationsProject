@@ -5,10 +5,10 @@ import fr.nations.NationsPlugin;
 public enum GradeType {
 
     JOUEUR    ("Joueur",    "&7", "",                       10),
-    SOUTIEN   ("Soutien",   "&a", "nations.grade.soutien",  20),
+    SOUTIEN   ("Premium",   "&a", "nations.grade.soutien",  20),
     HEROS     ("Héros",     "&e", "nations.grade.heros",    30),
     CHEVALIER ("Chevalier", "&b", "nations.grade.chevalier",55),
-    PREMIUM   ("Premium",   "&6", "nations.grade.premium",  80),
+    PREMIUM   ("Héros",     "&6", "nations.grade.premium",  80),
     ROI       ("Roi",       "&d", "nations.grade.roi",      120);
 
     private final String defaultDisplay;
