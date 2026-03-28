@@ -39,8 +39,32 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args.length > 0 && args[0].equalsIgnoreCase("hand")) {
+            smeltHand(player);
+            return true;
+        }
+
         player.openInventory(Bukkit.createInventory(player, InventoryType.FURNACE, "§6Fourneau"));
         return true;
+    }
+
+    private void smeltHand(Player player) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item.getType() == Material.AIR) {
+            MessageUtil.sendError(player, "Vous n'avez rien dans la main !");
+            return;
+        }
+        Material smelted = getSmeltResult(item.getType());
+        if (smelted == null) {
+            MessageUtil.sendError(player, "&cCet objet ne peut pas être cuit : &7" + item.getType().name());
+            return;
+        }
+        int amount = item.getAmount();
+        player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+        ItemStack result = new ItemStack(smelted, amount);
+        java.util.Map<Integer, ItemStack> leftover = player.getInventory().addItem(result);
+        leftover.values().forEach(l -> player.getWorld().dropItemNaturally(player.getLocation(), l));
+        MessageUtil.send(player, "&aCuit &e" + amount + "x " + smelted.name().toLowerCase().replace("_", " ") + " &adepuis votre main !");
     }
 
     private void smeltAll(Player player) {
@@ -92,7 +116,7 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            return List.of("all").stream()
+            return List.of("hand", "all").stream()
                 .filter(s -> s.startsWith(args[0].toLowerCase()))
                 .toList();
         }
