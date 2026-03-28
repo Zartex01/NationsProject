@@ -569,7 +569,16 @@ public class NationCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleRoleGui(Player player, String[] args) {
-        if (!player.hasPermission("nations.admin")) {
+        boolean isAdmin = player.hasPermission("nations.admin");
+        boolean isNationLeader = false;
+        Nation playerNation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
+        if (playerNation != null) {
+            NationMember member = playerNation.getMember(player.getUniqueId());
+            if (member != null && member.getRole() == NationRole.LEADER) {
+                isNationLeader = true;
+            }
+        }
+        if (!isAdmin && !isNationLeader) {
             MessageUtil.sendError(player, "Vous n'avez pas la permission.");
             return;
         }
