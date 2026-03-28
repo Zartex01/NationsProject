@@ -6,6 +6,7 @@ import fr.nations.config.ConfigManager;
 import fr.nations.database.DatabaseManager;
 import fr.nations.economy.EconomyManager;
 import fr.nations.grade.GradeManager;
+import fr.nations.hdv.HdvManager;
 import fr.nations.listeners.*;
 import fr.nations.nation.NationManager;
 import fr.nations.role.CustomRoleManager;
@@ -30,6 +31,7 @@ public class NationsPlugin extends JavaPlugin {
     private GradeManager gradeManager;
     private CustomRoleManager customRoleManager;
     private AtmManager atmManager;
+    private HdvManager hdvManager;
 
     @Override
     public void onEnable() {
@@ -57,8 +59,10 @@ public class NationsPlugin extends JavaPlugin {
         this.seasonManager = new SeasonManager(this);
         this.customRoleManager = new CustomRoleManager(this);
         this.dataManager = new DataManager(this);
+        this.hdvManager = new HdvManager(this);
 
         if (dbConnected) {
+            hdvManager.createTable();
             nationManager.loadFromDatabase();
             economyManager.loadFromDatabase();
             gradeManager.loadFromDatabase();
@@ -66,6 +70,7 @@ public class NationsPlugin extends JavaPlugin {
             seasonManager.loadFromDatabase();
             customRoleManager.loadAll();
             territoryManager.loadFromDatabase();
+            hdvManager.loadFromDatabase();
         } else {
             dataManager.loadAll();
         }
@@ -140,6 +145,14 @@ public class NationsPlugin extends JavaPlugin {
         SetGradeCommand setGradeCommand = new SetGradeCommand(this);
         getCommand("setgrade").setExecutor(setGradeCommand);
         getCommand("setgrade").setTabCompleter(setGradeCommand);
+
+        HdvCommand hdvCommand = new HdvCommand(this);
+        getCommand("hdv").setExecutor(hdvCommand);
+        getCommand("hdv").setTabCompleter(hdvCommand);
+
+        NationPubCommand nationPubCommand = new NationPubCommand(this);
+        getCommand("npub").setExecutor(nationPubCommand);
+        getCommand("npub").setTabCompleter(nationPubCommand);
     }
 
     private void registerListeners() {
@@ -165,4 +178,5 @@ public class NationsPlugin extends JavaPlugin {
     public GradeManager getGradeManager() { return gradeManager; }
     public CustomRoleManager getCustomRoleManager() { return customRoleManager; }
     public AtmManager getAtmManager() { return atmManager; }
+    public HdvManager getHdvManager() { return hdvManager; }
 }

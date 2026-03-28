@@ -71,6 +71,16 @@ commands:
     usage: /setgrade <joueur> <grade>
     aliases: [grade, donnergrade]
     permission: nations.admin
+  hdv:
+    description: Hôtel des Ventes — acheter et vendre des items
+    usage: /hdv [sell]
+    aliases: [market, marche]
+    permission: nations.use
+  npub:
+    description: Publier une pub pour sa nation dans le tchat (coût: 1000 coins)
+    usage: /npub <message>
+    aliases: [nationpub, nationpublicite]
+    permission: nations.use
 
 permissions:
   nations.use:

@@ -15,6 +15,7 @@ fr/nations/war/WarType.class
 fr/nations/listeners/ChunkListener.class
 fr/nations/gui/NationManageGui.class
 fr/nations/commands/ClaimCommand.class
+fr/nations/hdv/HdvListing.class
 fr/nations/util/MessageUtil.class
 fr/nations/war/War.class
 fr/nations/listeners/GradeCommandListener.class
@@ -31,11 +32,14 @@ fr/nations/commands/WarCommand$1.class
 fr/nations/war/WarManager$WarDeclarationResult.class
 fr/nations/commands/PayCommand.class
 fr/nations/nation/NationMember.class
+fr/nations/commands/HdvCommand.class
 fr/nations/nation/Nation.class
 fr/nations/war/WarStatus.class
 fr/nations/gui/PlayerProfileGui.class
+fr/nations/gui/HdvSellGui.class
 fr/nations/commands/NationCommand.class
 fr/nations/commands/ClaimCommand$1.class
+fr/nations/commands/NationPubCommand.class
 fr/nations/war/WarManager.class
 fr/nations/gui/MembersGui.class
 fr/nations/commands/SetGradeCommand.class
@@ -47,8 +51,10 @@ fr/nations/role/RolePermission.class
 fr/nations/gui/RolesGui.class
 fr/nations/grade/GradeType.class
 fr/nations/commands/NationRoleCommand.class
+fr/nations/hdv/HdvManager.class
 fr/nations/grade/PlayerGrade.class
 fr/nations/gui/NationMainGui.class
+fr/nations/gui/HdvBrowseGui.class
 fr/nations/listeners/PlayerDeathListener.class
 fr/nations/commands/BalanceCommand.class
 fr/nations/season/SeasonManager.class

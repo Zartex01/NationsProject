@@ -8,6 +8,8 @@ A multi-faceted development project centered around a Minecraft "Nations" plugin
 - Java 21, Paper API (1.21.4), Maven build system
 - PostgreSQL via HikariCP connection pooling
 - Features: land claiming, historical epochs, economic systems, warfare mechanics
+- HDV (Hôtel des Ventes) marketplace: `/hdv sell` opens GUI to list items with price, optional pub (+2%), 5% sell tax; `/hdv` to browse/buy
+- Nation pub command: `/npub <message>` broadcasts nation advertisement for 1000 coins
 
 ### TypeScript Monorepo (pnpm workspaces)
 

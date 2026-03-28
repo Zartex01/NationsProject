@@ -8,6 +8,7 @@ public class GuiManager {
 
     private static final Map<UUID, Object> openGuis = new HashMap<>();
     private static final Map<UUID, String> pendingActions = new HashMap<>();
+    private static final Map<UUID, Object> pendingGuis = new HashMap<>();
 
     public static void registerGui(UUID playerId, Object gui) {
         openGuis.put(playerId, gui);
@@ -35,5 +36,17 @@ public class GuiManager {
 
     public static boolean hasPendingAction(UUID playerId) {
         return pendingActions.containsKey(playerId);
+    }
+
+    public static void setPendingGui(UUID playerId, Object gui) {
+        pendingGuis.put(playerId, gui);
+    }
+
+    public static Object getPendingGui(UUID playerId) {
+        return pendingGuis.get(playerId);
+    }
+
+    public static void clearPendingGui(UUID playerId) {
+        pendingGuis.remove(playerId);
     }
 }
