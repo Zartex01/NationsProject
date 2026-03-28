@@ -86,10 +86,6 @@ nation-role-permissions:
     display: "Retrait banque"
     description: "Retirer de l'argent de la banque"
     material: GOLD_BLOCK
-  can-deposit-bank:
-    display: "Depot banque"
-    description: "Deposer de l'argent dans la banque"
-    material: GOLD_INGOT
   can-manage-allies:
     display: "Alliances"
     description: "Gerer les alliances avec d'autres nations"

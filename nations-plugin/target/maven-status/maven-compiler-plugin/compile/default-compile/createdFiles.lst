@@ -82,6 +82,7 @@ fr/nations/war/WarStatus.class
 fr/nations/commands/StonecutterCommand.class
 fr/nations/shop/ShopManager.class
 fr/nations/commands/AnvilCommand.class
+fr/nations/listeners/PlayerChatListener.class
 fr/nations/gui/SeasonGui.class
 fr/nations/gui/HdvMyListingsGui.class
 fr/nations/grade/GradeType.class

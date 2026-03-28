@@ -227,6 +227,7 @@ public class NationsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GuiClickListener(this), this);
         getServer().getPluginManager().registerEvents(new AtmPlaytimeListener(this), this);
         getServer().getPluginManager().registerEvents(new GradeCommandListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerChatListener(this), this);
     }
 
     public static NationsPlugin getInstance() { return instance; }

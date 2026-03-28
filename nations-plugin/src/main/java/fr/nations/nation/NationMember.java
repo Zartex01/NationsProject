@@ -30,13 +30,13 @@ public class NationMember {
     public boolean canInvite()         { return role.canInvite(); }
     public boolean canKick()           { return role.canKick(); }
     public boolean canManageWar()      { return role.canManageWar(); }
-    public boolean canManageBank()     { return role.canManageBank(); }
+    public boolean canManageBank()     { return hasPerm("can-manage-bank"); }
     public boolean canDissolve()       { return role.canDissolve(); }
     public boolean canPromote()        { return hasPerm("can-promote"); }
     public boolean canDemote()         { return hasPerm("can-demote"); }
     public boolean canClaim()          { return hasPerm("can-claim"); }
     public boolean canUnclaim()        { return hasPerm("can-unclaim"); }
-    public boolean canDepositBank()    { return hasPerm("can-deposit-bank"); }
+    public boolean canDepositBank()    { return true; }
     public boolean canManageAllies()   { return hasPerm("can-manage-allies"); }
     public boolean canRename()         { return hasPerm("can-rename"); }
     public boolean canSetDescription() { return hasPerm("can-set-description"); }
