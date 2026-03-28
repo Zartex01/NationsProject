@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class KitManager {
-
-    /** 3 heures de temps de jeu effectif */
+        
     public static final long COOLDOWN_PLAYTIME_MS = 3L * 60 * 60 * 1000;
 
     private final NationsPlugin plugin;

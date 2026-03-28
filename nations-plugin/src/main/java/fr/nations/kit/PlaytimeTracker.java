@@ -18,8 +18,8 @@ public class PlaytimeTracker implements Listener {
     private final File dataFile;
     private YamlConfiguration cfg;
 
-    private final Map<UUID, Long> joinTimes   = new HashMap<>();
-    private final Map<UUID, Long> accumulated  = new HashMap<>();
+    private final Map<UUID, Long> joinTimes  = new HashMap<>();
+    private final Map<UUID, Long> accumulated = new HashMap<>();
     private final Map<UUID, Map<GradeType, Long>> kitClaims = new HashMap<>();
 
     public PlaytimeTracker(NationsPlugin plugin) {
@@ -27,7 +27,7 @@ public class PlaytimeTracker implements Listener {
         this.dataFile = new File(plugin.getDataFolder(), "kit_playtime.yml");
         loadFile();
         for (org.bukkit.entity.Player p : plugin.getServer().getOnlinePlayers()) {
-            onJoin(new PlayerJoinEvent(p, null));
+            handleJoin(p.getUniqueId());
         }
     }
 
@@ -37,9 +37,7 @@ public class PlaytimeTracker implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        joinTimes.put(uuid, System.currentTimeMillis());
-        loadPlayer(uuid);
+        handleJoin(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -78,15 +76,28 @@ public class PlaytimeTracker implements Listener {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    //  Internal
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void handleJoin(UUID uuid) {
+        joinTimes.put(uuid, System.currentTimeMillis());
+        loadPlayer(uuid);
+    }
+
+    private void flushSession(UUID uuid) {
+        Long joined = joinTimes.remove(uuid);
+        if (joined == null) return;
+        accumulated.merge(uuid, System.currentTimeMillis() - joined, Long::sum);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     //  Persistence
     // ─────────────────────────────────────────────────────────────────────────
 
     private void loadFile() {
-        if (dataFile.exists()) {
-            cfg = YamlConfiguration.loadConfiguration(dataFile);
-        } else {
-            cfg = new YamlConfiguration();
-        }
+        cfg = dataFile.exists()
+            ? YamlConfiguration.loadConfiguration(dataFile)
+            : new YamlConfiguration();
     }
 
     private void loadPlayer(UUID uuid) {
@@ -98,13 +109,6 @@ public class PlaytimeTracker implements Listener {
             if (val >= 0) claims.put(grade, val);
         }
         kitClaims.put(uuid, claims);
-    }
-
-    private void flushSession(UUID uuid) {
-        Long joined = joinTimes.remove(uuid);
-        if (joined == null) return;
-        long sessionMs = System.currentTimeMillis() - joined;
-        accumulated.merge(uuid, sessionMs, Long::sum);
     }
 
     private void savePlayer(UUID uuid) {
