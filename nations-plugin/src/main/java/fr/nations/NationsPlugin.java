@@ -6,6 +6,10 @@ import fr.nations.config.ConfigManager;
 import fr.nations.database.DatabaseManager;
 import fr.nations.economy.EconomyManager;
 import fr.nations.grade.GradeManager;
+import fr.nations.hdv.HdvManager;
+import fr.nations.kit.KitManager;
+import fr.nations.kit.PlaytimeTracker;
+import fr.nations.shop.ShopManager;
 import fr.nations.listeners.*;
 import fr.nations.nation.NationManager;
 import fr.nations.role.CustomRoleManager;
@@ -30,6 +34,10 @@ public class NationsPlugin extends JavaPlugin {
     private GradeManager gradeManager;
     private CustomRoleManager customRoleManager;
     private AtmManager atmManager;
+    private KitManager kitManager;
+    private PlaytimeTracker playtimeTracker;
+    private ShopManager shopManager;
+    private HdvManager hdvManager;
 
     @Override
     public void onEnable() {
@@ -51,6 +59,10 @@ public class NationsPlugin extends JavaPlugin {
         this.gradeManager = new GradeManager(this);
         this.economyManager = new EconomyManager(this);
         this.atmManager = new AtmManager(this);
+        this.playtimeTracker = new PlaytimeTracker(this);
+        this.kitManager = new KitManager(this);
+        this.shopManager = new ShopManager(this);
+        this.hdvManager  = new HdvManager(this);
         this.nationManager = new NationManager(this);
         this.territoryManager = new TerritoryManager(this);
         this.warManager = new WarManager(this);
@@ -81,6 +93,7 @@ public class NationsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (playtimeTracker != null) playtimeTracker.saveAll();
         if (atmManager != null) atmManager.flushAllSessions();
         if (warManager != null) warManager.shutdown();
         if (seasonManager != null) seasonManager.shutdown();
@@ -140,9 +153,73 @@ public class NationsPlugin extends JavaPlugin {
         SetGradeCommand setGradeCommand = new SetGradeCommand(this);
         getCommand("setgrade").setExecutor(setGradeCommand);
         getCommand("setgrade").setTabCompleter(setGradeCommand);
+
+        KitCommand kitCommand = new KitCommand(this);
+        getCommand("kit").setExecutor(kitCommand);
+        getCommand("kit").setTabCompleter(kitCommand);
+
+        CraftCommand craftCommand = new CraftCommand(this);
+        getCommand("craft").setExecutor(craftCommand);
+        getCommand("craft").setTabCompleter(craftCommand);
+
+        PWeatherCommand pWeatherCommand = new PWeatherCommand(this);
+        getCommand("pweather").setExecutor(pWeatherCommand);
+        getCommand("pweather").setTabCompleter(pWeatherCommand);
+
+        PTimeCommand pTimeCommand = new PTimeCommand(this);
+        getCommand("ptime").setExecutor(pTimeCommand);
+        getCommand("ptime").setTabCompleter(pTimeCommand);
+
+        FurnaceCommand furnaceCommand = new FurnaceCommand(this);
+        getCommand("furnace").setExecutor(furnaceCommand);
+        getCommand("furnace").setTabCompleter(furnaceCommand);
+
+        StonecutterCommand stonecutterCommand = new StonecutterCommand(this);
+        getCommand("stonecutter").setExecutor(stonecutterCommand);
+        getCommand("stonecutter").setTabCompleter(stonecutterCommand);
+
+        AnvilCommand anvilCommand = new AnvilCommand(this);
+        getCommand("anvil").setExecutor(anvilCommand);
+        getCommand("anvil").setTabCompleter(anvilCommand);
+
+        BackCommand backCommand = new BackCommand(this);
+        getCommand("back").setExecutor(backCommand);
+        getCommand("back").setTabCompleter(backCommand);
+
+        EnderChestCommand ecCommand = new EnderChestCommand(this);
+        getCommand("ec").setExecutor(ecCommand);
+        getCommand("ec").setTabCompleter(ecCommand);
+
+        XpBottleCommand xpbCommand = new XpBottleCommand(this);
+        getCommand("xpb").setExecutor(xpbCommand);
+        getCommand("xpb").setTabCompleter(xpbCommand);
+
+        RepairCommand repairCommand = new RepairCommand(this);
+        getCommand("repair").setExecutor(repairCommand);
+        getCommand("repair").setTabCompleter(repairCommand);
+
+        NickCommand nickCommand = new NickCommand(this);
+        getCommand("nick").setExecutor(nickCommand);
+        getCommand("nick").setTabCompleter(nickCommand);
+
+        HdvCommand hdvCommand = new HdvCommand(this);
+        getCommand("hdv").setExecutor(hdvCommand);
+        getCommand("hdv").setTabCompleter(hdvCommand);
+
+        ShopCommand shopCommand = new ShopCommand(this);
+        getCommand("shop").setExecutor(shopCommand);
+        getCommand("shop").setTabCompleter(shopCommand);
+
+        SellCommand sellCommand = new SellCommand(this);
+        getCommand("sell").setExecutor(sellCommand);
+        getCommand("sell").setTabCompleter(sellCommand);
+
+        getServer().getPluginManager().registerEvents(new BackLocationListener(this, backCommand), this);
     }
 
     private void registerListeners() {
+        getServer().getPluginManager().registerEvents(playtimeTracker, this);
+        getServer().getPluginManager().registerEvents(new HdvChatListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockProtectionListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(this), this);
@@ -165,4 +242,8 @@ public class NationsPlugin extends JavaPlugin {
     public GradeManager getGradeManager() { return gradeManager; }
     public CustomRoleManager getCustomRoleManager() { return customRoleManager; }
     public AtmManager getAtmManager() { return atmManager; }
+    public KitManager getKitManager() { return kitManager; }
+    public PlaytimeTracker getPlaytimeTracker() { return playtimeTracker; }
+    public ShopManager getShopManager()         { return shopManager; }
+    public HdvManager getHdvManager()           { return hdvManager; }
 }

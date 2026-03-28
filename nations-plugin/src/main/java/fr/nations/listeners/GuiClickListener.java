@@ -2,6 +2,7 @@ package fr.nations.listeners;
 
 import fr.nations.NationsPlugin;
 import fr.nations.gui.*;
+import fr.nations.gui.KitGui;
 import fr.nations.nation.Nation;
 import fr.nations.util.MessageUtil;
 import org.bukkit.entity.Player;
@@ -48,6 +49,26 @@ public class GuiClickListener implements Listener {
             profileGui.handleClick(event);
         } else if (gui instanceof fr.nations.gui.RolePermissionsGui roleGui) {
             roleGui.handleClick(event);
+        } else if (gui instanceof KitGui kitGui) {
+            kitGui.handleClick(event);
+        } else if (gui instanceof ShopGui shopGui) {
+            shopGui.handleClick(event);
+        } else if (gui instanceof ShopCategoryGui shopCatGui) {
+            shopCatGui.handleClick(event);
+        } else if (gui instanceof HdvGui hdvGui) {
+            hdvGui.handleClick(event);
+        } else if (gui instanceof HdvMyListingsGui hdvMyGui) {
+            hdvMyGui.handleClick(event);
+        } else if (gui instanceof HdvSellGui hdvSellGui) {
+            hdvSellGui.handleClick(event);
+        } else if (gui instanceof HdvConfirmGui hdvConfirmGui) {
+            hdvConfirmGui.handleClick(event);
+        } else if (gui instanceof NationRolesGui rolesGui) {
+            rolesGui.handleClick(event);
+        } else if (gui instanceof NationRoleEditGui roleEditGui) {
+            roleEditGui.handleClick(event);
+        } else if (gui instanceof NationRoleAssignGui roleAssignGui) {
+            roleAssignGui.handleClick(event);
         }
     }
 
@@ -143,6 +164,93 @@ public class GuiClickListener implements Listener {
                 plugin.getDataManager().saveNations();
                 MessageUtil.sendSuccess(player, "Description mise à jour.");
                 new NationManageGui(plugin, player, nation).open();
+            }
+
+            // ── Rôles ──
+            case "role_create" -> {
+                java.util.UUID nationId = java.util.UUID.fromString(param);
+                fr.nations.nation.Nation nation = plugin.getNationManager().getNationById(nationId);
+                if (nation == null) return;
+                String[] parts2 = input.split(" ", 3);
+                if (parts2.length < 2) {
+                    MessageUtil.sendError(player, "Format: <nom_interne> <rang> [nom_affiché]");
+                    new NationRolesGui(plugin, player, nation).open();
+                    return;
+                }
+                String roleName = parts2[0].toLowerCase();
+                if (!roleName.matches("[a-z0-9_]+") || roleName.length() > 16) {
+                    MessageUtil.sendError(player, "Nom invalide (lettres, chiffres, _ — max 16 car.)");
+                    new NationRolesGui(plugin, player, nation).open();
+                    return;
+                }
+                int rank;
+                try { rank = Integer.parseInt(parts2[1]); }
+                catch (NumberFormatException e) {
+                    MessageUtil.sendError(player, "Le rang doit être un nombre entre 1 et 999.");
+                    new NationRolesGui(plugin, player, nation).open();
+                    return;
+                }
+                if (rank < 1 || rank > 999) {
+                    MessageUtil.sendError(player, "Rang invalide (1-999).");
+                    new NationRolesGui(plugin, player, nation).open();
+                    return;
+                }
+                if (plugin.getCustomRoleManager().getRoleByName(nationId, roleName) != null) {
+                    MessageUtil.sendError(player, "Un rôle avec ce nom existe déjà.");
+                    new NationRolesGui(plugin, player, nation).open();
+                    return;
+                }
+                if (plugin.getCustomRoleManager().getRoleCount(nationId) >= 10) {
+                    MessageUtil.sendError(player, "Limite de 10 rôles atteinte.");
+                    new NationRolesGui(plugin, player, nation).open();
+                    return;
+                }
+                String displayName = parts2.length >= 3 ? parts2[2] : roleName;
+                fr.nations.role.CustomRole created = plugin.getCustomRoleManager()
+                    .createRole(nationId, roleName, displayName, rank);
+                MessageUtil.sendSuccess(player, "Rôle &d" + displayName + " &acréé (rang &e" + rank + "&a).");
+                new NationRoleEditGui(plugin, player, nation, created).open();
+            }
+
+            case "role_rename" -> {
+                // param = roleId:nationId
+                String[] ids = param.split(":");
+                fr.nations.role.CustomRole role = plugin.getCustomRoleManager()
+                    .getRole(java.util.UUID.fromString(ids[0]));
+                fr.nations.nation.Nation nation = plugin.getNationManager()
+                    .getNationById(java.util.UUID.fromString(ids[1]));
+                if (role == null || nation == null) return;
+                if (input.length() > 32) {
+                    MessageUtil.sendError(player, "Nom trop long (max 32 car.)");
+                }  else {
+                    role.setDisplayName(input);
+                    plugin.getCustomRoleManager().saveRole(role);
+                    MessageUtil.sendSuccess(player, "Rôle renommé en &d" + input + "&a.");
+                }
+                new NationRoleEditGui(plugin, player, nation, role).open();
+            }
+
+            case "role_setrank" -> {
+                String[] ids = param.split(":");
+                fr.nations.role.CustomRole role = plugin.getCustomRoleManager()
+                    .getRole(java.util.UUID.fromString(ids[0]));
+                fr.nations.nation.Nation nation = plugin.getNationManager()
+                    .getNationById(java.util.UUID.fromString(ids[1]));
+                if (role == null || nation == null) return;
+                try {
+                    int newRank = Integer.parseInt(input);
+                    if (newRank < 1 || newRank > 999) {
+                        MessageUtil.sendError(player, "Rang invalide (1-999).");
+                    } else {
+                        role.setRank(newRank);
+                        plugin.getCustomRoleManager().saveRole(role);
+                        MessageUtil.sendSuccess(player, "Rang du rôle &d" + role.getDisplayName()
+                            + " &amis à &e" + newRank + "&a.");
+                    }
+                } catch (NumberFormatException e) {
+                    MessageUtil.sendError(player, "Rang invalide.");
+                }
+                new NationRoleEditGui(plugin, player, nation, role).open();
             }
         }
     }

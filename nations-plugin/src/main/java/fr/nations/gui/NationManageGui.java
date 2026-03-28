@@ -48,8 +48,18 @@ public class NationManageGui {
             isOpen ? "&aouverte à tous" : "&cfermée (sur invitation)"
         ));
 
+        boolean canManageRoles = isLeader
+            || (member != null && (nation.isCoLeader(player.getUniqueId())
+                || plugin.getCustomRoleManager().hasPermission(player.getUniqueId(),
+                    fr.nations.role.RolePermission.MANAGE_ROLES)));
+        inv.setItem(16, GuiUtil.createItem(Material.NAME_TAG,
+            "&dRôles personnalisés",
+            "&7Gérer les rôles de ta nation",
+            "&7et les permissions associées"
+        ));
+
         if (isLeader) {
-            inv.setItem(16, GuiUtil.createItem(Material.TNT,
+            inv.setItem(28, GuiUtil.createItem(Material.TNT,
                 "&c&lDissoudre la nation",
                 "&7ATTENTION: Action irréversible!",
                 "&7Toutes les données seront perdues"
@@ -82,7 +92,8 @@ public class NationManageGui {
                 MessageUtil.sendSuccess(player, "La nation est maintenant " + (nation.isOpen() ? "ouverte" : "fermée") + ".");
                 player.openInventory(build());
             }
-            case 16 -> {
+            case 16 -> new NationRolesGui(plugin, player, nation).open();
+            case 28 -> {
                 if (nation.isLeader(player.getUniqueId())) {
                     new ConfirmDisbandGui(plugin, player, nation).open();
                 }

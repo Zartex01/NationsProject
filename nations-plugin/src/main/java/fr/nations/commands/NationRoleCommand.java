@@ -46,7 +46,7 @@ public class NationRoleCommand implements CommandExecutor, TabCompleter {
         if (member == null) return true;
 
         if (args.length == 0) {
-            sendHelp(player);
+            new fr.nations.gui.NationRolesGui(plugin, player, nation).open();
             return true;
         }
 

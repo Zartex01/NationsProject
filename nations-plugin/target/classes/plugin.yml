@@ -71,6 +71,86 @@ commands:
     usage: /setgrade <joueur> <grade>
     aliases: [grade, donnergrade]
     permission: nations.admin
+  # ──── Kits ────
+  kit:
+    description: Récupérer votre kit de grade
+    usage: /kit [heros|chevalier|premium]
+    aliases: [kits]
+    permission: nations.use
+  # ──── Grade Héros ────
+  craft:
+    description: Ouvrir une table de craft virtuelle
+    usage: /craft
+    aliases: [workbench, wb]
+    permission: nations.grade.heros
+  pweather:
+    description: Changer sa météo personnelle
+    usage: /pweather <clear|rain|reset>
+    aliases: [weather]
+    permission: nations.grade.heros
+  ptime:
+    description: Changer son heure personnelle
+    usage: /ptime <day|night|noon|midnight|reset>
+    aliases: [time]
+    permission: nations.grade.heros
+  # ──── Grade Chevalier ────
+  furnace:
+    description: Ouvrir un four virtuel (+ /furnace all pour fusionner)
+    usage: /furnace [all]
+    aliases: [four]
+    permission: nations.grade.chevalier
+  stonecutter:
+    description: Ouvrir une taillerie de pierres virtuelle
+    usage: /stonecutter
+    aliases: [tailleur]
+    permission: nations.grade.chevalier
+  anvil:
+    description: Ouvrir une enclume virtuelle
+    usage: /anvil
+    aliases: [enclume]
+    permission: nations.grade.chevalier
+  back:
+    description: Retourner à votre dernière position (mort ou téléportation)
+    usage: /back
+    permission: nations.grade.chevalier
+  ec:
+    description: Ouvrir votre coffre de l'Ender
+    usage: /ec
+    aliases: [enderchest, echest]
+    permission: nations.grade.chevalier
+  xpb:
+    description: Convertir vos niveaux d'XP en bouteilles d'expérience
+    usage: /xpb <nombre-de-bouteilles>
+    aliases: [xpbottle, xpbouteille]
+    permission: nations.grade.chevalier
+  # ──── Grade Premium ────
+  repair:
+    description: Réparer l'objet en main (1h) ou tous les objets (24h)
+    usage: /repair [all]
+    aliases: [reparer]
+    permission: nations.grade.premium
+  nick:
+    description: Changer votre pseudo affiché en jeu
+    usage: /nick <pseudo|reset>
+    aliases: [pseudo, surnom]
+    permission: nations.grade.premium
+  # ──── HDV ────
+  hdv:
+    description: Hôtel des Ventes — marché entre joueurs
+    usage: /hdv [sell]
+    aliases: [hotel, marche, marketplace]
+    permission: nations.use
+  # ──── Shop ────
+  shop:
+    description: Ouvrir la boutique du serveur
+    usage: /shop
+    aliases: [boutique, magasin]
+    permission: nations.use
+  sell:
+    description: Vendre des objets (hand = en main, all = tout l'inventaire)
+    usage: /sell [hand|all]
+    aliases: [vendre]
+    permission: nations.use
 
 permissions:
   nations.use:
@@ -97,12 +177,40 @@ permissions:
   nations.grade.soutien:
     description: Grade Soutien (20 claims max)
     default: false
-  nations.grade.premium:
-    description: Grade Premium (35 claims max)
+  nations.grade.heros:
+    description: "Grade Héros — Kit Héros, /craft, /pweather, /ptime, 10 homes, AFK 25min"
     default: false
+    children:
+      nations.grade.soutien: true
   nations.grade.chevalier:
-    description: Grade Chevalier (55 claims max)
+    description: "Grade Chevalier — Kit Chevalier, /furnace, /stonecutter, /anvil, /back, /ec, /xpb, 20 homes, AFK 35min"
     default: false
+    children:
+      nations.grade.heros: true
+  nations.grade.premium:
+    description: "Grade Premium — Kit Premium, /repair, /repair all, /nick, /furnace all, /sell all, 30 homes, AFK 1h"
+    default: false
+    children:
+      nations.grade.chevalier: true
+      nations.sell.all: true
   nations.grade.roi:
-    description: Grade Roi (80 claims max)
+    description: Grade Roi (120 claims max)
+    default: false
+    children:
+      nations.grade.premium: true
+  # Permissions pour les systèmes futurs (Hôtel des ventes, Mine)
+  nations.hotel.slots.heros:
+    description: "10 emplacements dans l'Hôtel des Ventes (Héros)"
+    default: false
+  nations.hotel.slots.chevalier:
+    description: "20 emplacements dans l'Hôtel des Ventes (Chevalier)"
+    default: false
+  nations.hotel.slots.premium:
+    description: "30 emplacements dans l'Hôtel des Ventes (Premium)"
+    default: false
+  nations.mine.heros:
+    description: "Accès à la seconde mine du spawn (Héros)"
+    default: false
+  nations.sell.all:
+    description: "Vendre tous les objets avec /sell all (Premium)"
     default: false
