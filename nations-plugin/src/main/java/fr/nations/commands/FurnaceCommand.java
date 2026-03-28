@@ -2,14 +2,12 @@ package fr.nations.commands;
 
 import fr.nations.NationsPlugin;
 import fr.nations.util.MessageUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,12 +37,7 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (args.length > 0 && args[0].equalsIgnoreCase("hand")) {
-            smeltHand(player);
-            return true;
-        }
-
-        player.openInventory(Bukkit.createInventory(player, InventoryType.FURNACE, "§6Fourneau"));
+        smeltHand(player);
         return true;
     }
 
@@ -56,7 +49,7 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
         }
         Material smelted = getSmeltResult(item.getType());
         if (smelted == null) {
-            MessageUtil.sendError(player, "&cCet objet ne peut pas être cuit : &7" + item.getType().name());
+            MessageUtil.sendError(player, "Cet objet ne peut pas être cuit.");
             return;
         }
         int amount = item.getAmount();
@@ -64,7 +57,7 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
         ItemStack result = new ItemStack(smelted, amount);
         java.util.Map<Integer, ItemStack> leftover = player.getInventory().addItem(result);
         leftover.values().forEach(l -> player.getWorld().dropItemNaturally(player.getLocation(), l));
-        MessageUtil.send(player, "&aCuit &e" + amount + "x " + smelted.name().toLowerCase().replace("_", " ") + " &adepuis votre main !");
+        MessageUtil.send(player, "&aCuit &e" + amount + "x " + smelted.name().toLowerCase().replace("_", " ") + " &a!");
     }
 
     private void smeltAll(Player player) {
@@ -116,7 +109,7 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            return List.of("hand", "all").stream()
+            return List.of("all").stream()
                 .filter(s -> s.startsWith(args[0].toLowerCase()))
                 .toList();
         }

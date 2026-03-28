@@ -541,7 +541,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
             List<String> subCommands = Arrays.asList(
                 "create", "invite", "join", "leave", "kick", "promote", "demote",
                 "ally", "unally", "info", "list", "disband", "open", "description",
-                "rename", "deposit", "withdraw", "accept", "gui"
+                "rename", "deposit", "withdraw", "accept", "gui", "role"
             );
             for (String sub : subCommands) {
                 if (sub.startsWith(args[0].toLowerCase())) completions.add(sub);
@@ -563,6 +563,14 @@ public class NationCommand implements CommandExecutor, TabCompleter {
                     }
                 }
                 case "deposit", "withdraw" -> completions.addAll(Arrays.asList("100", "500", "1000", "5000"));
+                case "role" -> {
+                    for (NationRole r : NationRole.values()) {
+                        String displayName = r.getDisplayName();
+                        if (displayName.toLowerCase().startsWith(args[1].toLowerCase())) {
+                            completions.add(displayName);
+                        }
+                    }
+                }
             }
         }
         return completions;
@@ -583,17 +591,31 @@ public class NationCommand implements CommandExecutor, TabCompleter {
             return;
         }
         if (args.length < 2) {
-            MessageUtil.sendError(player, "Usage: /nation role <LEADER|CO_LEADER|OFFICER|MEMBER|RECRUIT>");
+            String names = Arrays.stream(fr.nations.nation.NationRole.values())
+                .map(fr.nations.nation.NationRole::getDisplayName)
+                .collect(java.util.stream.Collectors.joining("|"));
+            MessageUtil.sendError(player, "Usage: /nation role <" + names + ">");
             return;
         }
-        fr.nations.nation.NationRole role;
-        try {
-            role = fr.nations.nation.NationRole.valueOf(args[1].toUpperCase());
-        } catch (IllegalArgumentException e) {
-            MessageUtil.sendError(player, "Rôle invalide. Rôles: LEADER, CO_LEADER, OFFICER, MEMBER, RECRUIT");
+        fr.nations.nation.NationRole role = resolveNationRole(args[1]);
+        if (role == null) {
+            String names = Arrays.stream(fr.nations.nation.NationRole.values())
+                .map(fr.nations.nation.NationRole::getDisplayName)
+                .collect(java.util.stream.Collectors.joining(", "));
+            MessageUtil.sendError(player, "Rôle invalide. Rôles disponibles: " + names);
             return;
         }
         new fr.nations.gui.RolePermissionsGui(plugin, player, role).open();
+    }
+
+    private fr.nations.nation.NationRole resolveNationRole(String input) {
+        try {
+            return fr.nations.nation.NationRole.valueOf(input.toUpperCase());
+        } catch (IllegalArgumentException ignored) {}
+        for (fr.nations.nation.NationRole r : fr.nations.nation.NationRole.values()) {
+            if (r.getDisplayName().equalsIgnoreCase(input)) return r;
+        }
+        return null;
     }
 
     private org.bukkit.configuration.file.FileConfiguration getConfig() {
