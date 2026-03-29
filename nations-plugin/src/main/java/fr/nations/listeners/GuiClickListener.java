@@ -65,6 +65,8 @@ public class GuiClickListener implements Listener {
             hdvConfirmGui.handleClick(event);
         } else if (gui instanceof HdvSellConfirmGui hdvSellConfirmGui) {
             hdvSellConfirmGui.handleClick(event);
+        } else if (gui instanceof EpoqueGui epoqueGui) {
+            epoqueGui.handleClick(event);
         } else if (gui instanceof NationRolesGui rolesGui) {
             rolesGui.handleClick(event);
         } else if (gui instanceof NationRoleEditGui roleEditGui) {

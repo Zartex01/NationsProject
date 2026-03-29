@@ -129,6 +129,17 @@ commands:
     usage: /hdv [sell]
     aliases: [hotel, marche, marketplace]
     permission: nations.use
+  # ──── Époque ────
+  nepoque:
+    description: Ouvrir le GUI des Époques de votre nation
+    usage: /nepoque
+    aliases: [epoque, ep]
+    permission: nations.use
+  nepoqueadmin:
+    description: Administrer le systeme des Epoques
+    usage: /nepoqueadmin <sous-commande>
+    aliases: [epadmin]
+    permission: nations.admin
   # ──── Nation Pub ────
   npub:
     description: Envoyer une publicité au chat pour votre nation (1000 coins)

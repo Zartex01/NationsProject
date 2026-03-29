@@ -34,6 +34,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/atm/AtmManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/hdv/HdvManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/WarCommand.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/epoque/EpoqueNationProgress.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/ShopCategoryGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/PTimeCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/ShopCommand.java
@@ -52,6 +53,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/kit/KitManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/NationsPlugin.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/GradeManager.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/EpoqueCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/PlayerDeathListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/PlayerJoinListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/BalanceCommand.java
@@ -63,6 +65,9 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/HdvMyListingsGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/BlockProtectionListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/SeasonCommand.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/epoque/EpoqueCondition.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/EpoqueGui.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/epoque/EpoqueLevel.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationsAdminCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/HdvConfirmGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/SetGradeCommand.java
@@ -85,11 +90,14 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/XpBottleCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationPubCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/SeasonManager.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/EpoqueAdminCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/config/ConfigManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/HdvGui.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/epoque/EpoqueManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/KitCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/CraftCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/SeasonGui.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/epoque/EpoqueReward.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/GuiManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/BackLocationListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/role/RolePermission.java

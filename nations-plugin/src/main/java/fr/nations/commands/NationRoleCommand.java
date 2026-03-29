@@ -46,7 +46,7 @@ public class NationRoleCommand implements CommandExecutor, TabCompleter {
         if (member == null) return true;
 
         if (args.length == 0) {
-            new fr.nations.gui.NationRolesGui(plugin, player, nation).open();
+            sendHelp(player);
             return true;
         }
 
@@ -58,6 +58,10 @@ public class NationRoleCommand implements CommandExecutor, TabCompleter {
             case "list", "liste" -> handleList(player, nation);
             case "info" -> handleInfo(player, nation, args);
             case "create", "creer" -> {
+                if (args.length == 1) {
+                    new fr.nations.gui.NationRolesGui(plugin, player, nation).open();
+                    return true;
+                }
                 if (!hasRolesPerm) { MessageUtil.sendError(player, "Permission insuffisante."); return true; }
                 handleCreate(player, nation, args);
             }
@@ -250,9 +254,10 @@ public class NationRoleCommand implements CommandExecutor, TabCompleter {
     private void sendHelp(Player player) {
         MessageUtil.sendSeparator(player);
         MessageUtil.sendTitle(player, "Rôles Personnalisés — Aide");
+        player.sendMessage("  §e/nationrole create §7— Ouvrir le gestionnaire de rôles (GUI)");
+        player.sendMessage("  §e/nationrole create <nom> <rang> [affichage] §7— Créer un rôle (texte)");
         player.sendMessage("  §e/nationrole list §7— Voir les rôles de votre nation");
         player.sendMessage("  §e/nationrole info <nom> §7— Détails d'un rôle");
-        player.sendMessage("  §e/nationrole create <nom> <rang> [affichage] §7— Créer un rôle");
         player.sendMessage("  §e/nationrole delete <nom> §7— Supprimer un rôle");
         player.sendMessage("  §e/nationrole setperm <nom> <perm> <true|false> §7— Modifier permission");
         player.sendMessage("  §e/nationrole assign <joueur> <nom> §7— Attribuer un rôle");

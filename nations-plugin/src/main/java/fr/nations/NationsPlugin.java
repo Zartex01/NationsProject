@@ -2,10 +2,13 @@ package fr.nations;
 
 import fr.nations.atm.AtmManager;
 import fr.nations.commands.*;
+import fr.nations.commands.EpoqueCommand;
+import fr.nations.commands.EpoqueAdminCommand;
 import fr.nations.config.ConfigManager;
 import fr.nations.database.DatabaseManager;
 import fr.nations.economy.EconomyManager;
 import fr.nations.grade.GradeManager;
+import fr.nations.epoque.EpoqueManager;
 import fr.nations.hdv.HdvManager;
 import fr.nations.kit.KitManager;
 import fr.nations.kit.PlaytimeTracker;
@@ -38,6 +41,7 @@ public class NationsPlugin extends JavaPlugin {
     private PlaytimeTracker playtimeTracker;
     private ShopManager shopManager;
     private HdvManager hdvManager;
+    private EpoqueManager epoqueManager;
 
     @Override
     public void onEnable() {
@@ -62,8 +66,9 @@ public class NationsPlugin extends JavaPlugin {
         this.playtimeTracker = new PlaytimeTracker(this);
         this.kitManager = new KitManager(this);
         this.shopManager = new ShopManager(this);
-        this.hdvManager  = new HdvManager(this);
-        this.nationManager = new NationManager(this);
+        this.hdvManager     = new HdvManager(this);
+        this.epoqueManager  = new EpoqueManager(this);
+        this.nationManager  = new NationManager(this);
         this.territoryManager = new TerritoryManager(this);
         this.warManager = new WarManager(this);
         this.seasonManager = new SeasonManager(this);
@@ -83,6 +88,7 @@ public class NationsPlugin extends JavaPlugin {
         }
 
         warManager.startTasks();
+        epoqueManager.load();
 
         registerCommands();
         registerListeners();
@@ -210,6 +216,14 @@ public class NationsPlugin extends JavaPlugin {
         getCommand("npub").setExecutor(nationPubCommand);
         getCommand("npub").setTabCompleter(nationPubCommand);
 
+        EpoqueCommand epoqueCommand = new EpoqueCommand(this);
+        getCommand("nepoque").setExecutor(epoqueCommand);
+        getCommand("nepoque").setTabCompleter(epoqueCommand);
+
+        EpoqueAdminCommand epoqueAdminCommand = new EpoqueAdminCommand(this);
+        getCommand("nepoqueadmin").setExecutor(epoqueAdminCommand);
+        getCommand("nepoqueadmin").setTabCompleter(epoqueAdminCommand);
+
         ShopCommand shopCommand = new ShopCommand(this);
         getCommand("shop").setExecutor(shopCommand);
         getCommand("shop").setTabCompleter(shopCommand);
@@ -251,4 +265,5 @@ public class NationsPlugin extends JavaPlugin {
     public PlaytimeTracker getPlaytimeTracker() { return playtimeTracker; }
     public ShopManager getShopManager()         { return shopManager; }
     public HdvManager getHdvManager()           { return hdvManager; }
+    public EpoqueManager getEpoqueManager()     { return epoqueManager; }
 }

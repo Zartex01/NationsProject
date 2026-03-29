@@ -1,0 +1,95 @@
+levels:
+  1:
+    name: "Age de Pierre"
+    duration-minutes: 15
+    conditions:
+      - type: MEMBERS
+        value: 2
+        description: "Avoir 2 membres dans la nation"
+      - type: COINS
+        value: 200
+        description: "200 coins en banque"
+    rewards:
+      - type: COINS_PER_MEMBER
+        value: 50
+        description: "+50 coins a chaque membre"
+  2:
+    name: "Age du Bronze"
+    duration-minutes: 30
+    conditions:
+      - type: MEMBERS
+        value: 4
+        description: "Avoir 4 membres dans la nation"
+      - type: COINS
+        value: 800
+        description: "800 coins en banque"
+      - type: TERRITORIES
+        value: 3
+        description: "Controler 3 territoires"
+    rewards:
+      - type: COINS_PER_MEMBER
+        value: 150
+        description: "+150 coins a chaque membre"
+      - type: NATION_COINS
+        value: 500
+        description: "+500 coins dans la banque"
+  3:
+    name: "Age de Fer"
+    duration-minutes: 60
+    conditions:
+      - type: MEMBERS
+        value: 8
+        description: "Avoir 8 membres dans la nation"
+      - type: COINS
+        value: 2500
+        description: "2500 coins en banque"
+      - type: TERRITORIES
+        value: 6
+        description: "Controler 6 territoires"
+    rewards:
+      - type: COINS_PER_MEMBER
+        value: 400
+        description: "+400 coins a chaque membre"
+      - type: NATION_COINS
+        value: 2000
+        description: "+2000 coins dans la banque"
+  4:
+    name: "Age Medieval"
+    duration-minutes: 120
+    conditions:
+      - type: MEMBERS
+        value: 12
+        description: "Avoir 12 membres dans la nation"
+      - type: COINS
+        value: 8000
+        description: "8000 coins en banque"
+      - type: TERRITORIES
+        value: 10
+        description: "Controler 10 territoires"
+    rewards:
+      - type: COINS_PER_MEMBER
+        value: 1000
+        description: "+1000 coins a chaque membre"
+      - type: NATION_COINS
+        value: 5000
+        description: "+5000 coins dans la banque"
+  5:
+    name: "Age Moderne"
+    duration-minutes: 240
+    conditions:
+      - type: MEMBERS
+        value: 20
+        description: "Avoir 20 membres dans la nation"
+      - type: COINS
+        value: 25000
+        description: "25 000 coins en banque"
+      - type: TERRITORIES
+        value: 20
+        description: "Controler 20 territoires"
+    rewards:
+      - type: COINS_PER_MEMBER
+        value: 3000
+        description: "+3000 coins a chaque membre"
+      - type: NATION_COINS
+        value: 20000
+        description: "+20 000 coins dans la banque"
