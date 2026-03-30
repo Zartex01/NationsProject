@@ -13,22 +13,62 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class HdvGui {
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Sort modes
+    // ─────────────────────────────────────────────────────────────────────────
+
+    public enum SortMode {
+        RECENT,     // plus récent en premier (défaut)
+        PRICE_DESC, // plus cher en premier
+        PRICE_ASC,  // moins cher en premier
+        ALPHA       // ordre alphabétique A-Z
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Constants
+    // ─────────────────────────────────────────────────────────────────────────
 
     private static final int ITEMS_PER_PAGE = 36;
     private static final int ITEM_START     = 9;
     private static final int ITEM_END       = 44;
 
+    // Header slots
+    private static final int SLOT_ALL       = 0;
+    private static final int SLOT_SORT_RECENT = 1;
+    private static final int SLOT_SORT_PRICE  = 3;
+    private static final int SLOT_TITLE      = 4;
+    private static final int SLOT_SORT_ALPHA  = 5;
+    private static final int SLOT_MY_LISTINGS = 8;
+
+    // Nav slots
+    private static final int SLOT_PREV     = 47;
+    private static final int SLOT_PAGE_INFO = 49;
+    private static final int SLOT_NEXT     = 51;
+    private static final int SLOT_SELL     = 53;
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Fields
+    // ─────────────────────────────────────────────────────────────────────────
+
     private final NationsPlugin plugin;
     private final Player player;
     private int page;
+    private SortMode sortMode;
 
     public HdvGui(NationsPlugin plugin, Player player, int page) {
-        this.plugin  = plugin;
-        this.player  = player;
-        this.page    = page;
+        this(plugin, player, page, SortMode.RECENT);
+    }
+
+    public HdvGui(NationsPlugin plugin, Player player, int page, SortMode sortMode) {
+        this.plugin    = plugin;
+        this.player    = player;
+        this.page      = page;
+        this.sortMode  = sortMode;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -36,20 +76,36 @@ public class HdvGui {
     // ─────────────────────────────────────────────────────────────────────────
 
     public Inventory build() {
-        Inventory inv = GuiUtil.createGui("&6✦ &eHôtel des Ventes &6✦", 6);
+        Inventory inv = GuiUtil.createGui("&6✦ &eHôtel des Ventes &8— &7" + sortLabel(), 6);
 
         // ── Row 1 : header ──
         ItemStack gold = GuiUtil.createFillerItem(Material.YELLOW_STAINED_GLASS_PANE);
         for (int i = 0; i < 9; i++) inv.setItem(i, gold);
 
-        List<HdvListing> all = plugin.getHdvManager().getActiveListings();
+        List<HdvListing> all = sortedListings();
         int maxPage = maxPage(all);
 
-        inv.setItem(0, GuiUtil.createItem(Material.CHEST,
+        // Slot 0 – total annonces
+        inv.setItem(SLOT_ALL, GuiUtil.createItem(Material.CHEST,
             "&a&l✦ Tous les articles",
             "&7" + all.size() + " annonce(s) active(s)"
         ));
-        inv.setItem(4, GuiUtil.createItem(Material.GOLD_BLOCK,
+
+        // Slot 1 – tri récent
+        inv.setItem(SLOT_SORT_RECENT, buildSortButton(
+            SortMode.RECENT,
+            Material.CLOCK,
+            Material.YELLOW_STAINED_GLASS_PANE,
+            "&e⏱ Tri : Plus récent",
+            new String[]{"&7Affiche les dernières annonces", "&7en premier (ordre d'arrivée)."},
+            new String[]{"&7⬤ Tri actif"}
+        ));
+
+        // Slot 3 – tri prix
+        inv.setItem(SLOT_SORT_PRICE, buildPriceSortButton());
+
+        // Slot 4 – titre HDV
+        inv.setItem(SLOT_TITLE, GuiUtil.createItem(Material.GOLD_BLOCK,
             "&6&l✦ Hôtel des Ventes ✦",
             "&7Achetez et vendez des objets",
             "&7entre joueurs !",
@@ -57,7 +113,19 @@ public class HdvGui {
             "&eVotre balance : &a" + MessageUtil.formatNumber(
                 plugin.getEconomyManager().getBalance(player.getUniqueId())) + " coins"
         ));
-        inv.setItem(8, GuiUtil.createItem(Material.BOOK,
+
+        // Slot 5 – tri alphabétique
+        inv.setItem(SLOT_SORT_ALPHA, buildSortButton(
+            SortMode.ALPHA,
+            Material.NAME_TAG,
+            Material.YELLOW_STAINED_GLASS_PANE,
+            "&bA-Z &7Tri alphabétique",
+            new String[]{"&7Trie les objets dans l'ordre", "&7alphabétique (A → Z)."},
+            new String[]{"&7⬤ Tri actif"}
+        ));
+
+        // Slot 8 – mes annonces
+        inv.setItem(SLOT_MY_LISTINGS, GuiUtil.createItem(Material.BOOK,
             "&e✦ Mes annonces",
             "&7Voir et gérer vos propres annonces"
         ));
@@ -73,18 +141,19 @@ public class HdvGui {
         for (int i = 45; i < 54; i++) inv.setItem(i, navGlass);
 
         if (page > 0) {
-            inv.setItem(47, GuiUtil.createItem(Material.LIME_STAINED_GLASS_PANE,
+            inv.setItem(SLOT_PREV, GuiUtil.createItem(Material.LIME_STAINED_GLASS_PANE,
                 "&a« Page précédente", "&7Page " + page + " / " + (maxPage + 1)));
         }
-        inv.setItem(49, GuiUtil.createItem(Material.PAPER,
+        inv.setItem(SLOT_PAGE_INFO, GuiUtil.createItem(Material.PAPER,
             "&7Page &e" + (page + 1) + " &7/ &e" + (maxPage + 1),
-            "&7" + all.size() + " article(s) en vente"
+            "&7" + all.size() + " article(s) en vente",
+            "&7Tri : &e" + sortLabel()
         ));
         if (page < maxPage) {
-            inv.setItem(51, GuiUtil.createItem(Material.LIME_STAINED_GLASS_PANE,
+            inv.setItem(SLOT_NEXT, GuiUtil.createItem(Material.LIME_STAINED_GLASS_PANE,
                 "&aPage suivante »", "&7Page " + (page + 2) + " / " + (maxPage + 1)));
         }
-        inv.setItem(53, GuiUtil.createItem(Material.EMERALD,
+        inv.setItem(SLOT_SELL, GuiUtil.createItem(Material.EMERALD,
             "&a&l+ Mettre en vente",
             "&7Ouvre votre inventaire pour",
             "&7sélectionner un objet à vendre.",
@@ -98,6 +167,87 @@ public class HdvGui {
         GuiUtil.fillAll(inv);
         return inv;
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Sort helpers
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private List<HdvListing> sortedListings() {
+        List<HdvListing> list = new ArrayList<>(plugin.getHdvManager().getActiveListings());
+        switch (sortMode) {
+            case PRICE_DESC -> list.sort(Comparator.comparingDouble(HdvListing::getPrice).reversed());
+            case PRICE_ASC  -> list.sort(Comparator.comparingDouble(HdvListing::getPrice));
+            case ALPHA      -> list.sort(Comparator.comparing(l -> itemDisplayName(l).toLowerCase()));
+            case RECENT     -> {} // already sorted by recency in HdvManager
+        }
+        return list;
+    }
+
+    private String itemDisplayName(HdvListing listing) {
+        ItemStack item = listing.getItem();
+        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+            return item.getItemMeta().getDisplayName().replaceAll("§[0-9a-fk-or]", "");
+        }
+        return formatMat(item.getType());
+    }
+
+    private String sortLabel() {
+        return switch (sortMode) {
+            case RECENT     -> "Plus récent";
+            case PRICE_DESC -> "Prix ↓ (+ cher)";
+            case PRICE_ASC  -> "Prix ↑ (- cher)";
+            case ALPHA      -> "A-Z";
+        };
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Button builders
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private ItemStack buildSortButton(SortMode mode, Material activeMat, Material inactiveMat,
+                                      String name, String[] inactiveLore, String[] activeLore) {
+        boolean active = sortMode == mode;
+        String displayName = (active ? "&a" : "&7") + name.replaceFirst("^&[0-9a-fk-or]", "");
+        List<String> lore = new ArrayList<>();
+        String[] extra = active ? activeLore : inactiveLore;
+        for (String l : extra) lore.add(l);
+        if (!active) lore.add("&eCliquez pour activer");
+        else lore.add("&eCliquez pour désactiver");
+        return GuiUtil.createItem(active ? activeMat : inactiveMat, displayName, lore.toArray(new String[0]));
+    }
+
+    private ItemStack buildPriceSortButton() {
+        boolean ascending  = sortMode == SortMode.PRICE_ASC;
+        boolean descending = sortMode == SortMode.PRICE_DESC;
+        boolean active     = ascending || descending;
+
+        Material mat = descending ? Material.ORANGE_DYE : ascending ? Material.LIME_DYE : Material.YELLOW_STAINED_GLASS_PANE;
+        String name  = active
+            ? (descending ? "&6💰 Prix ↓ (plus cher)" : "&a💰 Prix ↑ (moins cher)")
+            : "&7💰 Trier par prix";
+
+        List<String> lore = new ArrayList<>();
+        if (!active) {
+            lore.add("&7Cliquez une fois : &6Prix ↓ (plus cher)");
+            lore.add("&7Cliquez deux fois : &aPrix ↑ (moins cher)");
+            lore.add("&7Cliquez trois fois : désactiver");
+            lore.add("");
+            lore.add("&eCliquez pour activer");
+        } else if (descending) {
+            lore.add("&7Actuellement : &6Plus cher en premier");
+            lore.add("");
+            lore.add("&eCliquez → &aPrix ↑ (moins cher)");
+        } else {
+            lore.add("&7Actuellement : &aMoins cher en premier");
+            lore.add("");
+            lore.add("&eCliquez → &7désactiver le tri");
+        }
+        return GuiUtil.createItem(mat, name, lore.toArray(new String[0]));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Listing item builder
+    // ─────────────────────────────────────────────────────────────────────────
 
     private ItemStack buildListingItem(HdvListing listing) {
         ItemStack display = listing.getItem();
@@ -142,23 +292,49 @@ public class HdvGui {
         event.setCancelled(true);
         int slot = event.getRawSlot();
 
-        // Header
-        if (slot == 8) { new HdvMyListingsGui(plugin, player, 0).open(); return; }
-        if (slot == 4 || slot == 0) return;
+        // ── Header fixed buttons ──
+        if (slot == SLOT_MY_LISTINGS) { new HdvMyListingsGui(plugin, player, 0).open(); return; }
+        if (slot == SLOT_TITLE || slot == SLOT_ALL) return;
 
-        // Navigation
-        if (slot == 47 && page > 0) { page--; refresh(); return; }
-        if (slot == 51) {
-            List<HdvListing> all = plugin.getHdvManager().getActiveListings();
+        // ── Sort buttons ──
+        if (slot == SLOT_SORT_RECENT) {
+            sortMode = SortMode.RECENT;
+            page = 0;
+            refresh();
+            return;
+        }
+
+        if (slot == SLOT_SORT_PRICE) {
+            sortMode = switch (sortMode) {
+                case PRICE_DESC -> SortMode.PRICE_ASC;
+                case PRICE_ASC  -> SortMode.RECENT;
+                default         -> SortMode.PRICE_DESC;
+            };
+            page = 0;
+            refresh();
+            return;
+        }
+
+        if (slot == SLOT_SORT_ALPHA) {
+            sortMode = (sortMode == SortMode.ALPHA) ? SortMode.RECENT : SortMode.ALPHA;
+            page = 0;
+            refresh();
+            return;
+        }
+
+        // ── Navigation ──
+        if (slot == SLOT_PREV && page > 0) { page--; refresh(); return; }
+        if (slot == SLOT_NEXT) {
+            List<HdvListing> all = sortedListings();
             if (page < maxPage(all)) { page++; refresh(); return; }
         }
-        if (slot == 49) return;
-        if (slot == 53) { new HdvSellGui(plugin, player).open(); return; }
+        if (slot == SLOT_PAGE_INFO) return;
+        if (slot == SLOT_SELL) { new HdvSellGui(plugin, player).open(); return; }
 
-        // Listing slots
+        // ── Listing items ──
         if (slot >= ITEM_START && slot <= ITEM_END) {
             int idx = page * ITEMS_PER_PAGE + (slot - ITEM_START);
-            List<HdvListing> all = plugin.getHdvManager().getActiveListings();
+            List<HdvListing> all = sortedListings();
             if (idx >= all.size()) return;
             HdvListing listing = all.get(idx);
             if (listing.getSellerUuid().equals(player.getUniqueId())) return;
@@ -193,4 +369,6 @@ public class HdvGui {
         player.openInventory(build());
         GuiManager.registerGui(player.getUniqueId(), this);
     }
+
+    public SortMode getSortMode() { return sortMode; }
 }

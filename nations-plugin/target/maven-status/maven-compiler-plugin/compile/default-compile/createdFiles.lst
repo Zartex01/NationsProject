@@ -45,6 +45,7 @@ fr/nations/commands/SetGradeCommand.class
 fr/nations/shop/ShopCategory.class
 fr/nations/commands/KitCommand.class
 fr/nations/epoque/EpoqueManager.class
+fr/nations/gui/HdvGui$SortMode.class
 fr/nations/NationsPlugin.class
 fr/nations/economy/EconomyManager.class
 fr/nations/kit/PlaytimeTracker.class
