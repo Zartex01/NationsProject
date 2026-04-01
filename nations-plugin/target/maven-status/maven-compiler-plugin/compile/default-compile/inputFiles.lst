@@ -49,8 +49,8 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/RolePermissionsGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/atm/AtmManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationPubCommand.java
-/home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/SeasonManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/hdv/HdvManager.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/SeasonManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/WarCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/config/ConfigManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/BankGui.java

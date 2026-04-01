@@ -5,6 +5,7 @@ import java.util.UUID;
 public class PlayerGrade {
 
     private final UUID playerId;
+    private String playerName;
     private String gradeName;
     private int level;
     private long xp;
@@ -30,6 +31,8 @@ public class PlayerGrade {
     public void decrementClaimCount() { this.claimCount = Math.max(0, claimCount - 1); }
 
     public UUID getPlayerId() { return playerId; }
+    public String getPlayerName() { return playerName; }
+    public void setPlayerName(String playerName) { this.playerName = playerName; }
     public String getGradeName() { return gradeName; }
     public void setGradeName(String gradeName) { this.gradeName = gradeName; }
     public int getLevel() { return level; }

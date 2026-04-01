@@ -5,6 +5,7 @@ import java.util.UUID;
 public class PlayerAccount {
 
     private final UUID playerId;
+    private String playerName;
     private double balance;
 
     public PlayerAccount(UUID playerId, double balance) {
@@ -13,6 +14,8 @@ public class PlayerAccount {
     }
 
     public UUID getPlayerId() { return playerId; }
+    public String getPlayerName() { return playerName; }
+    public void setPlayerName(String playerName) { this.playerName = playerName; }
 
     public double getBalance() { return balance; }
 

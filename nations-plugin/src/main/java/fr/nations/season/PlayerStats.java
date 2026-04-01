@@ -5,6 +5,7 @@ import java.util.UUID;
 public class PlayerStats {
 
     private final UUID playerId;
+    private String playerName;
     private int kills;
     private int deaths;
     private int warsWon;
@@ -23,6 +24,8 @@ public class PlayerStats {
     }
 
     public UUID getPlayerId() { return playerId; }
+    public String getPlayerName() { return playerName; }
+    public void setPlayerName(String playerName) { this.playerName = playerName; }
     public int getKills() { return kills; }
     public void setKills(int kills) { this.kills = kills; }
     public void addKill() { this.kills++; }

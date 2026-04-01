@@ -26,6 +26,7 @@ public class ChunkListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        if (event.getTo() == null) return;
         if (event.getFrom().getChunk().equals(event.getTo().getChunk())) return;
 
         Player player = event.getPlayer();

@@ -94,7 +94,8 @@ public class MoneyCommand implements CommandExecutor, TabCompleter {
         MessageUtil.sendTitle(player, "Top Richesse");
         for (int i = 0; i < top.size(); i++) {
             PlayerAccount account = top.get(i);
-            String name = Bukkit.getOfflinePlayer(account.getPlayerId()).getName();
+            String name = account.getPlayerName();
+            if (name == null) name = Bukkit.getOfflinePlayer(account.getPlayerId()).getName();
             if (name == null) name = account.getPlayerId().toString().substring(0, 8);
             MessageUtil.sendRaw(player, "  §7" + (i + 1) + ". §f" + name + " §7— §e" + MessageUtil.formatNumber(account.getBalance()) + " coins");
         }

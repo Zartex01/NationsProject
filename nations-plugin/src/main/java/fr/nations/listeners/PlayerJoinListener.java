@@ -1,8 +1,10 @@
 package fr.nations.listeners;
 
 import fr.nations.NationsPlugin;
+import fr.nations.economy.PlayerAccount;
 import fr.nations.grade.PlayerGrade;
 import fr.nations.nation.Nation;
+import fr.nations.season.PlayerStats;
 import fr.nations.util.MessageUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,10 +24,15 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        plugin.getEconomyManager().getOrCreateAccount(player.getUniqueId());
+        PlayerAccount account = plugin.getEconomyManager().getOrCreateAccount(player.getUniqueId());
+        account.setPlayerName(player.getName());
+
         PlayerGrade grade = plugin.getGradeManager().getOrCreatePlayerGrade(player.getUniqueId(), player.getName());
         grade.setGradeName(plugin.getGradeManager().getEffectiveGrade(player).name());
-        plugin.getSeasonManager().getOrCreatePlayerStats(player.getUniqueId());
+        grade.setPlayerName(player.getName());
+
+        PlayerStats stats = plugin.getSeasonManager().getOrCreatePlayerStats(player.getUniqueId());
+        stats.setPlayerName(player.getName());
 
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (!player.isOnline()) return;

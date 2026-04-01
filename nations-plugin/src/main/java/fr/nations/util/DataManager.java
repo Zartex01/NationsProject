@@ -236,7 +236,9 @@ public class DataManager {
         if (!economyConfig.contains("accounts")) return;
         for (String uuidStr : economyConfig.getConfigurationSection("accounts").getKeys(false)) {
             double balance = economyConfig.getDouble("accounts." + uuidStr + ".balance", 0);
+            String name = economyConfig.getString("accounts." + uuidStr + ".name", null);
             PlayerAccount account = new PlayerAccount(UUID.fromString(uuidStr), balance);
+            account.setPlayerName(name);
             plugin.getEconomyManager().addAccount(account);
         }
     }
@@ -245,6 +247,9 @@ public class DataManager {
         economyConfig = new YamlConfiguration();
         for (PlayerAccount account : plugin.getEconomyManager().getAllAccounts()) {
             economyConfig.set("accounts." + account.getPlayerId() + ".balance", account.getBalance());
+            if (account.getPlayerName() != null) {
+                economyConfig.set("accounts." + account.getPlayerId() + ".name", account.getPlayerName());
+            }
         }
         saveFile(economyConfig, economyFile);
     }
@@ -257,8 +262,10 @@ public class DataManager {
             int level = playersConfig.getInt(path + ".level", 1);
             long xp = playersConfig.getLong(path + ".xp", 0);
             int claimCount = playersConfig.getInt(path + ".claim-count", 0);
+            String name = playersConfig.getString(path + ".name", null);
 
             PlayerGrade grade = new PlayerGrade(UUID.fromString(uuidStr), gradeName, level, xp, claimCount);
+            grade.setPlayerName(name);
             plugin.getGradeManager().addPlayerGrade(grade);
         }
     }
@@ -271,6 +278,9 @@ public class DataManager {
             playersConfig.set(path + ".level", grade.getLevel());
             playersConfig.set(path + ".xp", grade.getXp());
             playersConfig.set(path + ".claim-count", grade.getClaimCount());
+            if (grade.getPlayerName() != null) {
+                playersConfig.set(path + ".name", grade.getPlayerName());
+            }
         }
         saveFile(playersConfig, playersFile);
     }
@@ -283,8 +293,10 @@ public class DataManager {
             int deaths = seasonsConfig.getInt(path + ".deaths", 0);
             int warsWon = seasonsConfig.getInt(path + ".wars-won", 0);
             int claimsCount = seasonsConfig.getInt(path + ".claims", 0);
+            String name = seasonsConfig.getString(path + ".name", null);
 
             PlayerStats stats = new PlayerStats(UUID.fromString(uuidStr), kills, deaths, warsWon, claimsCount);
+            stats.setPlayerName(name);
             plugin.getSeasonManager().addPlayerStats(stats);
         }
         seasonsConfig.set("current-season", seasonsConfig.getInt("current-season", 1));
@@ -303,6 +315,9 @@ public class DataManager {
             seasonsConfig.set(path + ".deaths", stats.getDeaths());
             seasonsConfig.set(path + ".wars-won", stats.getWarsWon());
             seasonsConfig.set(path + ".claims", stats.getClaimsCount());
+            if (stats.getPlayerName() != null) {
+                seasonsConfig.set(path + ".name", stats.getPlayerName());
+            }
         }
         saveFile(seasonsConfig, seasonsFile);
     }
