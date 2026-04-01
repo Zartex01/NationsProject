@@ -87,8 +87,8 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/ShopGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/HdvChatListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/GiveMoneyCommand.java
-/home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/XpBottleCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationPubCommand.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/XpBottleCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/SeasonManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/EpoqueAdminCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/config/ConfigManager.java

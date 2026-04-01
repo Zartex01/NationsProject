@@ -570,6 +570,14 @@ public class NationCommand implements CommandExecutor, TabCompleter {
                             completions.add(displayName);
                         }
                     }
+                    Nation pn = plugin.getNationManager().getPlayerNation(((Player) sender).getUniqueId());
+                    if (pn != null) {
+                        for (fr.nations.role.CustomRole cr : plugin.getCustomRoleManager().getRolesForNation(pn.getId())) {
+                            if (cr.getName().toLowerCase().startsWith(args[1].toLowerCase())) {
+                                completions.add(cr.getName());
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -577,32 +585,45 @@ public class NationCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleRoleGui(Player player, String[] args) {
-        boolean isAdmin = player.hasPermission("nations.admin");
-        boolean isNationLeader = false;
         Nation playerNation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
-        if (playerNation != null) {
-            NationMember member = playerNation.getMember(player.getUniqueId());
-            if (member != null && member.getRole() == NationRole.LEADER) {
-                isNationLeader = true;
-            }
+        if (playerNation == null) {
+            MessageUtil.sendError(player, "Vous n'avez pas de nation.");
+            return;
         }
-        if (!isAdmin && !isNationLeader) {
+        NationMember member = playerNation.getMember(player.getUniqueId());
+        if (member == null) return;
+
+        boolean isAdmin = player.hasPermission("nations.admin");
+        boolean isLeaderOrCo = member.getRole() == NationRole.LEADER || member.getRole() == NationRole.CO_LEADER;
+
+        if (args.length < 2) {
+            new fr.nations.gui.NationRolesGui(plugin, player, playerNation).open();
+            return;
+        }
+
+        String input = args[1];
+
+        fr.nations.role.CustomRole customRole = plugin.getCustomRoleManager().getRoleByName(playerNation.getId(), input);
+        if (customRole != null) {
+            new fr.nations.gui.NationRoleEditGui(plugin, player, playerNation, customRole).open();
+            return;
+        }
+
+        if (!isAdmin && !isLeaderOrCo) {
             MessageUtil.sendError(player, "Vous n'avez pas la permission.");
             return;
         }
-        if (args.length < 2) {
-            String names = Arrays.stream(fr.nations.nation.NationRole.values())
-                .map(fr.nations.nation.NationRole::getDisplayName)
-                .collect(java.util.stream.Collectors.joining("|"));
-            MessageUtil.sendError(player, "Usage: /nation role <" + names + ">");
-            return;
-        }
-        fr.nations.nation.NationRole role = resolveNationRole(args[1]);
+
+        fr.nations.nation.NationRole role = resolveNationRole(input);
         if (role == null) {
-            String names = Arrays.stream(fr.nations.nation.NationRole.values())
+            java.util.List<fr.nations.role.CustomRole> customs = plugin.getCustomRoleManager().getRolesForNation(playerNation.getId());
+            String customNames = customs.isEmpty() ? "aucun" : customs.stream()
+                .map(fr.nations.role.CustomRole::getName)
+                .collect(java.util.stream.Collectors.joining(", "));
+            String baseNames = Arrays.stream(fr.nations.nation.NationRole.values())
                 .map(fr.nations.nation.NationRole::getDisplayName)
                 .collect(java.util.stream.Collectors.joining(", "));
-            MessageUtil.sendError(player, "Rôle invalide. Rôles disponibles: " + names);
+            MessageUtil.sendError(player, "Rôle introuvable. Perso: " + customNames + " | Base: " + baseNames);
             return;
         }
         new fr.nations.gui.RolePermissionsGui(plugin, player, role).open();
