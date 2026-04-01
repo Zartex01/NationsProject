@@ -26,6 +26,10 @@ author = "agent"
 task = "workflow.run"
 args = "Start application"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Component Preview Server"
+
 [[workflows.workflow]]
 name = "Start application"
 author = "agent"
@@ -35,7 +39,21 @@ outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "echo 'Services managed by artifact workflows: API Server (8080) and Component Preview Server (8081)'"
+args = "PORT=8080 pnpm --filter @workspace/api-server run dev"
+waitForPort = 8080
+
+[[workflows.workflow]]
+name = "Component Preview Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+isCanvasWorkflow = true
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "PORT=8081 BASE_PATH=/__mockup pnpm --filter @workspace/mockup-sandbox run dev"
+waitForPort = 8081
 
 [agent]
 stack = "PNPM_WORKSPACE"
