@@ -585,15 +585,26 @@ public class NationCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleRoleGui(Player player, String[] args) {
+        boolean isAdmin = player.hasPermission("nations.admin");
         Nation playerNation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
+
         if (playerNation == null) {
-            MessageUtil.sendError(player, "Vous n'avez pas de nation.");
+            if (isAdmin && args.length >= 2) {
+                fr.nations.nation.NationRole role = resolveNationRole(args[1]);
+                if (role != null) {
+                    new fr.nations.gui.RolePermissionsGui(plugin, player, role).open();
+                } else {
+                    MessageUtil.sendError(player, "Rôle de base introuvable.");
+                }
+            } else {
+                MessageUtil.sendError(player, "Vous n'avez pas de nation.");
+            }
             return;
         }
+
         NationMember member = playerNation.getMember(player.getUniqueId());
         if (member == null) return;
 
-        boolean isAdmin = player.hasPermission("nations.admin");
         boolean isLeaderOrCo = member.getRole() == NationRole.LEADER || member.getRole() == NationRole.CO_LEADER;
 
         if (args.length < 2) {
