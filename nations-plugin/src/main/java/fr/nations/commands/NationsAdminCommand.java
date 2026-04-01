@@ -33,13 +33,25 @@ public class NationsAdminCommand implements CommandExecutor, TabCompleter {
         switch (args[0].toLowerCase()) {
             case "reload" -> {
                 plugin.getConfigManager().reload();
-                plugin.getDataManager().saveAll();
-                plugin.getDataManager().loadAll();
-                MessageUtil.sendSuccess(sender, "Plugin rechargé.");
+                if (plugin.getDatabaseManager().isConnected()) {
+                    plugin.getNationManager().saveAllToDatabase();
+                    plugin.getEconomyManager().saveAllToDatabase();
+                    plugin.getGradeManager().saveAllToDatabase();
+                    plugin.getSeasonManager().saveAllToDatabase();
+                }
+                MessageUtil.sendSuccess(sender, "Config rechargée et données sauvegardées.");
             }
             case "save" -> {
-                plugin.getDataManager().saveAll();
-                MessageUtil.sendSuccess(sender, "Données sauvegardées.");
+                if (plugin.getDatabaseManager().isConnected()) {
+                    plugin.getNationManager().saveAllToDatabase();
+                    plugin.getEconomyManager().saveAllToDatabase();
+                    plugin.getGradeManager().saveAllToDatabase();
+                    plugin.getSeasonManager().saveAllToDatabase();
+                    MessageUtil.sendSuccess(sender, "Données sauvegardées en base.");
+                } else {
+                    plugin.getDataManager().saveAll();
+                    MessageUtil.sendSuccess(sender, "Données sauvegardées (YAML).");
+                }
             }
             case "nation" -> handleNationAdmin(sender, args);
             case "player", "joueur" -> handlePlayerAdmin(sender, args);
@@ -70,7 +82,7 @@ public class NationsAdminCommand implements CommandExecutor, TabCompleter {
                 try {
                     double amount = Double.parseDouble(args[3]);
                     nation.depositToBank(amount);
-                    plugin.getDataManager().saveNations();
+                    plugin.getNationManager().saveNationToDatabase(nation);
                     MessageUtil.sendSuccess(sender, "§e" + MessageUtil.formatNumber(amount) + " coins §aajoutés à la banque de §6" + nation.getName() + "§a.");
                 } catch (NumberFormatException e) {
                     MessageUtil.sendError(sender, "Montant invalide.");
@@ -81,7 +93,7 @@ public class NationsAdminCommand implements CommandExecutor, TabCompleter {
                 try {
                     int points = Integer.parseInt(args[3]);
                     nation.addSeasonPoints(points);
-                    plugin.getDataManager().saveNations();
+                    plugin.getNationManager().saveNationToDatabase(nation);
                     MessageUtil.sendSuccess(sender, "§e" + points + " pts §aajoutés à §6" + nation.getName() + "§a.");
                 } catch (NumberFormatException e) {
                     MessageUtil.sendError(sender, "Nombre invalide.");
@@ -129,7 +141,7 @@ public class NationsAdminCommand implements CommandExecutor, TabCompleter {
         }
         var grade = plugin.getGradeManager().getOrCreatePlayerGrade(target.getUniqueId(), target.getName());
         grade.setGradeName(gradeName);
-        plugin.getDataManager().savePlayers();
+        plugin.getGradeManager().saveGradeToDatabase(target.getUniqueId());
         MessageUtil.sendSuccess(sender, "Grade de §f" + target.getName() + " §afixé à §e" + gradeName + "§a.");
         MessageUtil.send(target, "§aVotre grade a été mis à jour: §e" + gradeName);
     }
@@ -150,7 +162,7 @@ public class NationsAdminCommand implements CommandExecutor, TabCompleter {
             var grade = plugin.getGradeManager().getOrCreatePlayerGrade(target.getUniqueId(), target.getName());
             grade.setLevel(level);
             grade.setXp(0);
-            plugin.getDataManager().savePlayers();
+            plugin.getGradeManager().saveGradeToDatabase(target.getUniqueId());
             MessageUtil.sendSuccess(sender, "Niveau de §f" + target.getName() + " §afixé à §e" + level + "§a.");
         } catch (NumberFormatException e) {
             MessageUtil.sendError(sender, "Niveau invalide.");

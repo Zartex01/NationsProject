@@ -70,8 +70,8 @@ public class TerritoryManager {
         plugin.getSeasonManager().addPlayerStat(player.getUniqueId(), "claims", 1);
         plugin.getGradeManager().addXp(player.getUniqueId(), plugin.getConfigManager().getXpPerClaim());
 
-        plugin.getDataManager().saveClaims();
-        plugin.getDataManager().savePlayers();
+        saveChunkToDatabase(claimed);
+        plugin.getGradeManager().saveGradeToDatabase(player.getUniqueId());
         return ClaimResult.SUCCESS;
     }
 
@@ -90,7 +90,7 @@ public class TerritoryManager {
         PlayerGrade grade = plugin.getGradeManager().getPlayerGrade(player.getUniqueId());
         if (grade != null) grade.decrementClaimCount();
 
-        plugin.getDataManager().saveClaims();
+        deleteChunkFromDatabase(claimed.getWorldName(), claimed.getChunkX(), claimed.getChunkZ());
         return true;
     }
 
@@ -106,7 +106,7 @@ public class TerritoryManager {
             if (grade != null) grade.decrementClaimCount();
         }
 
-        plugin.getDataManager().saveClaims();
+        deleteAllChunksForNation(nationId);
     }
 
     public ClaimedChunk getClaimedChunk(Chunk chunk) {

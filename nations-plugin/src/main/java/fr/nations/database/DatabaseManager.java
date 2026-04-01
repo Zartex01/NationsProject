@@ -61,6 +61,7 @@ public class DatabaseManager {
                     player_id TEXT NOT NULL,
                     nation_id TEXT NOT NULL,
                     role_name TEXT DEFAULT 'MEMBER',
+                    player_name TEXT,
                     joined_at INTEGER NOT NULL,
                     PRIMARY KEY (player_id),
                     FOREIGN KEY (nation_id) REFERENCES nations(id) ON DELETE CASCADE
@@ -108,6 +109,7 @@ public class DatabaseManager {
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS player_accounts (
                     player_id TEXT PRIMARY KEY,
+                    player_name TEXT,
                     balance REAL DEFAULT 0
                 )
             """);
@@ -115,6 +117,7 @@ public class DatabaseManager {
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS player_grades (
                     player_id TEXT PRIMARY KEY,
+                    player_name TEXT,
                     grade TEXT DEFAULT 'JOUEUR',
                     level INTEGER DEFAULT 1,
                     xp REAL DEFAULT 0
@@ -144,6 +147,7 @@ public class DatabaseManager {
                 CREATE TABLE IF NOT EXISTS season_stats (
                     player_id TEXT NOT NULL,
                     season_number INTEGER NOT NULL,
+                    player_name TEXT,
                     kills INTEGER DEFAULT 0,
                     deaths INTEGER DEFAULT 0,
                     wars_won INTEGER DEFAULT 0,
@@ -204,6 +208,23 @@ public class DatabaseManager {
             plugin.getLogger().info("[DB] Tables créées / vérifiées avec succès.");
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[DB] Erreur lors de la création des tables: " + e.getMessage(), e);
+        }
+
+        migrateColumns();
+    }
+
+    private void migrateColumns() {
+        String[][] migrations = {
+            {"ALTER TABLE player_accounts ADD COLUMN player_name TEXT", "player_accounts.player_name"},
+            {"ALTER TABLE player_grades ADD COLUMN player_name TEXT", "player_grades.player_name"},
+            {"ALTER TABLE season_stats ADD COLUMN player_name TEXT", "season_stats.player_name"},
+            {"ALTER TABLE nation_members ADD COLUMN player_name TEXT", "nation_members.player_name"},
+        };
+        for (String[] migration : migrations) {
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(migration[0]);
+            } catch (SQLException ignored) {
+            }
         }
     }
 

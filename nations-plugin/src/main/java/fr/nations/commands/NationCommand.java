@@ -128,7 +128,6 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         MessageUtil.sendSuccess(player, "Invitation envoyée à §f" + target.getName() + "§a.");
         MessageUtil.send(target, "§6" + player.getName() + " §7vous invite à rejoindre la nation §6" + nation.getName() + "§7.");
         MessageUtil.send(target, "§7Tapez §e/nation accept " + nation.getName() + " §7pour accepter.");
-        plugin.getDataManager().saveNations();
     }
 
     private void handleJoin(Player player, String[] args) {
@@ -243,7 +242,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
             return;
         }
         targetMember.setRole(roles[currentIndex - 1]);
-        plugin.getDataManager().saveNations();
+        plugin.getNationManager().saveMemberToDatabase(nation.getId(), targetMember);
         MessageUtil.sendSuccess(player, "§f" + target.getName() + " §aest maintenant §7" + targetMember.getRole().getDisplayName() + "§a.");
         MessageUtil.send(target, "§aVous avez été promu §7" + targetMember.getRole().getDisplayName() + " §adans §6" + nation.getName() + "§a.");
     }
@@ -275,7 +274,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
             return;
         }
         targetMember.setRole(roles[currentIndex + 1]);
-        plugin.getDataManager().saveNations();
+        plugin.getNationManager().saveMemberToDatabase(nation.getId(), targetMember);
         MessageUtil.sendSuccess(player, "§f" + target.getName() + " §aest maintenant §7" + targetMember.getRole().getDisplayName() + "§a.");
         MessageUtil.send(target, "§cVous avez été rétrogradé §7" + targetMember.getRole().getDisplayName() + " §cdans §6" + nation.getName() + "§c.");
     }
@@ -397,7 +396,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
             return;
         }
         nation.setOpen(!nation.isOpen());
-        plugin.getDataManager().saveNations();
+        plugin.getNationManager().saveNationToDatabase(nation);
         MessageUtil.sendSuccess(player, "La nation est maintenant " + (nation.isOpen() ? "§aOuverte" : "§cFermee") + "§a.");
     }
 
@@ -419,7 +418,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
             return;
         }
         nation.setDescription(desc);
-        plugin.getDataManager().saveNations();
+        plugin.getNationManager().saveNationToDatabase(nation);
         MessageUtil.sendSuccess(player, "Description mise a jour.");
     }
 
@@ -446,7 +445,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
         }
         String oldName = nation.getName();
         nation.setName(newName);
-        plugin.getDataManager().saveNations();
+        plugin.getNationManager().saveNationToDatabase(nation);
         MessageUtil.sendSuccess(player, "Nation renommee de §6" + oldName + " §avers §6" + newName + "§a.");
     }
 
@@ -471,7 +470,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
             }
             plugin.getEconomyManager().withdraw(player.getUniqueId(), amount);
             nation.depositToBank(amount);
-            plugin.getDataManager().saveNations();
+            plugin.getNationManager().saveNationToDatabase(nation);
             MessageUtil.sendSuccess(player, "§e" + MessageUtil.formatNumber(amount) + " coins §adéposés dans la banque de la nation.");
         } catch (NumberFormatException e) {
             MessageUtil.sendError(player, "Montant invalide.");
@@ -498,7 +497,7 @@ public class NationCommand implements CommandExecutor, TabCompleter {
                 return;
             }
             plugin.getEconomyManager().deposit(player.getUniqueId(), amount);
-            plugin.getDataManager().saveNations();
+            plugin.getNationManager().saveNationToDatabase(nation);
             MessageUtil.sendSuccess(player, "§e" + MessageUtil.formatNumber(amount) + " coins §aretirés de la banque.");
         } catch (NumberFormatException e) {
             MessageUtil.sendError(player, "Montant invalide.");

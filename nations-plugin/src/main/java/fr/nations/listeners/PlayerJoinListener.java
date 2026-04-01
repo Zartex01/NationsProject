@@ -59,11 +59,28 @@ public class PlayerJoinListener implements Listener {
             MessageUtil.sendRaw(player, "");
         }, 20L);
 
-        plugin.getDataManager().savePlayers();
+        if (plugin.getDatabaseManager().isConnected()) {
+            plugin.getEconomyManager().saveAccountToDatabase(player.getUniqueId());
+            plugin.getGradeManager().saveGradeToDatabase(player.getUniqueId());
+            plugin.getSeasonManager().savePlayerStatToDatabase(player.getUniqueId());
+        }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        plugin.getDataManager().saveAll();
+        Player player = event.getPlayer();
+        if (plugin.getDatabaseManager().isConnected()) {
+            plugin.getEconomyManager().saveAccountToDatabase(player.getUniqueId());
+            plugin.getGradeManager().saveGradeToDatabase(player.getUniqueId());
+            plugin.getSeasonManager().savePlayerStatToDatabase(player.getUniqueId());
+            fr.nations.nation.Nation nation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
+            if (nation != null) {
+                plugin.getNationManager().saveNationToDatabase(nation);
+                fr.nations.nation.NationMember member = nation.getMember(player.getUniqueId());
+                if (member != null) {
+                    plugin.getNationManager().saveMemberToDatabase(nation.getId(), member);
+                }
+            }
+        }
     }
 }

@@ -41,12 +41,12 @@ public class EconomyManager {
 
     public void deposit(UUID playerId, double amount) {
         getOrCreateAccount(playerId).deposit(amount);
-        plugin.getDataManager().saveEconomy();
+        saveAccountToDatabase(playerId);
     }
 
     public boolean withdraw(UUID playerId, double amount) {
         boolean result = getOrCreateAccount(playerId).withdraw(amount);
-        if (result) plugin.getDataManager().saveEconomy();
+        if (result) saveAccountToDatabase(playerId);
         return result;
     }
 
@@ -60,7 +60,7 @@ public class EconomyManager {
     public boolean setBalance(UUID playerId, double amount) {
         if (amount < 0) return false;
         getOrCreateAccount(playerId).setBalance(amount);
-        plugin.getDataManager().saveEconomy();
+        saveAccountToDatabase(playerId);
         return true;
     }
 
@@ -93,7 +93,7 @@ public class EconomyManager {
     }
 
     public void loadFromDatabase() {
-        String sql = "SELECT player_id, balance FROM player_accounts";
+        String sql = "SELECT player_id, player_name, balance FROM player_accounts";
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -101,7 +101,9 @@ public class EconomyManager {
             while (rs.next()) {
                 UUID id = UUID.fromString(rs.getString("player_id"));
                 double balance = rs.getDouble("balance");
-                accounts.put(id, new PlayerAccount(id, balance));
+                PlayerAccount account = new PlayerAccount(id, balance);
+                account.setPlayerName(rs.getString("player_name"));
+                accounts.put(id, account);
                 count++;
             }
             plugin.getLogger().info("[Economy] " + count + " comptes chargés depuis la DB.");
@@ -115,16 +117,24 @@ public class EconomyManager {
         PlayerAccount account = accounts.get(playerId);
         if (account == null) return;
         String sql = """
-            INSERT INTO player_accounts (player_id, balance) VALUES (?,?)
-            ON CONFLICT (player_id) DO UPDATE SET balance=excluded.balance
+            INSERT INTO player_accounts (player_id, player_name, balance) VALUES (?,?,?)
+            ON CONFLICT (player_id) DO UPDATE SET player_name=excluded.player_name, balance=excluded.balance
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, playerId.toString());
-            ps.setDouble(2, account.getBalance());
+            ps.setString(2, account.getPlayerName());
+            ps.setDouble(3, account.getBalance());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Economy] Erreur sauvegarde compte", e);
+        }
+    }
+
+    public void saveAllToDatabase() {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        for (UUID playerId : accounts.keySet()) {
+            saveAccountToDatabase(playerId);
         }
     }
 }

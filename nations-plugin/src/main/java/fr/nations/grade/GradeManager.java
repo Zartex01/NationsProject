@@ -75,7 +75,7 @@ public class GradeManager {
             }
         }
 
-        plugin.getDataManager().savePlayers();
+        saveGradeToDatabase(playerId);
     }
 
     public Collection<PlayerGrade> getAllPlayerGrades() {
@@ -97,7 +97,7 @@ public class GradeManager {
     }
 
     public void loadFromDatabase() {
-        String sql = "SELECT player_id, grade, level, xp FROM player_grades";
+        String sql = "SELECT player_id, player_name, grade, level, xp FROM player_grades";
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -107,7 +107,9 @@ public class GradeManager {
                 String grade = rs.getString("grade");
                 int level = rs.getInt("level");
                 double xp = rs.getDouble("xp");
-                playerGrades.put(id, new PlayerGrade(id, grade, level, (long) xp, 0));
+                PlayerGrade pg = new PlayerGrade(id, grade, level, (long) xp, 0);
+                pg.setPlayerName(rs.getString("player_name"));
+                playerGrades.put(id, pg);
                 count++;
             }
             plugin.getLogger().info("[Grades] " + count + " grades chargés depuis la DB.");
@@ -121,18 +123,28 @@ public class GradeManager {
         PlayerGrade grade = playerGrades.get(playerId);
         if (grade == null) return;
         String sql = """
-            INSERT INTO player_grades (player_id, grade, level, xp) VALUES (?,?,?,?)
-            ON CONFLICT (player_id) DO UPDATE SET grade=excluded.grade, level=excluded.level, xp=excluded.xp
+            INSERT INTO player_grades (player_id, player_name, grade, level, xp) VALUES (?,?,?,?,?)
+            ON CONFLICT (player_id) DO UPDATE SET
+                player_name=excluded.player_name, grade=excluded.grade,
+                level=excluded.level, xp=excluded.xp
         """;
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, playerId.toString());
-            ps.setString(2, grade.getGradeName());
-            ps.setInt(3, grade.getLevel());
-            ps.setDouble(4, grade.getXp());
+            ps.setString(2, grade.getPlayerName());
+            ps.setString(3, grade.getGradeName());
+            ps.setInt(4, grade.getLevel());
+            ps.setDouble(5, grade.getXp());
             ps.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Grades] Erreur sauvegarde grade", e);
+        }
+    }
+
+    public void saveAllToDatabase() {
+        if (!plugin.getDatabaseManager().isConnected()) return;
+        for (UUID playerId : playerGrades.keySet()) {
+            saveGradeToDatabase(playerId);
         }
     }
 }

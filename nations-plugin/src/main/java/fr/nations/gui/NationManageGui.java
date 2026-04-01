@@ -78,7 +78,7 @@ public class NationManageGui {
             }
             case 14 -> {
                 nation.setOpen(!nation.isOpen());
-                plugin.getDataManager().saveNations();
+                plugin.getNationManager().saveNationToDatabase(nation);
                 MessageUtil.sendSuccess(player, "La nation est maintenant " + (nation.isOpen() ? "ouverte" : "fermée") + ".");
                 player.openInventory(build());
             }

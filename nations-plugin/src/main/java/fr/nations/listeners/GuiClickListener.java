@@ -101,7 +101,7 @@ public class GuiClickListener implements Listener {
                     }
                     plugin.getEconomyManager().withdraw(player.getUniqueId(), amount);
                     nation.depositToBank(amount);
-                    plugin.getDataManager().saveNations();
+                    plugin.getNationManager().saveNationToDatabase(nation);
                     MessageUtil.sendSuccess(player, "§e" + MessageUtil.formatNumber(amount) + " coins §adéposés dans la banque.");
                     new BankGui(plugin, player, nation).open();
                 } catch (NumberFormatException e) {
@@ -118,7 +118,7 @@ public class GuiClickListener implements Listener {
                         MessageUtil.sendError(player, "Fonds insuffisants dans la banque."); return;
                     }
                     plugin.getEconomyManager().deposit(player.getUniqueId(), amount);
-                    plugin.getDataManager().saveNations();
+                    plugin.getNationManager().saveNationToDatabase(nation);
                     MessageUtil.sendSuccess(player, "§e" + MessageUtil.formatNumber(amount) + " coins §aretirés de la banque.");
                     new BankGui(plugin, player, nation).open();
                 } catch (NumberFormatException e) {
@@ -136,7 +136,7 @@ public class GuiClickListener implements Listener {
                 }
                 String oldName = nation.getName();
                 nation.setName(input);
-                plugin.getDataManager().saveNations();
+                plugin.getNationManager().saveNationToDatabase(nation);
                 MessageUtil.sendSuccess(player, "Nation renommée: §6" + oldName + " §a→ §6" + input);
                 new NationManageGui(plugin, player, nation).open();
             }
@@ -164,7 +164,7 @@ public class GuiClickListener implements Listener {
                 if (nation == null) { MessageUtil.sendError(player, "Nation introuvable."); return; }
                 if (input.length() > 100) { MessageUtil.sendError(player, "Description trop longue (max 100 chars)."); return; }
                 nation.setDescription(input);
-                plugin.getDataManager().saveNations();
+                plugin.getNationManager().saveNationToDatabase(nation);
                 MessageUtil.sendSuccess(player, "Description mise à jour.");
                 new NationManageGui(plugin, player, nation).open();
             }

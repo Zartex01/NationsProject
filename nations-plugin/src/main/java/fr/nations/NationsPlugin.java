@@ -89,6 +89,16 @@ public class NationsPlugin extends JavaPlugin {
         if (atmManager != null) atmManager.flushAllSessions();
         if (warManager != null) warManager.shutdown();
         if (seasonManager != null) seasonManager.shutdown();
+
+        if (databaseManager != null && databaseManager.isConnected()) {
+            getLogger().info("Sauvegarde de toutes les données en base...");
+            if (nationManager != null) nationManager.saveAllToDatabase();
+            if (economyManager != null) economyManager.saveAllToDatabase();
+            if (gradeManager != null) gradeManager.saveAllToDatabase();
+            if (seasonManager != null) seasonManager.saveAllToDatabase();
+            getLogger().info("Sauvegarde terminée.");
+        }
+
         if (databaseManager != null) databaseManager.close();
         getLogger().info("NationsEpoque désactivé.");
     }
