@@ -102,7 +102,6 @@ fr/nations/gui/HdvMyListingsGui.class
 fr/nations/grade/GradeType.class
 fr/nations/hdv/HdvManager.class
 fr/nations/grade/PlayerGrade.class
-fr/nations/commands/FurnaceCommand$1.class
 fr/nations/gui/NationRoleEditGui.class
 fr/nations/kit/KitManager$1.class
 fr/nations/gui/NationMainGui.class

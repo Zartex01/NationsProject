@@ -2,20 +2,31 @@ package fr.nations.commands;
 
 import fr.nations.NationsPlugin;
 import fr.nations.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.SmokingRecipe;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class FurnaceCommand implements CommandExecutor, TabCompleter {
 
     private final NationsPlugin plugin;
+
+    private volatile Map<Material, Material> smeltCache;
 
     public FurnaceCommand(NationsPlugin plugin) {
         this.plugin = plugin;
@@ -85,99 +96,57 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
     }
 
     private Material getSmeltResult(Material input) {
-        return switch (input) {
-            // ── Métaux (haut-fourneau) ──────────────────────────────────
-            case IRON_ORE, RAW_IRON,
-                 DEEPSLATE_IRON_ORE             -> Material.IRON_INGOT;
-            case GOLD_ORE, RAW_GOLD,
-                 DEEPSLATE_GOLD_ORE,
-                 NETHER_GOLD_ORE                -> Material.GOLD_INGOT;
-            case COPPER_ORE, RAW_COPPER,
-                 DEEPSLATE_COPPER_ORE           -> Material.COPPER_INGOT;
-            case ANCIENT_DEBRIS                 -> Material.NETHERITE_SCRAP;
-            case RAW_IRON_BLOCK                 -> Material.IRON_BLOCK;
-            case RAW_GOLD_BLOCK                 -> Material.GOLD_BLOCK;
-            case RAW_COPPER_BLOCK               -> Material.COPPER_BLOCK;
+        return getSmeltCache().get(input);
+    }
 
-            // ── Minerais divers ─────────────────────────────────────────
-            case COAL_ORE,
-                 DEEPSLATE_COAL_ORE             -> Material.COAL;
-            case NETHER_QUARTZ_ORE              -> Material.QUARTZ;
-            case LAPIS_ORE,
-                 DEEPSLATE_LAPIS_ORE            -> Material.LAPIS_LAZULI;
-            case DIAMOND_ORE,
-                 DEEPSLATE_DIAMOND_ORE          -> Material.DIAMOND;
-            case EMERALD_ORE,
-                 DEEPSLATE_EMERALD_ORE          -> Material.EMERALD;
-            case REDSTONE_ORE,
-                 DEEPSLATE_REDSTONE_ORE         -> Material.REDSTONE;
+    private Map<Material, Material> getSmeltCache() {
+        if (smeltCache == null) {
+            synchronized (this) {
+                if (smeltCache == null) {
+                    smeltCache = buildSmeltCache();
+                }
+            }
+        }
+        return smeltCache;
+    }
 
-            // ── Blocs de construction ───────────────────────────────────
-            case SAND, RED_SAND                 -> Material.GLASS;
-            case COBBLESTONE                    -> Material.STONE;
-            case COBBLED_DEEPSLATE              -> Material.DEEPSLATE;
-            case STONE                          -> Material.SMOOTH_STONE;
-            case SANDSTONE                      -> Material.SMOOTH_SANDSTONE;
-            case RED_SANDSTONE                  -> Material.SMOOTH_RED_SANDSTONE;
-            case QUARTZ_BLOCK                   -> Material.SMOOTH_QUARTZ;
-            case BASALT                         -> Material.SMOOTH_BASALT;
-            case NETHERRACK                     -> Material.NETHER_BRICK;
-            case CLAY_BALL                      -> Material.BRICK;
-            case CLAY                           -> Material.TERRACOTTA;
-            case WET_SPONGE                     -> Material.SPONGE;
-            case CACTUS                         -> Material.GREEN_DYE;
-            case CHORUS_FRUIT                   -> Material.POPPED_CHORUS_FRUIT;
-            case KELP                           -> Material.DRIED_KELP;
+    private Map<Material, Material> buildSmeltCache() {
+        Map<Material, Material> cache = new HashMap<>();
+        Iterator<Recipe> it = Bukkit.recipeIterator();
+        while (it.hasNext()) {
+            Recipe recipe = it.next();
 
-            // ── Bois / logs / planches → charbon de bois ────────────────
-            case OAK_LOG, OAK_WOOD,
-                 STRIPPED_OAK_LOG,
-                 STRIPPED_OAK_WOOD,
-                 OAK_PLANKS,
-                 BIRCH_LOG, BIRCH_WOOD,
-                 STRIPPED_BIRCH_LOG,
-                 STRIPPED_BIRCH_WOOD,
-                 BIRCH_PLANKS,
-                 SPRUCE_LOG, SPRUCE_WOOD,
-                 STRIPPED_SPRUCE_LOG,
-                 STRIPPED_SPRUCE_WOOD,
-                 SPRUCE_PLANKS,
-                 JUNGLE_LOG, JUNGLE_WOOD,
-                 STRIPPED_JUNGLE_LOG,
-                 STRIPPED_JUNGLE_WOOD,
-                 JUNGLE_PLANKS,
-                 ACACIA_LOG, ACACIA_WOOD,
-                 STRIPPED_ACACIA_LOG,
-                 STRIPPED_ACACIA_WOOD,
-                 ACACIA_PLANKS,
-                 DARK_OAK_LOG, DARK_OAK_WOOD,
-                 STRIPPED_DARK_OAK_LOG,
-                 STRIPPED_DARK_OAK_WOOD,
-                 DARK_OAK_PLANKS,
-                 MANGROVE_LOG, MANGROVE_WOOD,
-                 STRIPPED_MANGROVE_LOG,
-                 STRIPPED_MANGROVE_WOOD,
-                 MANGROVE_PLANKS,
-                 CHERRY_LOG, CHERRY_WOOD,
-                 STRIPPED_CHERRY_LOG,
-                 STRIPPED_CHERRY_WOOD,
-                 CHERRY_PLANKS,
-                 BAMBOO_BLOCK,
-                 STRIPPED_BAMBOO_BLOCK,
-                 BAMBOO_PLANKS              -> Material.CHARCOAL;
+            Material result;
+            RecipeChoice choice;
 
-            // ── Nourriture (fumoir) ─────────────────────────────────────
-            case BEEF                           -> Material.COOKED_BEEF;
-            case PORKCHOP                       -> Material.COOKED_PORKCHOP;
-            case CHICKEN                        -> Material.COOKED_CHICKEN;
-            case MUTTON                         -> Material.COOKED_MUTTON;
-            case SALMON                         -> Material.COOKED_SALMON;
-            case COD                            -> Material.COOKED_COD;
-            case RABBIT                         -> Material.COOKED_RABBIT;
-            case POTATO                         -> Material.BAKED_POTATO;
+            if (recipe instanceof FurnaceRecipe fr) {
+                result = fr.getResult().getType();
+                choice = fr.getInputChoice();
+            } else if (recipe instanceof BlastingRecipe br) {
+                result = br.getResult().getType();
+                choice = br.getInputChoice();
+            } else if (recipe instanceof SmokingRecipe sr) {
+                result = sr.getResult().getType();
+                choice = sr.getInputChoice();
+            } else {
+                continue;
+            }
 
-            default                             -> null;
-        };
+            if (choice instanceof RecipeChoice.MaterialChoice mc) {
+                for (Material m : mc.getChoices()) {
+                    cache.putIfAbsent(m, result);
+                }
+            } else if (choice instanceof RecipeChoice.ExactChoice ec) {
+                for (ItemStack is : ec.getChoices()) {
+                    cache.putIfAbsent(is.getType(), result);
+                }
+            }
+        }
+        return cache;
+    }
+
+    public void invalidateCache() {
+        smeltCache = null;
     }
 
     @Override
