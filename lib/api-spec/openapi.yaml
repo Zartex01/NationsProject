@@ -3,13 +3,26 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: NationsEpoque API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: nations
+    description: Nation management
+  - name: players
+    description: Player accounts and grades
+  - name: wars
+    description: War management
+  - name: coalitions
+    description: Coalition management
+  - name: seasons
+    description: Season management
+  - name: leaderboard
+    description: Leaderboard and rankings
+
 paths:
   /healthz:
     get:
@@ -24,13 +37,630 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /nations:
+    get:
+      operationId: listNations
+      tags: [nations]
+      summary: List all nations
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: number
+            default: 0
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [name, level, seasonPoints, bankBalance, memberCount]
+            default: level
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        "200":
+          description: List of nations
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, total]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NationSummary"
+                  total:
+                    type: number
+
+  /nations/{id}:
+    get:
+      operationId: getNation
+      tags: [nations]
+      summary: Get a nation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Nation detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NationDetail"
+        "404":
+          description: Nation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /nations/{id}/members:
+    get:
+      operationId: getNationMembers
+      tags: [nations]
+      summary: Get all members of a nation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of nation members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NationMember"
+        "404":
+          description: Nation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /nations/{id}/claims:
+    get:
+      operationId: getNationClaims
+      tags: [nations]
+      summary: Get all claimed chunks of a nation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of claimed chunks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClaimedChunk"
+        "404":
+          description: Nation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /nations/{id}/wars:
+    get:
+      operationId: getNationWars
+      tags: [nations]
+      summary: Get all wars involving a nation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, ACTIVE, FINISHED, CANCELLED]
+      responses:
+        "200":
+          description: List of wars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/War"
+        "404":
+          description: Nation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /players/{id}:
+    get:
+      operationId: getPlayer
+      tags: [players]
+      summary: Get a player profile (account + grade + playtime)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Player profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerProfile"
+        "404":
+          description: Player not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /players/{id}/stats:
+    get:
+      operationId: getPlayerSeasonStats
+      tags: [players]
+      summary: Get all season stats for a player
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Season stats list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeasonStat"
+
+  /wars:
+    get:
+      operationId: listWars
+      tags: [wars]
+      summary: List all wars
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, ACTIVE, FINISHED, CANCELLED]
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: number
+            default: 0
+      responses:
+        "200":
+          description: List of wars
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, total]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/War"
+                  total:
+                    type: number
+
+  /wars/{id}:
+    get:
+      operationId: getWar
+      tags: [wars]
+      summary: Get a war by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: War detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/War"
+        "404":
+          description: War not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /coalitions:
+    get:
+      operationId: listCoalitions
+      tags: [coalitions]
+      summary: List all coalitions
+      responses:
+        "200":
+          description: List of coalitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CoalitionDetail"
+
+  /coalitions/{id}:
+    get:
+      operationId: getCoalition
+      tags: [coalitions]
+      summary: Get a coalition by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Coalition detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoalitionDetail"
+        "404":
+          description: Coalition not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /seasons:
+    get:
+      operationId: listSeasons
+      tags: [seasons]
+      summary: List all seasons
+      responses:
+        "200":
+          description: List of seasons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Season"
+
+  /seasons/current:
+    get:
+      operationId: getCurrentSeason
+      tags: [seasons]
+      summary: Get the current active season
+      responses:
+        "200":
+          description: Current season
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Season"
+        "404":
+          description: No active season
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /seasons/{number}/stats:
+    get:
+      operationId: getSeasonStats
+      tags: [seasons]
+      summary: Get leaderboard stats for a season
+      parameters:
+        - name: number
+          in: path
+          required: true
+          schema:
+            type: number
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: number
+            default: 0
+      responses:
+        "200":
+          description: Season stats leaderboard
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, total]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SeasonStat"
+                  total:
+                    type: number
+
+  /leaderboard/nations:
+    get:
+      operationId: getNationsLeaderboard
+      tags: [leaderboard]
+      summary: Get nations ranked by season points
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 10
+      responses:
+        "200":
+          description: Top nations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NationSummary"
+
+  /leaderboard/players:
+    get:
+      operationId: getPlayersLeaderboard
+      tags: [leaderboard]
+      summary: Get players ranked by kills in current season
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 10
+      responses:
+        "200":
+          description: Top players
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeasonStat"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    NationSummary:
+      type: object
+      required: [id, name, leaderId, level, xp, seasonPoints, bankBalance, open, createdAt, memberCount]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        leaderId:
+          type: string
+        level:
+          type: number
+        xp:
+          type: number
+        seasonPoints:
+          type: number
+        bankBalance:
+          type: number
+        open:
+          type: boolean
+        coalitionId:
+          type: string
+          nullable: true
+        createdAt:
+          type: number
+        memberCount:
+          type: number
+
+    NationDetail:
+      allOf:
+        - $ref: "#/components/schemas/NationSummary"
+        - type: object
+          required: [members, allies]
+          properties:
+            members:
+              type: array
+              items:
+                $ref: "#/components/schemas/NationMember"
+            allies:
+              type: array
+              items:
+                type: string
+
+    NationMember:
+      type: object
+      required: [playerId, nationId, roleName, joinedAt]
+      properties:
+        playerId:
+          type: string
+        nationId:
+          type: string
+        roleName:
+          type: string
+        playerName:
+          type: string
+          nullable: true
+        joinedAt:
+          type: number
+
+    ClaimedChunk:
+      type: object
+      required: [id, nationId, worldName, chunkX, chunkZ, claimedAt]
+      properties:
+        id:
+          type: string
+        nationId:
+          type: string
+        worldName:
+          type: string
+        chunkX:
+          type: number
+        chunkZ:
+          type: number
+        claimedAt:
+          type: number
+
+    War:
+      type: object
+      required: [id, attackerNationId, defenderNationId, type, status, declaredAt, endsAt, attackerKills, defenderKills, surrenderRequested]
+      properties:
+        id:
+          type: string
+        attackerNationId:
+          type: string
+        defenderNationId:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+        declaredAt:
+          type: number
+        endsAt:
+          type: number
+        reason:
+          type: string
+          nullable: true
+        attackerKills:
+          type: number
+        defenderKills:
+          type: number
+        staffNote:
+          type: string
+          nullable: true
+        validatedBy:
+          type: string
+          nullable: true
+        surrenderRequested:
+          type: boolean
+        surrenderRequestedAt:
+          type: number
+          nullable: true
+
+    CoalitionDetail:
+      type: object
+      required: [id, name, leaderNationId, createdAt, memberNationIds]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        leaderNationId:
+          type: string
+        createdAt:
+          type: number
+        memberNationIds:
+          type: array
+          items:
+            type: string
+
+    PlayerProfile:
+      type: object
+      required: [playerId]
+      properties:
+        playerId:
+          type: string
+        playerName:
+          type: string
+          nullable: true
+        balance:
+          type: number
+          nullable: true
+        grade:
+          type: string
+          nullable: true
+        gradeLevel:
+          type: number
+          nullable: true
+        gradeXp:
+          type: number
+          nullable: true
+        totalPlaytimeSeconds:
+          type: number
+          nullable: true
+        claimedPlaytimeSeconds:
+          type: number
+          nullable: true
+
+    SeasonStat:
+      type: object
+      required: [playerId, seasonNumber, kills, deaths, warsWon, claims]
+      properties:
+        playerId:
+          type: string
+        seasonNumber:
+          type: number
+        playerName:
+          type: string
+          nullable: true
+        kills:
+          type: number
+        deaths:
+          type: number
+        warsWon:
+          type: number
+        claims:
+          type: number
+
+    Season:
+      type: object
+      required: [seasonNumber, startedAt, current]
+      properties:
+        seasonNumber:
+          type: number
+        startedAt:
+          type: number
+        endedAt:
+          type: number
+          nullable: true
+        current:
+          type: boolean

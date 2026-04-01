@@ -6,6 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface HealthStatus {
-  status: string;
+export interface CoalitionDetail {
+  id: string;
+  name: string;
+  leaderNationId: string;
+  createdAt: number;
+  memberNationIds: string[];
 }

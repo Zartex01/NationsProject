@@ -5,7 +5,9 @@
  * NationsEpoque API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { SeasonStat } from "./seasonStat";
 
-export interface HealthStatus {
-  status: string;
-}
+export type GetSeasonStats200 = {
+  data: SeasonStat[];
+  total: number;
+};

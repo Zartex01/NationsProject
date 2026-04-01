@@ -5,7 +5,8 @@
  * NationsEpoque API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { GetNationWarsStatus } from "./getNationWarsStatus";
 
-export interface HealthStatus {
-  status: string;
-}
+export type GetNationWarsParams = {
+  status?: GetNationWarsStatus;
+};

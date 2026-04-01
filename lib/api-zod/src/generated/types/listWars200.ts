@@ -5,7 +5,9 @@
  * NationsEpoque API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { War } from "./war";
 
-export interface HealthStatus {
-  status: string;
-}
+export type ListWars200 = {
+  data: War[];
+  total: number;
+};
