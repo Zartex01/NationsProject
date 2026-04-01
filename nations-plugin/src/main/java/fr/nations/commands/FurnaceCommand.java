@@ -86,12 +86,76 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
 
     private Material getSmeltResult(Material input) {
         return switch (input) {
-            case IRON_ORE, RAW_IRON             -> Material.IRON_INGOT;
-            case GOLD_ORE, RAW_GOLD             -> Material.GOLD_INGOT;
-            case COPPER_ORE, RAW_COPPER         -> Material.COPPER_INGOT;
+            // ── Métaux (haut-fourneau) ──────────────────────────────────
+            case IRON_ORE, RAW_IRON,
+                 DEEPSLATE_IRON_ORE             -> Material.IRON_INGOT;
+            case GOLD_ORE, RAW_GOLD,
+                 DEEPSLATE_GOLD_ORE,
+                 NETHER_GOLD_ORE                -> Material.GOLD_INGOT;
+            case COPPER_ORE, RAW_COPPER,
+                 DEEPSLATE_COPPER_ORE           -> Material.COPPER_INGOT;
             case ANCIENT_DEBRIS                 -> Material.NETHERITE_SCRAP;
-            case SAND                           -> Material.GLASS;
-            case COBBLESTONE                    -> Material.STONE;
+            case RAW_IRON_BLOCK                 -> Material.IRON_BLOCK;
+            case RAW_GOLD_BLOCK                 -> Material.GOLD_BLOCK;
+            case RAW_COPPER_BLOCK               -> Material.COPPER_BLOCK;
+
+            // ── Minerais divers ─────────────────────────────────────────
+            case NETHER_QUARTZ_ORE              -> Material.QUARTZ;
+            case LAPIS_ORE,
+                 DEEPSLATE_LAPIS_ORE            -> Material.LAPIS_LAZULI;
+            case DIAMOND_ORE,
+                 DEEPSLATE_DIAMOND_ORE          -> Material.DIAMOND;
+            case EMERALD_ORE,
+                 DEEPSLATE_EMERALD_ORE          -> Material.EMERALD;
+            case REDSTONE_ORE,
+                 DEEPSLATE_REDSTONE_ORE         -> Material.REDSTONE;
+
+            // ── Blocs de construction ───────────────────────────────────
+            case SAND, RED_SAND                 -> Material.GLASS;
+            case COBBLESTONE,
+                 COBBLED_DEEPSLATE              -> Material.STONE;
+            case STONE                          -> Material.SMOOTH_STONE;
+            case SANDSTONE                      -> Material.SMOOTH_SANDSTONE;
+            case RED_SANDSTONE                  -> Material.SMOOTH_RED_SANDSTONE;
+            case QUARTZ_BLOCK                   -> Material.SMOOTH_QUARTZ;
+            case BASALT                         -> Material.SMOOTH_BASALT;
+            case NETHERRACK                     -> Material.NETHER_BRICK;
+            case CLAY_BALL                      -> Material.BRICK;
+            case CLAY                           -> Material.TERRACOTTA;
+            case WET_SPONGE                     -> Material.SPONGE;
+            case CACTUS                         -> Material.GREEN_DYE;
+            case CHORUS_FRUIT                   -> Material.POPPED_CHORUS_FRUIT;
+            case KELP                           -> Material.DRIED_KELP;
+
+            // ── Bois / logs → charbon de bois ───────────────────────────
+            case OAK_LOG, OAK_WOOD,
+                 STRIPPED_OAK_LOG,
+                 STRIPPED_OAK_WOOD,
+                 BIRCH_LOG, BIRCH_WOOD,
+                 STRIPPED_BIRCH_LOG,
+                 STRIPPED_BIRCH_WOOD,
+                 SPRUCE_LOG, SPRUCE_WOOD,
+                 STRIPPED_SPRUCE_LOG,
+                 STRIPPED_SPRUCE_WOOD,
+                 JUNGLE_LOG, JUNGLE_WOOD,
+                 STRIPPED_JUNGLE_LOG,
+                 STRIPPED_JUNGLE_WOOD,
+                 ACACIA_LOG, ACACIA_WOOD,
+                 STRIPPED_ACACIA_LOG,
+                 STRIPPED_ACACIA_WOOD,
+                 DARK_OAK_LOG, DARK_OAK_WOOD,
+                 STRIPPED_DARK_OAK_LOG,
+                 STRIPPED_DARK_OAK_WOOD,
+                 MANGROVE_LOG, MANGROVE_WOOD,
+                 STRIPPED_MANGROVE_LOG,
+                 STRIPPED_MANGROVE_WOOD,
+                 CHERRY_LOG, CHERRY_WOOD,
+                 STRIPPED_CHERRY_LOG,
+                 STRIPPED_CHERRY_WOOD,
+                 BAMBOO_BLOCK,
+                 STRIPPED_BAMBOO_BLOCK          -> Material.CHARCOAL;
+
+            // ── Nourriture (fumoir) ─────────────────────────────────────
             case BEEF                           -> Material.COOKED_BEEF;
             case PORKCHOP                       -> Material.COOKED_PORKCHOP;
             case CHICKEN                        -> Material.COOKED_CHICKEN;
@@ -100,8 +164,7 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
             case COD                            -> Material.COOKED_COD;
             case RABBIT                         -> Material.COOKED_RABBIT;
             case POTATO                         -> Material.BAKED_POTATO;
-            case KELP                           -> Material.DRIED_KELP;
-            case WET_SPONGE                     -> Material.SPONGE;
+
             default                             -> null;
         };
     }
