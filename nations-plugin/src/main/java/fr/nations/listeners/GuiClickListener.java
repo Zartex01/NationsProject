@@ -53,6 +53,12 @@ public class GuiClickListener implements Listener {
             hdvSellGui.handleClick(event);
         } else if (gui instanceof HdvBrowseGui hdvBrowseGui) {
             hdvBrowseGui.handleClick(event);
+        } else if (gui instanceof fr.nations.gui.NationRoleListGui roleListGui) {
+            roleListGui.handleClick(event);
+        } else if (gui instanceof fr.nations.gui.CustomRoleEditHolder customRoleGui) {
+            customRoleGui.handleClick(event);
+        } else if (gui instanceof fr.nations.gui.FurnaceGui furnaceGui) {
+            furnaceGui.handleClick(event);
         }
     }
 
@@ -167,6 +173,66 @@ public class GuiClickListener implements Listener {
                 plugin.getNationManager().saveNationToDatabase(nation);
                 MessageUtil.sendSuccess(player, "Description mise à jour.");
                 new NationManageGui(plugin, player, nation).open();
+            }
+            case "custom_role_rename" -> {
+                java.util.UUID roleId = java.util.UUID.fromString(param);
+                fr.nations.role.CustomRole role = plugin.getCustomRoleManager().getRole(roleId);
+                if (role == null) { MessageUtil.sendError(player, "Rôle introuvable."); return; }
+                if (input.length() < 2 || input.length() > 24) {
+                    MessageUtil.sendError(player, "Nom invalide (2-24 caractères).");
+                    return;
+                }
+                role.setDisplayName(input);
+                plugin.getCustomRoleManager().saveRole(role);
+                MessageUtil.sendSuccess(player, "Rôle renommé en §6" + input + "§a.");
+                Nation nation = plugin.getNationManager().getNationById(role.getNationId());
+                if (nation != null) {
+                    player.openInventory(fr.nations.gui.RolesGui.buildRoleEditGui(plugin, role));
+                    fr.nations.gui.GuiManager.registerGui(player.getUniqueId(),
+                        new fr.nations.gui.CustomRoleEditHolder(plugin, player, nation, role));
+                }
+            }
+            case "housing_name" -> {
+                // param = "minX,minY,minZ,maxX,maxY,maxZ,world"
+                if (input.length() < 2 || input.length() > 32) {
+                    MessageUtil.sendError(player, "Nom invalide (2-32 caractères).");
+                    return;
+                }
+                GuiManager.setPendingAction(player.getUniqueId(), "housing_price:" + input + ":" + param);
+                player.sendMessage("§eTapez le §6prix §edu logement en coins §8(ou §cannuler§8):");
+            }
+            case "housing_price" -> {
+                // param = "nom:minX,minY,minZ,maxX,maxY,maxZ,world"
+                int colonIdx = param.indexOf(':');
+                if (colonIdx < 0) { MessageUtil.sendError(player, "Erreur interne."); return; }
+                String housingName = param.substring(0, colonIdx);
+                String coords = param.substring(colonIdx + 1);
+                String[] coordParts = coords.split(",");
+                if (coordParts.length < 7) { MessageUtil.sendError(player, "Erreur interne (coords)."); return; }
+                try {
+                    double price = Double.parseDouble(input);
+                    if (price < 0) { MessageUtil.sendError(player, "Le prix ne peut pas être négatif."); return; }
+                    if (price > 1_000_000_000) { MessageUtil.sendError(player, "Prix trop élevé."); return; }
+                    int minX = Integer.parseInt(coordParts[0]), minY = Integer.parseInt(coordParts[1]), minZ = Integer.parseInt(coordParts[2]);
+                    int maxX = Integer.parseInt(coordParts[3]), maxY = Integer.parseInt(coordParts[4]), maxZ = Integer.parseInt(coordParts[5]);
+                    String world = coordParts[6];
+
+                    Nation playerNation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
+                    if (playerNation == null) { MessageUtil.sendError(player, "Vous n'avez pas de nation."); return; }
+
+                    java.util.UUID housingId = java.util.UUID.randomUUID();
+                    fr.nations.housing.Housing housing = new fr.nations.housing.Housing(
+                        housingId, playerNation.getId(), housingName, price,
+                        minX, minY, minZ, maxX, maxY, maxZ, world
+                    );
+                    plugin.getHousingManager().createHousing(housing);
+                    plugin.getHousingListener().setPendingSign(player.getUniqueId(), housingId);
+
+                    player.sendMessage("§a§l✔ §aLogement §6" + housingName + " §acréé! Prix: §6" + (int) price + " coins§a.");
+                    player.sendMessage("§ePlacez maintenant un §6panneau §edans ou à côté de la zone pour finaliser.");
+                } catch (NumberFormatException e) {
+                    MessageUtil.sendError(player, "Prix invalide. Entrez un nombre (ex: §e1000§c).");
+                }
             }
         }
     }

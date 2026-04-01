@@ -81,6 +81,11 @@ commands:
     usage: /npub <message>
     aliases: [nationpub, nationpublicite]
     permission: nations.use
+  furnace:
+    description: Ouvrir un fourneau virtuel pour fondre des items
+    usage: /furnace
+    aliases: [fourneau, smelt]
+    permission: nations.use
 
 permissions:
   nations.use:

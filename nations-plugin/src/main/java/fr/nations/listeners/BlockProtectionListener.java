@@ -117,6 +117,18 @@ public class BlockProtectionListener implements Listener {
     }
 
     private boolean canPlayerBuildInNation(Player player, UUID nationId) {
+        // Si le joueur est proprio d'un logement qui contient le bloc, il peut tout faire
+        if (plugin.getHousingManager() != null) {
+            fr.nations.housing.Housing housing = plugin.getHousingManager().getHousingContaining(
+                player.getWorld().getName(),
+                (int) player.getLocation().getX(),
+                (int) player.getLocation().getY(),
+                (int) player.getLocation().getZ());
+            if (housing != null && player.getUniqueId().equals(housing.getOwnerId())) {
+                return true;
+            }
+        }
+
         Nation nation = plugin.getNationManager().getNationById(nationId);
         if (nation == null) return true;
         if (!nation.isMember(player.getUniqueId())) return false;
@@ -125,6 +137,18 @@ public class BlockProtectionListener implements Listener {
     }
 
     private boolean canPlayerInteractInNation(Player player, UUID nationId) {
+        // Si le joueur est proprio d'un logement dans ce chunk, il peut interagir
+        if (plugin.getHousingManager() != null) {
+            fr.nations.housing.Housing housing = plugin.getHousingManager().getHousingContaining(
+                player.getWorld().getName(),
+                (int) player.getLocation().getX(),
+                (int) player.getLocation().getY(),
+                (int) player.getLocation().getZ());
+            if (housing != null && player.getUniqueId().equals(housing.getOwnerId())) {
+                return true;
+            }
+        }
+
         Nation nation = plugin.getNationManager().getNationById(nationId);
         if (nation == null) return true;
         return nation.isMember(player.getUniqueId());

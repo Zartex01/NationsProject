@@ -569,30 +569,45 @@ public class NationCommand implements CommandExecutor, TabCompleter {
 
     private void handleRoleGui(Player player, String[] args) {
         boolean isAdmin = player.hasPermission("nations.admin");
-        boolean isNationLeader = false;
         Nation playerNation = plugin.getNationManager().getPlayerNation(player.getUniqueId());
-        if (playerNation != null) {
-            NationMember member = playerNation.getMember(player.getUniqueId());
-            if (member != null && member.getRole() == NationRole.LEADER) {
-                isNationLeader = true;
-            }
-        }
-        if (!isAdmin && !isNationLeader) {
-            MessageUtil.sendError(player, "Vous n'avez pas la permission.");
+        if (playerNation == null) {
+            MessageUtil.sendError(player, "Vous n'avez pas de nation.");
             return;
         }
+        NationMember member = playerNation.getMember(player.getUniqueId());
+        boolean canManage = isAdmin
+            || (member != null && (member.getRole() == NationRole.LEADER || member.getRole() == NationRole.CO_LEADER))
+            || plugin.getCustomRoleManager().hasPermission(player.getUniqueId(), fr.nations.role.RolePermission.MANAGE_ROLES);
+
+        if (!canManage) {
+            MessageUtil.sendError(player, "Vous n'avez pas la permission de gérer les rôles.");
+            return;
+        }
+
+        // Sans argument → GUI liste tous les rôles (base + custom)
         if (args.length < 2) {
-            MessageUtil.sendError(player, "Usage: /nation role <LEADER|CO_LEADER|OFFICER|MEMBER|RECRUIT>");
+            new fr.nations.gui.NationRoleListGui(plugin, player, playerNation).open();
             return;
         }
-        fr.nations.nation.NationRole role;
+
+        // Essayer un rôle de base d'abord
         try {
-            role = fr.nations.nation.NationRole.valueOf(args[1].toUpperCase());
-        } catch (IllegalArgumentException e) {
-            MessageUtil.sendError(player, "Rôle invalide. Rôles: LEADER, CO_LEADER, OFFICER, MEMBER, RECRUIT");
+            NationRole role = NationRole.valueOf(args[1].toUpperCase());
+            new fr.nations.gui.RolePermissionsGui(plugin, player, role).open();
+            return;
+        } catch (IllegalArgumentException ignored) {}
+
+        // Essayer un rôle personnalisé
+        fr.nations.role.CustomRole customRole = plugin.getCustomRoleManager().getRoleByName(playerNation.getId(), args[1]);
+        if (customRole != null) {
+            player.openInventory(fr.nations.gui.RolesGui.buildRoleEditGui(plugin, customRole));
+            fr.nations.gui.GuiManager.registerGui(player.getUniqueId(),
+                new fr.nations.gui.CustomRoleEditHolder(plugin, player, playerNation, customRole));
             return;
         }
-        new fr.nations.gui.RolePermissionsGui(plugin, player, role).open();
+
+        // Rien trouvé → ouvrir la liste
+        new fr.nations.gui.NationRoleListGui(plugin, player, playerNation).open();
     }
 
     private org.bukkit.configuration.file.FileConfiguration getConfig() {
