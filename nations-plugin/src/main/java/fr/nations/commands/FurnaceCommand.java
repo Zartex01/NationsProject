@@ -100,6 +100,8 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
             case RAW_COPPER_BLOCK               -> Material.COPPER_BLOCK;
 
             // ── Minerais divers ─────────────────────────────────────────
+            case COAL_ORE,
+                 DEEPSLATE_COAL_ORE             -> Material.COAL;
             case NETHER_QUARTZ_ORE              -> Material.QUARTZ;
             case LAPIS_ORE,
                  DEEPSLATE_LAPIS_ORE            -> Material.LAPIS_LAZULI;
@@ -112,8 +114,8 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
 
             // ── Blocs de construction ───────────────────────────────────
             case SAND, RED_SAND                 -> Material.GLASS;
-            case COBBLESTONE,
-                 COBBLED_DEEPSLATE              -> Material.STONE;
+            case COBBLESTONE                    -> Material.STONE;
+            case COBBLED_DEEPSLATE              -> Material.DEEPSLATE;
             case STONE                          -> Material.SMOOTH_STONE;
             case SANDSTONE                      -> Material.SMOOTH_SANDSTONE;
             case RED_SANDSTONE                  -> Material.SMOOTH_RED_SANDSTONE;
@@ -127,33 +129,42 @@ public class FurnaceCommand implements CommandExecutor, TabCompleter {
             case CHORUS_FRUIT                   -> Material.POPPED_CHORUS_FRUIT;
             case KELP                           -> Material.DRIED_KELP;
 
-            // ── Bois / logs → charbon de bois ───────────────────────────
+            // ── Bois / logs / planches → charbon de bois ────────────────
             case OAK_LOG, OAK_WOOD,
                  STRIPPED_OAK_LOG,
                  STRIPPED_OAK_WOOD,
+                 OAK_PLANKS,
                  BIRCH_LOG, BIRCH_WOOD,
                  STRIPPED_BIRCH_LOG,
                  STRIPPED_BIRCH_WOOD,
+                 BIRCH_PLANKS,
                  SPRUCE_LOG, SPRUCE_WOOD,
                  STRIPPED_SPRUCE_LOG,
                  STRIPPED_SPRUCE_WOOD,
+                 SPRUCE_PLANKS,
                  JUNGLE_LOG, JUNGLE_WOOD,
                  STRIPPED_JUNGLE_LOG,
                  STRIPPED_JUNGLE_WOOD,
+                 JUNGLE_PLANKS,
                  ACACIA_LOG, ACACIA_WOOD,
                  STRIPPED_ACACIA_LOG,
                  STRIPPED_ACACIA_WOOD,
+                 ACACIA_PLANKS,
                  DARK_OAK_LOG, DARK_OAK_WOOD,
                  STRIPPED_DARK_OAK_LOG,
                  STRIPPED_DARK_OAK_WOOD,
+                 DARK_OAK_PLANKS,
                  MANGROVE_LOG, MANGROVE_WOOD,
                  STRIPPED_MANGROVE_LOG,
                  STRIPPED_MANGROVE_WOOD,
+                 MANGROVE_PLANKS,
                  CHERRY_LOG, CHERRY_WOOD,
                  STRIPPED_CHERRY_LOG,
                  STRIPPED_CHERRY_WOOD,
+                 CHERRY_PLANKS,
                  BAMBOO_BLOCK,
-                 STRIPPED_BAMBOO_BLOCK          -> Material.CHARCOAL;
+                 STRIPPED_BAMBOO_BLOCK,
+                 BAMBOO_PLANKS              -> Material.CHARCOAL;
 
             // ── Nourriture (fumoir) ─────────────────────────────────────
             case BEEF                           -> Material.COOKED_BEEF;
