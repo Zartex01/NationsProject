@@ -21,10 +21,11 @@ public class KitGui implements InventoryHolder {
     private final Player player;
     private final Inventory inventory;
 
-    /** Slots des boutons de kit dans l'inventaire (9 colonnes, 3 rangées). */
-    private static final int SLOT_SOUTIEN = 2;
-    private static final int SLOT_PREMIUM = 4;
-    private static final int SLOT_HEROS   = 6;
+    /** Slots des boutons de kit — rangée centrale (row 1, slots 9-17). */
+    private static final int SLOT_JOUEUR  = 10;
+    private static final int SLOT_SOUTIEN = 12;
+    private static final int SLOT_PREMIUM = 14;
+    private static final int SLOT_HEROS   = 16;
 
     public KitGui(NationsPlugin plugin, Player player) {
         this.plugin    = plugin;
@@ -49,9 +50,10 @@ public class KitGui implements InventoryHolder {
         GradeType playerGrade = GradeType.fromPermission(player);
         KitManager km = plugin.getKitManager();
 
+        inventory.setItem(SLOT_JOUEUR,  buildKitItem(KitType.JOUEUR,  playerGrade, km));
         inventory.setItem(SLOT_SOUTIEN, buildKitItem(KitType.SOUTIEN, playerGrade, km));
         inventory.setItem(SLOT_PREMIUM, buildKitItem(KitType.PREMIUM, playerGrade, km));
-        inventory.setItem(SLOT_HEROS,   buildKitItem(KitType.HEROS, playerGrade, km));
+        inventory.setItem(SLOT_HEROS,   buildKitItem(KitType.HEROS,   playerGrade, km));
     }
 
     private ItemStack buildKitItem(KitType kit, GradeType playerGrade, KitManager km) {
@@ -121,6 +123,7 @@ public class KitGui implements InventoryHolder {
         event.setCancelled(true);
         int slot = event.getRawSlot();
         KitType kit = switch (slot) {
+            case SLOT_JOUEUR  -> KitType.JOUEUR;
             case SLOT_SOUTIEN -> KitType.SOUTIEN;
             case SLOT_PREMIUM -> KitType.PREMIUM;
             case SLOT_HEROS   -> KitType.HEROS;

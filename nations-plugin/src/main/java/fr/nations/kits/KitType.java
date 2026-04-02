@@ -13,6 +13,11 @@ import java.util.List;
 
 public enum KitType {
 
+    JOUEUR(
+        "Joueur", "§7", Material.LEATHER_CHESTPLATE,
+        GradeType.JOUEUR,
+        24 * 3600L
+    ),
     SOUTIEN(
         "Soutien", "§a", Material.IRON_CHESTPLATE,
         GradeType.SOUTIEN,
@@ -59,6 +64,7 @@ public enum KitType {
     /** Construit et retourne une copie fraîche des items du kit. */
     public List<ItemStack> getItems() {
         return switch (this) {
+            case JOUEUR  -> buildJoueurItems();
             case SOUTIEN -> buildSoutienItems();
             case PREMIUM -> buildPremiumItems();
             case HEROS   -> buildHerosItems();
@@ -66,6 +72,31 @@ public enum KitType {
     }
 
     // ─── Contenu des kits ────────────────────────────────────────────────────
+
+    private static List<ItemStack> buildJoueurItems() {
+        List<ItemStack> items = new ArrayList<>();
+
+        // Armure complète en cuir
+        items.add(enchant(new ItemStack(Material.LEATHER_HELMET),
+            "protection", 1));
+        items.add(enchant(new ItemStack(Material.LEATHER_CHESTPLATE),
+            "protection", 1));
+        items.add(enchant(new ItemStack(Material.LEATHER_LEGGINGS),
+            "protection", 1));
+        items.add(enchant(new ItemStack(Material.LEATHER_BOOTS),
+            "protection", 1));
+
+        // Armes & outils
+        items.add(enchant(new ItemStack(Material.STONE_SWORD),
+            "sharpness", 1));
+        items.add(new ItemStack(Material.STONE_PICKAXE));
+
+        // Consommables
+        items.add(stack(Material.COOKED_BEEF, 16));
+        items.add(stack(Material.TORCH, 16));
+
+        return items;
+    }
 
     private static List<ItemStack> buildSoutienItems() {
         List<ItemStack> items = new ArrayList<>();
