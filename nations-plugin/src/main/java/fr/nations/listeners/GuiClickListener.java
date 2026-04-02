@@ -57,8 +57,6 @@ public class GuiClickListener implements Listener {
             roleListGui.handleClick(event);
         } else if (gui instanceof fr.nations.gui.CustomRoleEditHolder customRoleGui) {
             customRoleGui.handleClick(event);
-        } else if (gui instanceof fr.nations.gui.FurnaceGui furnaceGui) {
-            furnaceGui.handleClick(event);
         }
     }
 
