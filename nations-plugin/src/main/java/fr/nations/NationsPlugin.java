@@ -11,6 +11,8 @@ import fr.nations.housing.HousingManager;
 import fr.nations.housing.HousingListener;
 import fr.nations.jobs.JobManager;
 import fr.nations.jobs.JobListener;
+import fr.nations.kits.KitManager;
+import fr.nations.kits.KitCommand;
 import fr.nations.listeners.*;
 import fr.nations.nation.NationManager;
 import fr.nations.role.CustomRoleManager;
@@ -39,6 +41,7 @@ public class NationsPlugin extends JavaPlugin {
     private HousingManager housingManager;
     private HousingListener housingListener;
     private JobManager jobManager;
+    private KitManager kitManager;
 
     @Override
     public void onEnable() {
@@ -69,11 +72,13 @@ public class NationsPlugin extends JavaPlugin {
         this.hdvManager = new HdvManager(this);
         this.housingManager = new HousingManager(this);
         this.jobManager = new JobManager(this);
+        this.kitManager = new KitManager(this);
 
         if (dbConnected) {
             hdvManager.createTable();
             housingManager.createTable();
             jobManager.createTable();
+            kitManager.createTable();
             nationManager.loadFromDatabase();
             economyManager.loadFromDatabase();
             gradeManager.loadFromDatabase();
@@ -175,6 +180,10 @@ public class NationsPlugin extends JavaPlugin {
         getCommand("furnace").setExecutor(new FurnaceCommand(this));
         getCommand("jobs").setExecutor(new JobCommand(this));
 
+        KitCommand kitCommand = new KitCommand(this);
+        getCommand("kits").setExecutor(kitCommand);
+        getCommand("kits").setTabCompleter(kitCommand);
+
         NationPubCommand nationPubCommand = new NationPubCommand(this);
         getCommand("npub").setExecutor(nationPubCommand);
         getCommand("npub").setTabCompleter(nationPubCommand);
@@ -210,4 +219,5 @@ public class NationsPlugin extends JavaPlugin {
     public HousingManager getHousingManager() { return housingManager; }
     public HousingListener getHousingListener() { return housingListener; }
     public JobManager getJobManager() { return jobManager; }
+    public KitManager getKitManager() { return kitManager; }
 }

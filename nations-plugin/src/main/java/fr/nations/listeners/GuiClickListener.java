@@ -61,6 +61,8 @@ public class GuiClickListener implements Listener {
             jobsGui.handleClick(event);
         } else if (gui instanceof fr.nations.gui.JobDetailGui jobDetailGui) {
             jobDetailGui.handleClick(event);
+        } else if (gui instanceof fr.nations.kits.KitGui kitGui) {
+            kitGui.handleClick(event);
         }
     }
 

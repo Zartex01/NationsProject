@@ -91,6 +91,11 @@ commands:
     usage: /jobs
     aliases: [metiers, job, metier]
     permission: nations.use
+  kits:
+    description: "Ouvrir le menu des kits ou claim un kit (Soutien, Premium, Heros)"
+    usage: /kits [soutien|premium|heros]
+    aliases: [kit]
+    permission: nations.use
 
 permissions:
   nations.use:
