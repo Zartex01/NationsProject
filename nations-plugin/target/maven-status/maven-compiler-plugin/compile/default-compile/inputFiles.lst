@@ -2,6 +2,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/util/MessageUtil.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/NationsPlugin.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/GradeManager.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/kits/KitGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/StaffWarsGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/JobsGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/PlayerDeathListener.java
@@ -22,6 +23,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/nation/NationManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/jobs/PlayerJobData.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/war/WarType.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/kits/KitManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationsAdminCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/jobs/JobType.java
@@ -33,6 +35,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/FurnaceCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/GuiClickListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/nation/NationMember.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/kits/KitCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/role/CustomRole.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/RolesGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/PayCommand.java
@@ -54,6 +57,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/database/DatabaseManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/JobDetailGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/role/CustomRoleManager.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/kits/KitType.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/GradeType.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/jobs/JobListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/GiveMoneyCommand.java
