@@ -165,15 +165,32 @@ public class JobListener implements Listener {
     private void showXpBar(Player player, JobType jobType, PlayerJobData data, int xpGained) {
         String color = jobType.getColor();
         double mult  = data.getXpMultiplier();
+
+        // Multiplicateur affiché seulement si > 1
         String multStr = mult > 1.0
             ? " §8(§6×" + String.format("%.2f", mult) + "§8)"
             : "";
 
+        // Progression XP
+        String bar = data.progressBar(8, color);
         int pct = (int)(data.progressPercent() * 100);
-        String bar = data.progressBar(10, color);
 
-        String msg = color + "+" + xpGained + " XP §7" + jobType.getDisplayName()
-            + multStr + "  " + bar + " §f" + pct + "%";
+        // Infos niveau et XP actuels / requis
+        String levelStr;
+        String xpStr;
+        if (data.isMaxLevel()) {
+            levelStr = color + "§lMAX";
+            xpStr    = "";
+        } else {
+            levelStr = "§7Niv. " + color + data.getLevel();
+            int needed = PlayerJobData.xpToNextLevel(data.getLevel());
+            xpStr    = " §8| §7" + data.getXp() + "§8/§7" + needed + " XP";
+        }
+
+        String msg = color + "§l+" + xpGained + " XP" + multStr
+            + " §8| " + levelStr
+            + " §8| " + bar + " §f" + pct + "%"
+            + xpStr;
 
         player.sendActionBar(msg);
     }
