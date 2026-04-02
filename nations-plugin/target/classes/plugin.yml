@@ -77,7 +77,7 @@ commands:
     aliases: [market, marche]
     permission: nations.use
   npub:
-    description: Publier une pub pour sa nation dans le tchat (coût: 1000 coins)
+    description: "Publier une pub pour sa nation dans le tchat (cout: 1000 coins)"
     usage: /npub <message>
     aliases: [nationpub, nationpublicite]
     permission: nations.use
