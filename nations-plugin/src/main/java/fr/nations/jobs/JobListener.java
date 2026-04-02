@@ -175,8 +175,7 @@ public class JobListener implements Listener {
         String msg = color + "+" + xpGained + " XP §7" + jobType.getDisplayName()
             + multStr + "  " + bar + " §f" + pct + "%";
 
-        player.sendActionBar(net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-            .legacySection().deserialize(msg));
+        player.sendActionBar(msg);
     }
 
     private void handleLevelUp(Player player, UUID playerId,
