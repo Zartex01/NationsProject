@@ -9,6 +9,8 @@ import fr.nations.grade.GradeManager;
 import fr.nations.hdv.HdvManager;
 import fr.nations.housing.HousingManager;
 import fr.nations.housing.HousingListener;
+import fr.nations.jobs.JobManager;
+import fr.nations.jobs.JobListener;
 import fr.nations.listeners.*;
 import fr.nations.nation.NationManager;
 import fr.nations.role.CustomRoleManager;
@@ -36,6 +38,7 @@ public class NationsPlugin extends JavaPlugin {
     private HdvManager hdvManager;
     private HousingManager housingManager;
     private HousingListener housingListener;
+    private JobManager jobManager;
 
     @Override
     public void onEnable() {
@@ -65,10 +68,12 @@ public class NationsPlugin extends JavaPlugin {
         this.dataManager = new DataManager(this);
         this.hdvManager = new HdvManager(this);
         this.housingManager = new HousingManager(this);
+        this.jobManager = new JobManager(this);
 
         if (dbConnected) {
             hdvManager.createTable();
             housingManager.createTable();
+            jobManager.createTable();
             nationManager.loadFromDatabase();
             economyManager.loadFromDatabase();
             gradeManager.loadFromDatabase();
@@ -168,6 +173,7 @@ public class NationsPlugin extends JavaPlugin {
         getCommand("hdv").setTabCompleter(hdvCommand);
 
         getCommand("furnace").setExecutor(new FurnaceCommand(this));
+        getCommand("jobs").setExecutor(new JobCommand(this));
 
         NationPubCommand nationPubCommand = new NationPubCommand(this);
         getCommand("npub").setExecutor(nationPubCommand);
@@ -184,6 +190,7 @@ public class NationsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GradeCommandListener(this), this);
         this.housingListener = new HousingListener(this);
         getServer().getPluginManager().registerEvents(this.housingListener, this);
+        getServer().getPluginManager().registerEvents(new JobListener(this), this);
     }
 
     public static NationsPlugin getInstance() { return instance; }
@@ -202,4 +209,5 @@ public class NationsPlugin extends JavaPlugin {
     public HdvManager getHdvManager() { return hdvManager; }
     public HousingManager getHousingManager() { return housingManager; }
     public HousingListener getHousingListener() { return housingListener; }
+    public JobManager getJobManager() { return jobManager; }
 }
