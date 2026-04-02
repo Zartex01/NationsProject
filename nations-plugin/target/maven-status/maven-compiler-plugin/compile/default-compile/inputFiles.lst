@@ -3,6 +3,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/NationsPlugin.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/GradeManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/StaffWarsGui.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/JobsGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/PlayerDeathListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/war/WarStatus.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/listeners/PlayerJoinListener.java
@@ -19,9 +20,11 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/housing/HousingManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/SeasonCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/nation/NationManager.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/jobs/PlayerJobData.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/war/WarType.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/NationsAdminCommand.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/jobs/JobType.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/FurnaceGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/SetGradeCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/HdvCommand.java
@@ -43,13 +46,16 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/AtmCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/PlayerGrade.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/season/PlayerStats.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/jobs/JobManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/MembersGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/PlayerProfileGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/war/WarManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/HdvSellGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/database/DatabaseManager.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/JobDetailGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/role/CustomRoleManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/grade/GradeType.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/jobs/JobListener.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/GiveMoneyCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/CustomRoleEditHolder.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/RolePermissionsGui.java
@@ -60,6 +66,7 @@
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/WarCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/config/ConfigManager.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/BankGui.java
+/home/runner/workspace/nations-plugin/src/main/java/fr/nations/commands/JobCommand.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/SeasonGui.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/nation/Nation.java
 /home/runner/workspace/nations-plugin/src/main/java/fr/nations/gui/GuiManager.java

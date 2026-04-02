@@ -86,6 +86,11 @@ commands:
     usage: /furnace
     aliases: [fourneau, smelt]
     permission: nations.use
+  jobs:
+    description: "Ouvrir le menu des metiers (Mineur, Farmeur, Chasseur, Bucheron)"
+    usage: /jobs
+    aliases: [metiers, job, metier]
+    permission: nations.use
 
 permissions:
   nations.use:
